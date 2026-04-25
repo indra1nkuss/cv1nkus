@@ -1,0 +1,2 @@
+"document.addEventListener('DOMContentLoaded', () => {\n    \n    // =========================================\n    // 1. TYPEWRITER EFFECT\n    // =========================================\n    const typewriterElement = document.getElementById('typewriter
+<truncated 6967 bytes>

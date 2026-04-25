@@ -1,0 +1,2 @@
+"    // =========================================\n    // 3. SCROLL REVEAL\n    // =========================================\n    const revealElements = document.querySelectorAll('.reveal');\n    const revealOnScroll = () => {\n        const windowHeight =
+<truncated 4166 bytes>
