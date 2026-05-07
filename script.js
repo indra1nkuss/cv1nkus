@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const commands = {
             'help': 'Available commands: <br>- <span class="text-accent">whoami</span>: View my profile summary<br>- <span class="text-accent">skills</span>: List my core technical skills<br>- <span class="text-accent">contact</span>: Get my contact info<br>- <span class="text-accent">clear</span>: Clear terminal screen',
             'whoami': 'I am Indra Nurul Kusuma, a passionate Developer and Energy Data Analyst specializing in modern web tech and data efficiency.',
-            'skills': 'Frontend: React, Tailwind, HTML/CSS. <br>Backend: Node.js, Python.<br>Data: Excel, Analytics tools.',
+            'skills': 'Frontend: React, Tailwind, Three.js, HTML/CSS. <br>Backend: Node.js, Python, Firebase.<br>Data: Excel, Analytics tools.',
             'contact': 'Email: email@anda.com<br>LinkedIn: /in/indra-nk<br>GitHub: /1nkuss',
             'clear': ''
         };
@@ -193,6 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
+            // Scroll to projects section
+            document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+
             // Reset styles
             filterBtns.forEach(b => {
                 b.classList.remove('active', 'bg-primary/20', 'text-white', 'border-primary');
@@ -206,10 +209,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const filterValue = btn.getAttribute('data-filter');
 
             projectCards.forEach(card => {
-                // Ensure default display is flex if we are using flex, but here we just toggle .hide
                 if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
                     card.classList.remove('hide');
-                    setTimeout(() => { card.style.position = 'relative'; }, 400); // Wait for fade out of others
                 } else {
                     card.classList.add('hide');
                 }
@@ -414,9 +415,11 @@ document.addEventListener('DOMContentLoaded', () => {
         animate();
 
         window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            camera.aspect = width / height;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setSize(width, height);
         });
     }
 
@@ -621,5 +624,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Fix for "Unsafe attempt to load URL" in file:// mode
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href === '#' || !href.startsWith('#')) return;
+            
+            e.preventDefault();
+            const targetId = href.substring(1);
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+                const mobileNav = document.getElementById('mobile-nav');
+                if (mobileNav) mobileNav.classList.add('-translate-y-full', 'opacity-0');
+            }
+        });
+    });
 
 });

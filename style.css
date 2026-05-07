@@ -25,12 +25,21 @@ body {
     background-color: var(--dark);
     color: var(--text-main);
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 h1, h2, h3, .font-heading {
     letter-spacing: -0.02em;
     font-weight: 700;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 /* Custom Scrollbar */
@@ -211,6 +220,23 @@ h1, h2, h3, .font-heading {
 @media (max-width: 768px) {
     .glass-card {
         backdrop-filter: blur(10px);
+    }
+    h1 {
+        line-height: 1.1;
+    }
+}
+
+@media (max-width: 480px) {
+    .px-6 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    .gap-20 {
+        gap: 2.5rem;
+    }
+    .py-32 {
+        padding-top: 3.5rem;
+        padding-bottom: 3.5rem;
     }
 }
 

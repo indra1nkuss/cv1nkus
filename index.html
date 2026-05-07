@@ -39,7 +39,8 @@
         }
     </script>
 </head>
-<body class="bg-dark text-slate-200 font-sans selection:bg-primary selection:text-white overflow-x-hidden">
+<body class="bg-dark text-slate-200 font-sans selection:bg-primary selection:text-white">
+    <div class="overflow-x-hidden relative w-full">
 
     <!-- Preloader -->
     <div id="preloader" class="fixed inset-0 z-[9999] bg-dark flex flex-col items-center justify-center transition-all duration-700">
@@ -58,9 +59,9 @@
     <div class="mesh-bg"></div>
     <div class="bg-noise"></div>
 
-    <nav class="fixed w-full z-50 transition-all duration-300 glass" id="navbar">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-white tracking-tighter font-heading">
+    <nav class="fixed left-0 right-0 top-0 z-50 transition-all duration-300 glass" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-xl md:text-2xl font-bold text-white tracking-tighter font-heading">
                 My<span class="text-primary">Portfolio.</span>
             </a>
             
@@ -98,7 +99,7 @@
         <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-accent/10 rounded-full blur-[120px] animate-pulse"></div>
         
-        <div class="relative z-10 text-center px-6 max-w-5xl mx-auto flex flex-col items-center gap-8">
+        <div class="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto flex flex-col items-center gap-8 w-full overflow-hidden">
             <div class="inline-flex items-center px-4 py-2 rounded-full border border-white/10 glass">
                 <span class="relative flex h-3 w-3 mr-3">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -107,8 +108,8 @@
                 <span class="text-slate-300 text-xs md:text-sm font-semibold tracking-wider uppercase">Available for Work</span>
             </div>
 
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight leading-tight">
-                Hi, I'm <span class="text-white">Indra Nurul Kusuma</span>. <br>
+            <h1 class="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight leading-tight w-full break-words">
+                Hi, I'm <span class="text-white block sm:inline">Indra Nurul Kusuma</span>. <br>
                 <span class="text-gradient" id="typewriter">Developer</span>
                 <span class="animate-blink text-accent ml-1">|</span>
             </h1>
@@ -133,16 +134,16 @@
         </div>
     </section>
 
-    <section id="about" class="py-32 relative">
+    <section id="about" class="py-16 md:py-32 relative">
         <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center">
             <div class="reveal">
                 <h2 class="text-4xl md:text-5xl font-bold text-white mb-8 font-heading">
                     About <span class="text-primary">Me</span>
                 </h2>
-                <p class="text-slate-400 leading-relaxed mb-8 text-xl">
+                <p class="text-slate-400 leading-relaxed mb-8 text-lg md:text-xl">
                     Halo, saya Indra Nurul Kusuma, seorang profesional yang mengombinasikan keahlian Web Development dengan analisis data yang mendalam. Saat ini, saya berkarier sebagai <span class="text-white font-medium">Energy Data Analyst di PT Pratama Abadi Industri (IR)</span>. 
                 </p>
-                <p class="text-slate-400 leading-relaxed mb-8 text-xl">
+                <p class="text-slate-400 leading-relaxed mb-8 text-lg md:text-xl">
                     Saya memiliki passion dalam mengolah data energi yang kompleks menjadi wawasan strategis melalui pengembangan sistem dan visualisasi data yang efisien. Dengan latar belakang teknis yang kuat, saya mampu membangun solusi digital yang tidak hanya estetik secara visual tetapi juga fungsional dan berbasis data untuk mendukung pengambilan keputusan yang cerdas.
                 </p>
                 <div class="grid grid-cols-2 gap-6">
@@ -169,7 +170,7 @@
         </div>
     </section>
 
-    <section id="skills" class="py-32 relative">
+    <section id="skills" class="py-16 md:py-32 relative">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-24 reveal">
                 <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 font-heading">Tech & Tools <span class="text-gradient">Arsenal</span></h2>
@@ -182,11 +183,15 @@
                     <div class="skill-card-marquee"><i class="devicon-javascript-plain text-4xl text-[#f0db4f]"></i> JavaScript</div>
                     <div class="skill-card-marquee"><i class="devicon-react-original text-4xl text-[#61dafb]"></i> React</div>
                     <div class="skill-card-marquee"><i class="devicon-tailwindcss-original text-4xl text-[#38bdf8]"></i> Tailwind</div>
-                    <div class="skill-card-marquee"><i class="fas fa-file-excel text-4xl text-[#1D6F42]"></i> MS Excel</div>
-                    <div class="skill-card-marquee"><i class="fas fa-file-word text-4xl text-[#2B579A]"></i> MS Word</div>
-                    <div class="skill-card-marquee"><i class="fas fa-file-powerpoint text-4xl text-[#D24726]"></i> PowerPoint</div>
-                    <div class="skill-card-marquee"><i class="devicon-git-plain text-4xl text-[#f1502f]"></i> Git</div>
-                    <div class="skill-card-marquee"><i class="devicon-nodejs-plain text-4xl text-[#68a063]"></i> Node JS</div>
+                    <div class="skill-card-marquee"><i class="devicon-laravel-original text-4xl text-[#FF2D20]"></i> Laravel</div>
+                    <div class="skill-card-marquee"><i class="devicon-mysql-plain text-4xl text-[#4479A1]"></i> MySQL</div>
+                    <div class="skill-card-marquee"><i class="devicon-flutter-plain text-4xl text-[#02569B]"></i> Flutter</div>
+                    <div class="skill-card-marquee"><i class="devicon-firebase-plain text-4xl text-[#FFCA28]"></i> Firebase</div>
+                    <div class="skill-card-marquee"><i class="devicon-threejs-original text-4xl text-[#ffffff]"></i> Three.js</div>
+                    <div class="skill-card-marquee"><i class="fas fa-file-excel text-4xl text-[#1D6F42]"></i> Excel</div>
+                    <div class="skill-card-marquee"><i class="fas fa-file-word text-4xl text-[#2B579A]"></i> Word</div>
+                    <div class="skill-card-marquee"><i class="fas fa-file-powerpoint text-4xl text-[#D24726]"></i> PPT</div>
+                    <div class="skill-card-marquee"><i class="fas fa-envelope text-4xl text-[#0078D4]"></i> Outlook</div>
                     
                     <!-- Duplicate for infinite effect -->
                     <div class="skill-card-marquee"><i class="devicon-html5-plain text-4xl text-[#e34c26]"></i> HTML5</div>
@@ -194,36 +199,42 @@
                     <div class="skill-card-marquee"><i class="devicon-javascript-plain text-4xl text-[#f0db4f]"></i> JavaScript</div>
                     <div class="skill-card-marquee"><i class="devicon-react-original text-4xl text-[#61dafb]"></i> React</div>
                     <div class="skill-card-marquee"><i class="devicon-tailwindcss-original text-4xl text-[#38bdf8]"></i> Tailwind</div>
-                    <div class="skill-card-marquee"><i class="fas fa-file-excel text-4xl text-[#1D6F42]"></i> MS Excel</div>
-                    <div class="skill-card-marquee"><i class="fas fa-file-word text-4xl text-[#2B579A]"></i> MS Word</div>
-                    <div class="skill-card-marquee"><i class="fas fa-file-powerpoint text-4xl text-[#D24726]"></i> PowerPoint</div>
-                    <div class="skill-card-marquee"><i class="devicon-git-plain text-4xl text-[#f1502f]"></i> Git</div>
-                    <div class="skill-card-marquee"><i class="devicon-nodejs-plain text-4xl text-[#68a063]"></i> Node JS</div>
+                    <div class="skill-card-marquee"><i class="devicon-laravel-original text-4xl text-[#FF2D20]"></i> Laravel</div>
+                    <div class="skill-card-marquee"><i class="devicon-mysql-plain text-4xl text-[#4479A1]"></i> MySQL</div>
+                    <div class="skill-card-marquee"><i class="devicon-flutter-plain text-4xl text-[#02569B]"></i> Flutter</div>
+                    <div class="skill-card-marquee"><i class="devicon-firebase-plain text-4xl text-[#FFCA28]"></i> Firebase</div>
+                    <div class="skill-card-marquee"><i class="devicon-threejs-original text-4xl text-[#ffffff]"></i> Three.js</div>
+                    <div class="skill-card-marquee"><i class="fas fa-file-excel text-4xl text-[#1D6F42]"></i> Excel</div>
+                    <div class="skill-card-marquee"><i class="fas fa-file-word text-4xl text-[#2B579A]"></i> Word</div>
+                    <div class="skill-card-marquee"><i class="fas fa-file-powerpoint text-4xl text-[#D24726]"></i> PPT</div>
+                    <div class="skill-card-marquee"><i class="fas fa-envelope text-4xl text-[#0078D4]"></i> Outlook</div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Impact & Analytics Section -->
-    <section id="analytics" class="py-32 relative overflow-hidden bg-dark/30">
+    <section id="analytics" class="py-16 md:py-32 relative overflow-hidden bg-dark/30">
         <div class="max-w-6xl mx-auto px-6">
             <div class="text-center mb-16 reveal">
-                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4 font-heading">Efisiensi & <span class="text-primary">Analitik</span></h2>
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 font-heading">Analitik <span class="text-primary">Energi</span></h2>
                 <p class="text-slate-400">Statistik tingkat analisis proyek dan rekam jejak penurunan konsumsi energi.</p>
             </div>
             
             <div class="grid lg:grid-cols-3 gap-8 items-center">
-                <div class="lg:col-span-2 glass-card p-8 rounded-3xl border border-white/10 reveal shadow-2xl shadow-primary/5">
-                    <canvas id="energyChart"></canvas>
+                <div class="lg:col-span-2 glass-card p-4 md:p-8 rounded-3xl border border-white/10 reveal shadow-2xl shadow-primary/5 overflow-hidden">
+                    <div class="relative w-full h-[300px] md:h-auto">
+                        <canvas id="energyChart"></canvas>
+                    </div>
                 </div>
                 <div class="grid grid-cols-1 gap-6">
-                    <div class="p-8 glass-card rounded-3xl border border-white/10 reveal group hover:bg-primary/5 transition-all">
+                    <div class="p-6 md:p-8 glass-card rounded-3xl border border-white/10 reveal group hover:bg-primary/5 transition-all">
                         <div class="text-primary text-3xl mb-4"><i class="fas fa-chart-line"></i></div>
                         <h4 class="text-white font-bold mb-2">Proyek Analisis</h4>
                         <div class="text-4xl font-bold text-primary mb-2">30+</div>
                         <p class="text-slate-400 text-xs uppercase tracking-widest font-bold">Proyek diselesaikan</p>
                     </div>
-                    <div class="p-8 glass-card rounded-3xl border border-white/10 reveal group hover:bg-accent/5 transition-all">
+                    <div class="p-6 md:p-8 glass-card rounded-3xl border border-white/10 reveal group hover:bg-accent/5 transition-all">
                         <div class="text-accent text-3xl mb-4"><i class="fas fa-leaf"></i></div>
                         <h4 class="text-white font-bold mb-2">Penurunan Efisiensi</h4>
                         <div class="text-4xl font-bold text-accent mb-2">28%</div>
@@ -234,7 +245,7 @@
         </div>
     </section>
 
-    <section id="projects" class="py-32">
+    <section id="projects" class="py-16 md:py-32">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl md:text-5xl font-bold text-center text-white mb-10 reveal font-heading">Featured <span class="text-primary">Projects</span></h2>
             
@@ -243,76 +254,105 @@
                 <button class="filter-btn active px-6 py-2 rounded-full border border-primary text-white bg-primary/20 text-sm font-bold transition-all" data-filter="all">Semua</button>
                 <button class="filter-btn px-6 py-2 rounded-full border border-white/10 text-slate-400 hover:text-white hover:border-white/30 text-sm font-bold transition-all" data-filter="web">Web App</button>
                 <button class="filter-btn px-6 py-2 rounded-full border border-white/10 text-slate-400 hover:text-white hover:border-white/30 text-sm font-bold transition-all" data-filter="mobile">Mobile</button>
-                <button class="filter-btn px-6 py-2 rounded-full border border-white/10 text-slate-400 hover:text-white hover:border-white/30 text-sm font-bold transition-all" data-filter="ai">AI / Data</button>
             </div>
 
             <div class="grid md:grid-cols-3 gap-10" id="project-grid">
+                <!-- Project: Portal Energi IR -->
                 <div class="project-card reveal group cursor-pointer" data-category="web" 
                       onclick="openModal(this)"
-                      data-title="E-Commerce Dashboard"
-                      data-desc="Dashboard admin lengkap dengan analitik penjualan real-time, manajemen stok, dan laporan bulanan."
-                      data-tech="React, Tailwind, ChartJS"
-                      data-image="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80"
-                      data-link="#">
+                      data-title="Portal Energi - Hall of Fame"
+                      data-desc="Portal informasi pusat untuk pemenang training online tahun 2026. Dilengkapi dengan daftar pemenang interaktif, dokumentasi Solar Photovoltaic, dan Energy AI Assistant untuk mendukung pengembangan kompetensi tim."
+                      data-tech="Tailwind, Three.js, Firebase"
+                      data-image="images/portal-energi.png"
+                      data-link="https://irenergyportal.vercel.app/">
                     <div class="aspect-[16/10] overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <img src="images/portal-energi.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                         <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                             <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
                         </div>
                     </div>
                     <div class="p-8">
-                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">Toko Online Admin</h3>
-                        <p class="text-slate-400 text-sm mb-6 leading-relaxed">Sistem manajemen toko online yang komprehensif.</p>
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">Portal Energi Winners</h3>
+                        <p class="text-slate-400 text-sm mb-6 leading-relaxed">Platform apresiasi dan informasi pemenang training online.</p>
                         <div class="flex gap-3">
-                            <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">React</span>
-                            <span class="text-[10px] font-bold uppercase tracking-widest bg-accent/10 text-accent px-3 py-1 rounded-full border border-accent/20">Tailwind</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Tailwind</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest bg-accent/10 text-accent px-3 py-1 rounded-full border border-accent/20">Three.js</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full border border-yellow-500/20">Firebase</span>
                         </div>
                     </div>
                 </div>
+                <!-- Project: Interactive 3D Portfolio -->
+                <div class="project-card reveal group cursor-pointer" data-category="web" 
+                      onclick="openModal(this)"
+                      data-title="Interactive 3D Portfolio"
+                      data-desc="Portfolio website pribadi dengan pengalaman pengguna yang imersif. Menggunakan Three.js untuk animasi 3D robot, Terminal CLI interaktif, dan integrasi Firebase untuk Guestbook realtime."
+                      data-tech="Tailwind, Three.js, Firebase, ChartJS"
+                      data-image="images/portfolio-v3.png"
+                      data-link="https://indra1nkuss.github.io/cv1nkus/">
+                    <div class="aspect-[16/10] overflow-hidden relative">
+                        <img src="images/portfolio-v3.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">Interactive 3D Portfolio</h3>
+                        <p class="text-slate-400 text-sm mb-6 leading-relaxed">Personal brand showcase dengan teknologi modern.</p>
+                        <div class="flex gap-3">
+                            <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Three.js</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest bg-accent/10 text-accent px-3 py-1 rounded-full border border-accent/20">Firebase</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Project: Pendataan Mesin V2 -->
+                <div class="project-card reveal group cursor-pointer" data-category="web" 
+                      onclick="openModal(this)"
+                      data-title="Pendataan Mesin V2"
+                      data-desc="Sistem manajemen pendataan mesin industri untuk menentukan ENPI (Energy Performance Indicator) dan SEU (Significant Energy Use) secara akurat per area maupun keseluruhan. Membantu optimasi konsumsi energi di lingkungan pabrik."
+                      data-tech="Laravel, MySQL, Bootstrap"
+                      data-image="images/pendataan-mesin.png"
+                      data-link="https://pendataanmesinv2.great-site.net/login">
+                    <div class="aspect-[16/10] overflow-hidden relative">
+                        <img src="images/pendataan-mesin.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">Pendataan Mesin V2</h3>
+                        <p class="text-slate-400 text-sm mb-6 leading-relaxed">Sistem analisis ENPI & SEU berbasis Laravel.</p>
+                        <div class="flex gap-3">
+                            <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Laravel</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest bg-accent/10 text-accent px-3 py-1 rounded-full border border-accent/20">MySQL</span>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="project-card reveal group cursor-pointer" data-category="mobile"
                       onclick="openModal(this)"
-                      data-title="Finance App"
-                      data-desc="Aplikasi pencatat keuangan pribadi dengan fitur scan struk belanja otomatis."
-                      data-tech="Flutter, Firebase, AI"
-                      data-image="https://images.unsplash.com/photo-1557821552-17105176677c?w=800&q=80"
-                      data-link="#">
+                      data-title="UAS Cashflow App"
+                      data-desc="Aplikasi pencatat keuangan (Cashflow) berbasis mobile. Dibangun menggunakan Flutter dengan integrasi Firebase Authentication dan Realtime Database untuk pengelolaan data pemasukan dan pengeluaran secara efisien."
+                      data-tech="Flutter, Firebase, Dart"
+                      data-image="images/cashflow-app.png"
+                      data-link="https://github.com/Julianarwansah/uas_cashflow_app">
                     <div class="aspect-[16/10] overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1557821552-17105176677c?w=800&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <img src="images/cashflow-app.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                         <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                             <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
                         </div>
                     </div>
                     <div class="p-8">
-                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">Finance Tracker</h3>
-                        <p class="text-slate-400 text-sm mb-6 leading-relaxed">Kelola keuangan pribadi dengan mudah.</p>
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">UAS Cashflow App</h3>
+                        <p class="text-slate-400 text-sm mb-6 leading-relaxed">Solusi cerdas pencatatan keuangan berbasis mobile.</p>
                         <div class="flex gap-3">
                             <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Flutter</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full border border-yellow-500/20">Firebase</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="project-card reveal group cursor-pointer" data-category="ai"
-                      onclick="openModal(this)"
-                      data-title="AI Chatbot"
-                      data-desc="Bot otomatisasi untuk layanan pelanggan berbasis NLP."
-                      data-tech="Python, OpenAI, Docker"
-                      data-image="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&q=80"
-                      data-link="#">
-                    <div class="aspect-[16/10] overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                        <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                            <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
-                        </div>
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">Smart CS Bot</h3>
-                        <p class="text-slate-400 text-sm mb-6 leading-relaxed">Layanan pelanggan 24/7 dengan AI.</p>
-                        <div class="flex gap-3">
-                            <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Python</span>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </section>
@@ -340,7 +380,7 @@
         </div>
     </section>
 
-    <section id="certificates" class="py-32 relative">
+    <section id="certificates" class="py-16 md:py-32 relative">
         <div class="max-w-6xl mx-auto px-6">
             <h2 class="text-4xl font-bold text-center text-white mb-16 reveal font-heading">
                 Lisensi & <span class="text-primary">Sertifikat</span>
@@ -371,17 +411,17 @@
     </section>
 
 
-    <section id="contact" class="py-32 relative">
+    <section id="contact" class="py-16 md:py-32 relative">
         <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-20">
             <div class="reveal">
                 <h2 class="text-4xl md:text-5xl font-bold text-white mb-8 font-heading">Sharing <span class="text-primary">Bareng</span></h2>
-                <form id="guestbook-form" class="space-y-6 glass-card p-10 rounded-3xl">
+                <form id="guestbook-form" class="space-y-6 glass-card p-6 md:p-10 rounded-3xl">
                     <input type="text" id="guest-name" required class="w-full bg-dark/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:border-primary transition" placeholder="Nama Kamu">
                     <textarea id="guest-message" required rows="4" class="w-full bg-dark/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:border-primary transition" placeholder="Pesan Anda"></textarea>
                     <button type="submit" class="btn-premium w-full py-4 text-lg magnetic"><i class="fas fa-paper-plane mr-2"></i> Kirim Pesan</button>
                 </form>
             </div>
-            <div class="reveal flex flex-col h-full glass-card p-10 rounded-3xl">
+            <div class="reveal flex flex-col h-full glass-card p-6 md:p-10 rounded-3xl">
                 <h3 class="text-2xl font-bold text-white mb-10 flex items-center gap-3"><span class="w-2 h-10 bg-primary rounded-full"></span> Diskusi Terbaru</h3>
                 <div id="comments-container" class="flex-1 overflow-y-auto max-h-[450px] space-y-6"></div>
             </div>
@@ -415,7 +455,10 @@
                     <h3 id="modal-title" class="text-3xl font-bold text-white mb-4"></h3>
                     <p id="modal-desc" class="text-slate-300 mb-8"></p>
                     <div id="modal-tech" class="flex gap-3 mb-10"></div>
-                    <a id="modal-link" href="#" target="_blank" class="btn-premium text-center">Visit Website</a>
+                    <a id="modal-link" href="#" target="_blank" class="btn-premium text-center mb-4">Visit Website</a>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-white transition-colors text-sm font-bold flex items-center justify-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Portfolio
+                    </button>
                 </div>
             </div>
         </div>
@@ -438,9 +481,10 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script src="script.js"></script>
+    </div>
 </body>
 </html>
