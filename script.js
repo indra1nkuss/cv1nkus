@@ -355,73 +355,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =========================================
-    // 4. THREE.JS 3D ROBOT HEAD (Restored)
+    // 4. THREE.JS 3D ROBOT HEAD (Removed - Replaced with model-viewer in HTML)
     // =========================================
-    const container = document.getElementById('robot-3d-container');
-    if (container) {
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        container.appendChild(renderer.domElement);
-
-        const robotHead = new THREE.Group();
-        scene.add(robotHead);
-
-        // Stylized Robot head using a rounded-like geometry
-        const mainMaterial = new THREE.MeshPhongMaterial({ color: 0x6366f1, transparent: true, opacity: 0.2, shininess: 100 });
-        const wireframeMaterial = new THREE.MeshBasicMaterial({ color: 0x6366f1, wireframe: true, transparent: true, opacity: 0.1 });
-        const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
-
-        const geometry = new THREE.BoxGeometry(2, 2.2, 1.8);
-        const coreHead = new THREE.Mesh(geometry, mainMaterial);
-        const coreWire = new THREE.Mesh(geometry, wireframeMaterial);
-        robotHead.add(coreHead);
-        robotHead.add(coreWire);
-
-        const eyeGeo = new THREE.SphereGeometry(0.2, 16, 16);
-        const eyeL = new THREE.Mesh(eyeGeo, eyeMaterial);
-        const eyeR = new THREE.Mesh(eyeGeo, eyeMaterial);
-        eyeL.position.set(-0.5, 0.3, 0.9);
-        eyeR.position.set(0.5, 0.3, 0.9);
-        robotHead.add(eyeL);
-        robotHead.add(eyeR);
-
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
-        const pointLight = new THREE.PointLight(0x6366f1, 2, 100);
-        pointLight.position.set(5, 5, 5);
-        scene.add(pointLight);
-
-        camera.position.z = 5;
-
-        let mouseX = 0, mouseY = 0;
-        let targetX = 0, targetY = 0;
-
-        window.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-        });
-
-        const animate = () => {
-            requestAnimationFrame(animate);
-            targetX += (mouseX - targetX) * 0.05;
-            targetY += (mouseY - targetY) * 0.05;
-            robotHead.rotation.y = targetX * 0.5;
-            robotHead.rotation.x = -targetY * 0.3;
-            robotHead.position.y = Math.sin(Date.now() * 0.001) * 0.1;
-            renderer.render(scene, camera);
-        };
-        animate();
-
-        window.addEventListener('resize', () => {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-            renderer.setSize(width, height);
-        });
-    }
 
     // =========================================
     // 5. MAGNETIC EFFECT
@@ -642,5 +577,132 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // =========================================
+    // 12. GSAP ANIMATIONS
+    // =========================================
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Parallax Background Text
+        gsap.to('.bg-text', {
+            x: "-20vw",
+            ease: "none",
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1
+            }
+        });
+
+        // Horizontal Scroll Collage for Projects (ULTRA SMOOTH)
+        let projectsContainer = document.querySelector(".projects-container");
+        let projectsWrapper = document.querySelector(".projects-wrapper");
+
+        if (projectsContainer && projectsWrapper) {
+            
+            function getScrollAmount() {
+                let containerWidth = projectsContainer.scrollWidth;
+                // Add an extra 10vw of padding to the end scroll to ensure the last item is fully visible
+                return -(containerWidth - window.innerWidth + (window.innerWidth * 0.1));
+            }
+
+            const tween = gsap.to(projectsContainer, {
+                x: getScrollAmount,
+                ease: "none"
+            });
+
+            ScrollTrigger.create({
+                trigger: projectsWrapper,
+                start: "top top",
+                end: () => `+=${projectsContainer.scrollWidth}`, // Sync scroll distance with total width
+                pin: true,
+                animation: tween,
+                scrub: 1,
+                invalidateOnRefresh: true,
+                anticipatePin: 1
+            });
+        }
+
+        // =========================================
+        // 13. RESPAWN / INTRO ANIMATION & ROBOT SEQUENCE
+        // =========================================
+        const introTl = gsap.timeline();
+        introTl.from("body", { opacity: 0, duration: 0.3 })
+               .from(".mesh-bg", { scale: 0.8, opacity: 0, duration: 1, ease: "power3.out" })
+               // Spawn effect: Muncul (Fade in & slightly scale up smoothly)
+               .from("#hero-robot-container", { scale: 0.8, autoAlpha: 0, duration: 1.5, ease: "power2.out" }, "-=0.5")
+               .from("#home h1, #home h1 span", { y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" }, "-=1")
+               .from("#home p, #home a", { y: 20, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" }, "-=0.5");
+
+        // Robot Animation Sequence
+        const robotModel = document.getElementById("interactive-robot");
+        if (robotModel) {
+            // Bind to the 'load' event to ensure it works reliably on mobile
+            robotModel.addEventListener("load", () => {
+                // Wait for the spawn animation to finish, then start the sequence
+                setTimeout(() => {
+                    // 1. Look at hand (ThumbsUp animation)
+                    robotModel.animationName = "ThumbsUp";
+                    
+                    // 2. Say Hello (Wave)
+                    setTimeout(() => {
+                        robotModel.animationName = "Wave";
+                        
+                        // 3. Walk in place (Walking)
+                        setTimeout(() => {
+                            robotModel.animationName = "Walking";
+                            
+                            // 4. Say Hello again (Wave)
+                            setTimeout(() => {
+                                robotModel.animationName = "Wave";
+                                
+                                // 5. Idle
+                                setTimeout(() => {
+                                    robotModel.animationName = "Idle";
+                                }, 3000);
+                                
+                            }, 3000);
+                            
+                        }, 3000); 
+                        
+                    }, 1500); 
+                }, 1000); 
+            });
+            
+            // Add interactive click: Wave when clicked
+            robotModel.addEventListener('click', () => {
+                robotModel.animationName = "Wave";
+                setTimeout(() => { robotModel.animationName = "Idle"; }, 3000);
+            });
+        }   // end if(robotModel)
+    }       // end if(gsap)
+
+    // =========================================
+    // 14. DOWNLOAD CV CONFETTI EFFECT
+    // =========================================
+    const btnDownload = document.getElementById("download-cv");
+    if (btnDownload) {
+        btnDownload.addEventListener("click", () => {
+            const duration = 2000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 99999 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+
+                const particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        });
+    }
+
 
 });

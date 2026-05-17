@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
 
@@ -59,77 +62,125 @@
     <div class="mesh-bg"></div>
     <div class="bg-noise"></div>
 
-    <nav class="fixed left-0 right-0 top-0 z-50 transition-all duration-300 glass" id="navbar">
-        <div class="max-w-7xl mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-xl md:text-2xl font-bold text-white tracking-tighter font-heading">
-                My<span class="text-primary">Portfolio.</span>
+    <!-- Background Text for Aesthetic -->
+    <div class="bg-text text-[15vw] font-bold text-transparent fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap z-[-1] tracking-[1vw] pointer-events-none" style="-webkit-text-stroke: 2px rgba(255, 255, 255, 0.04); font-family: 'Space Grotesk', sans-serif;">DEVELOPER</div>
+
+    <nav class="fixed left-0 right-0 top-0 z-50 transition-all duration-500" id="navbar">
+        <div class="absolute inset-0 bg-dark/70 backdrop-blur-xl border-b border-white/5"></div>
+        <div class="relative max-w-7xl mx-auto px-4 md:px-8 py-3 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#home" class="group flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center text-primary font-bold text-sm group-hover:bg-primary/40 group-hover:shadow-[0_0_15px_rgba(99,102,241,0.7)] transition-all duration-300">1K</span>
+                <span class="text-lg font-bold text-white tracking-tight font-heading">Indra<span class="text-primary">NK.</span></span>
             </a>
             
-            <div class="hidden md:flex space-x-8 text-sm font-medium">
-                <a href="#about" class="hover:text-primary transition-colors">Tentang</a>
-                <a href="#skills" class="hover:text-primary transition-colors">Skills</a>
-                <a href="#projects" class="hover:text-primary transition-colors">Project</a>
-                <a href="#analytics" class="hover:text-primary transition-colors">Analytics</a>
-                <a href="#contact" class="hover:text-primary transition-colors">Kontak</a>
-                <button id="theme-toggle" class="ml-4 text-white hover:text-primary transition-colors" title="Toggle Light/Dark Mode">
-                    <i class="fas fa-sun"></i>
+            <!-- Desktop Links -->
+            <div class="hidden md:flex items-center space-x-1 text-sm font-medium">
+                <a href="#home" class="nav-link px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 relative group">Beranda<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-4/5 transition-all duration-300 rounded-full"></span></a>
+                <a href="#about" class="nav-link px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 relative group">Tentang<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-4/5 transition-all duration-300 rounded-full"></span></a>
+                <a href="#skills" class="nav-link px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 relative group">Skills<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-4/5 transition-all duration-300 rounded-full"></span></a>
+                <a href="#projects" class="nav-link px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 relative group">Project<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-4/5 transition-all duration-300 rounded-full"></span></a>
+                <a href="#analytics" class="nav-link px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 relative group">Analytics<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-4/5 transition-all duration-300 rounded-full"></span></a>
+                <a href="#contact" class="nav-link px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 relative group">Kontak<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-4/5 transition-all duration-300 rounded-full"></span></a>
+                <div class="w-px h-5 bg-white/10 mx-2"></div>
+                <button id="theme-toggle" class="p-2 rounded-lg text-slate-400 hover:text-primary hover:bg-white/5 transition-all duration-200" title="Toggle Light/Dark Mode">
+                    <i class="fas fa-sun text-sm"></i>
                 </button>
             </div>
 
             <!-- Hamburger Button -->
-            <button id="menu-toggle" class="md:hidden text-white text-2xl focus:outline-none">
+            <button id="menu-toggle" class="md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white hover:border-primary/50 hover:text-primary transition-all duration-200 focus:outline-none">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
     </nav>
 
     <!-- Mobile Nav Overlay -->
-    <div id="mobile-nav" class="fixed inset-0 z-[60] bg-dark/95 backdrop-blur-2xl flex flex-col items-center justify-center gap-8 transition-all duration-500 -translate-y-full opacity-0">
-        <button id="menu-close" class="absolute top-8 right-8 text-white text-3xl">
+    <div id="mobile-nav" class="fixed inset-0 z-[60] backdrop-blur-2xl flex flex-col items-center justify-center gap-6 transition-all duration-500 -translate-y-full opacity-0" style="background: rgba(7, 11, 22, 0.97);">
+        <!-- Close button -->
+        <button id="menu-close" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white hover:border-red-400/50 hover:text-red-400 transition-all">
             <i class="fas fa-times"></i>
         </button>
-        <a href="#about" class="mobile-link text-3xl font-bold text-white hover:text-primary transition-colors">Tentang</a>
-        <a href="#skills" class="mobile-link text-3xl font-bold text-white hover:text-primary transition-colors">Skills</a>
-        <a href="#projects" class="mobile-link text-3xl font-bold text-white hover:text-primary transition-colors">Project</a>
-        <a href="#analytics" class="mobile-link text-3xl font-bold text-white hover:text-primary transition-colors">Analytics</a>
-        <a href="#contact" class="mobile-link text-3xl font-bold text-white hover:text-primary transition-colors">Kontak</a>
+        <!-- Logo in mobile menu -->
+        <div class="mb-4 flex flex-col items-center gap-2">
+            <span class="w-14 h-14 rounded-xl bg-primary/20 border border-primary/50 flex items-center justify-center text-primary font-bold text-xl">1K</span>
+            <span class="text-sm text-slate-400">Indra Nurul Kusuma</span>
+        </div>
+        <a href="#home" class="mobile-link text-2xl font-bold text-slate-200 hover:text-primary transition-colors tracking-wide">Beranda</a>
+        <a href="#about" class="mobile-link text-2xl font-bold text-slate-200 hover:text-primary transition-colors tracking-wide">Tentang</a>
+        <a href="#skills" class="mobile-link text-2xl font-bold text-slate-200 hover:text-primary transition-colors tracking-wide">Skills</a>
+        <a href="#projects" class="mobile-link text-2xl font-bold text-slate-200 hover:text-primary transition-colors tracking-wide">Project</a>
+        <a href="#analytics" class="mobile-link text-2xl font-bold text-slate-200 hover:text-primary transition-colors tracking-wide">Analytics</a>
+        <a href="#contact" class="mobile-link text-2xl font-bold text-slate-200 hover:text-primary transition-colors tracking-wide">Kontak</a>
+        <div class="mt-4">
+            <a href="cv1nkus.pdf" download class="btn-outline-glow py-3 px-8 rounded-full text-sm font-bold flex items-center gap-2">
+                <i class="fas fa-file-download"></i> Download CV
+            </a>
+        </div>
     </div>
 
-    <section id="home" class="relative min-h-screen flex flex-col justify-center items-center overflow-hidden pt-32 pb-20">
+    <section id="home" class="relative min-h-[100dvh] w-full flex flex-col justify-center overflow-x-hidden pt-20 pb-12">
         <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-accent/10 rounded-full blur-[120px] animate-pulse"></div>
         
-        <div class="relative z-10 text-center px-4 sm:px-6 max-w-5xl mx-auto flex flex-col items-center gap-8 w-full overflow-hidden">
-            <div class="inline-flex items-center px-4 py-2 rounded-full border border-white/10 glass">
-                <span class="relative flex h-3 w-3 mr-3">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                </span>
-                <span class="text-slate-300 text-xs md:text-sm font-semibold tracking-wider uppercase">Available for Work</span>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full flex flex-col md:flex-row-reverse items-center justify-center gap-6 md:gap-12 relative z-10">
+            
+            <!-- 3D Modern Sci-Fi Model (Transparent) -->
+            <div class="w-full flex justify-center items-center relative z-20 h-[40vh] min-h-[300px] md:h-[600px] md:flex-1" id="hero-robot-container">
+                <div class="w-full h-full animate-float relative flex justify-center items-center">
+                    <div class="absolute w-64 h-64 md:w-96 md:h-96 bg-primary/40 rounded-full blur-[80px] md:blur-[100px] animate-pulse"></div>
+                    <model-viewer 
+                        id="interactive-robot"
+                        src="https://modelviewer.dev/shared-assets/models/RobotExpressive.glb" 
+                        alt="3D Animated Robot" 
+                        autoplay
+                        animation-name="ThumbsUp"
+                        camera-orbit="0deg 85deg auto"
+                        camera-controls 
+                        exposure="1.2"
+                        environment-image="https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.hdr"
+                        shadow-intensity="2"
+                        shadow-softness="1"
+                        class="absolute inset-0 transition-transform hover:scale-105"
+                        disable-zoom
+                        style="pointer-events: auto; outline: none; width: 100%; height: 100%;">
+                    </model-viewer>
+                </div>
             </div>
 
-            <h1 class="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-bold text-white tracking-tight leading-tight w-full break-words">
-                Hi, I'm <span class="text-white block sm:inline">Indra Nurul Kusuma</span>. <br>
-                <span class="text-gradient" id="typewriter">Developer</span>
-                <span class="animate-blink text-accent ml-1">|</span>
-            </h1>
+            <!-- Text Content -->
+            <div class="flex-1 flex flex-col items-center md:items-start text-center md:text-left gap-4 md:gap-6 w-full relative z-20 mt-4 md:mt-0">
+                <div class="inline-flex items-center px-4 py-2 rounded-full border border-white/10 glass">
+                    <span class="relative flex h-3 w-3 mr-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                    </span>
+                    <span class="text-slate-300 text-[10px] md:text-sm font-semibold tracking-wider uppercase">Available for Work</span>
+                </div>
 
-            <p class="text-slate-400 text-lg md:text-2xl max-w-3xl mx-auto leading-relaxed">
-                Mampu bekerja secara baik dalam <span class="text-white font-medium">Individu</span>, <span class="text-white font-medium">Team</span>, dan <span class="text-white font-medium">Fungsional</span>.
-            </p>
+                <h1 class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-tight w-full break-words">
+                    Hi, I'm <span class="text-white block sm:inline">Indra N.K.</span> <br>
+                    <span class="text-gradient" id="typewriter">Developer</span>
+                    <span class="animate-blink text-accent ml-1">|</span>
+                </h1>
 
-            <!-- Hero Social Links -->
-            <div class="flex gap-6 mt-4">
-                <a href="#" class="text-slate-400 hover:text-primary transition-colors text-2xl hover:scale-110"><i class="fab fa-github"></i></a>
-                <a href="#" class="text-slate-400 hover:text-primary transition-colors text-2xl hover:scale-110"><i class="fab fa-linkedin"></i></a>
-                <a href="#" class="text-slate-400 hover:text-primary transition-colors text-2xl hover:scale-110"><i class="fab fa-instagram"></i></a>
-            </div>
+                <p class="text-slate-400 text-base md:text-xl max-w-xl leading-relaxed px-2 md:px-0">
+                    Mampu bekerja secara baik dalam <span class="text-white font-medium">Individu</span>, <span class="text-white font-medium">Team</span>, dan <span class="text-white font-medium">Fungsional</span>.
+                </p>
 
-            <div class="flex flex-col sm:flex-row gap-6 w-full sm:w-auto mt-6">
-                <a href="#projects" class="btn-premium magnetic">Lihat Portfolio <i class="fas fa-arrow-right ml-2"></i></a>
-                <a href="cv1nkus.pdf" id="download-cv" download class="px-8 py-3 rounded-full font-bold text-white border border-white/10 glass hover:bg-white/5 transition-all flex items-center justify-center gap-2 magnetic">
-                    <i class="fas fa-file-download"></i> Download CV
-                </a>
+                <!-- Hero Social Links -->
+                <div class="flex gap-4 md:gap-6 mt-2 justify-center md:justify-start w-full">
+                    <a href="#" class="text-slate-400 hover:text-primary transition-colors text-xl md:text-2xl hover:scale-110"><i class="fab fa-github"></i></a>
+                    <a href="#" class="text-slate-400 hover:text-primary transition-colors text-xl md:text-2xl hover:scale-110"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-slate-400 hover:text-primary transition-colors text-xl md:text-2xl hover:scale-110"><i class="fab fa-instagram"></i></a>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto mt-2 md:mt-4">
+                    <a href="#projects" class="btn-premium magnetic text-center text-sm md:text-base py-3 px-6 rounded-full flex items-center justify-center w-full sm:w-auto">Lihat Portfolio <i class="fas fa-arrow-right ml-2"></i></a>
+                    <a href="cv1nkus.pdf" id="download-cv" download class="btn-outline-glow py-3 px-6 rounded-full text-sm md:text-base font-bold flex items-center justify-center gap-2 magnetic w-full sm:w-auto">
+                        <i class="fas fa-file-download"></i> Download CV
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -255,104 +306,105 @@
                 <button class="filter-btn px-6 py-2 rounded-full border border-white/10 text-slate-400 hover:text-white hover:border-white/30 text-sm font-bold transition-all" data-filter="web">Web App</button>
                 <button class="filter-btn px-6 py-2 rounded-full border border-white/10 text-slate-400 hover:text-white hover:border-white/30 text-sm font-bold transition-all" data-filter="mobile">Mobile</button>
             </div>
+        </div>
 
-            <div class="grid md:grid-cols-3 gap-10" id="project-grid">
+        <div class="projects-wrapper w-full h-[100dvh] flex items-center overflow-hidden bg-dark/30 border-y border-white/5 relative z-10 mt-10">
+            <div class="projects-container flex gap-6 md:gap-12 px-[5vw] md:px-[10vw] w-max items-center h-full" id="project-grid">
                 <!-- Project: Portal Energi IR -->
-                <div class="project-card reveal group cursor-pointer" data-category="web" 
-                      onclick="openModal(this)"
-                      data-title="Portal Energi - Hall of Fame"
-                      data-desc="Portal informasi pusat untuk pemenang training online tahun 2026. Dilengkapi dengan daftar pemenang interaktif, dokumentasi Solar Photovoltaic, dan Energy AI Assistant untuk mendukung pengembangan kompetensi tim."
-                      data-tech="Tailwind, Three.js, Firebase"
-                      data-image="images/portal-energi.png"
-                      data-link="https://irenergyportal.vercel.app/">
-                    <div class="aspect-[16/10] overflow-hidden relative">
-                        <img src="images/portal-energi.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                        <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                            <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
+                <div class="project-card group cursor-pointer w-[85vw] md:w-[450px] flex-shrink-0 project-collage-item" data-category="web" 
+                        onclick="openModal(this)"
+                        data-title="Portal Energi - Hall of Fame"
+                        data-desc="Portal informasi pusat untuk pemenang training online tahun 2026. Dilengkapi dengan daftar pemenang interaktif, dokumentasi Solar Photovoltaic, dan Energy AI Assistant untuk mendukung pengembangan kompetensi tim."
+                        data-tech="Tailwind, Three.js, Firebase"
+                        data-image="images/portal-energi.png"
+                        data-link="https://irenergyportal.vercel.app/">
+                        <div class="aspect-[16/10] overflow-hidden relative">
+                            <img src="images/portal-energi.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                            <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
+                            </div>
+                        </div>
+                        <div class="p-8">
+                            <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">Portal Energi Winners</h3>
+                            <p class="text-slate-400 text-sm mb-6 leading-relaxed">Platform apresiasi dan informasi pemenang training online.</p>
+                            <div class="flex gap-3">
+                                <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Tailwind</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest bg-accent/10 text-accent px-3 py-1 rounded-full border border-accent/20">Three.js</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full border border-yellow-500/20">Firebase</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="p-8">
-                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">Portal Energi Winners</h3>
-                        <p class="text-slate-400 text-sm mb-6 leading-relaxed">Platform apresiasi dan informasi pemenang training online.</p>
-                        <div class="flex gap-3">
-                            <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Tailwind</span>
-                            <span class="text-[10px] font-bold uppercase tracking-widest bg-accent/10 text-accent px-3 py-1 rounded-full border border-accent/20">Three.js</span>
-                            <span class="text-[10px] font-bold uppercase tracking-widest bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full border border-yellow-500/20">Firebase</span>
+                    <!-- Project: Interactive 3D Portfolio -->
+                    <div class="project-card group cursor-pointer w-[85vw] md:w-[450px] flex-shrink-0 project-collage-item" data-category="web" 
+                        onclick="openModal(this)"
+                        data-title="Interactive 3D Portfolio"
+                        data-desc="Portfolio website pribadi dengan pengalaman pengguna yang imersif. Menggunakan Three.js untuk animasi 3D robot, Terminal CLI interaktif, dan integrasi Firebase untuk Guestbook realtime."
+                        data-tech="Tailwind, Three.js, Firebase, ChartJS"
+                        data-image="images/portfolio-v3.png"
+                        data-link="https://indra1nkuss.github.io/cv1nkus/">
+                        <div class="aspect-[16/10] overflow-hidden relative">
+                            <img src="images/portfolio-v3.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                            <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
+                            </div>
+                        </div>
+                        <div class="p-8">
+                            <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">Interactive 3D Portfolio</h3>
+                            <p class="text-slate-400 text-sm mb-6 leading-relaxed">Personal brand showcase dengan teknologi modern.</p>
+                            <div class="flex gap-3">
+                                <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Three.js</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest bg-accent/10 text-accent px-3 py-1 rounded-full border border-accent/20">Firebase</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Project: Interactive 3D Portfolio -->
-                <div class="project-card reveal group cursor-pointer" data-category="web" 
-                      onclick="openModal(this)"
-                      data-title="Interactive 3D Portfolio"
-                      data-desc="Portfolio website pribadi dengan pengalaman pengguna yang imersif. Menggunakan Three.js untuk animasi 3D robot, Terminal CLI interaktif, dan integrasi Firebase untuk Guestbook realtime."
-                      data-tech="Tailwind, Three.js, Firebase, ChartJS"
-                      data-image="images/portfolio-v3.png"
-                      data-link="https://indra1nkuss.github.io/cv1nkus/">
-                    <div class="aspect-[16/10] overflow-hidden relative">
-                        <img src="images/portfolio-v3.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                        <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                            <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
+                    <!-- Project: Pendataan Mesin V2 -->
+                    <div class="project-card group cursor-pointer w-[85vw] md:w-[450px] flex-shrink-0 project-collage-item" data-category="web" 
+                        onclick="openModal(this)"
+                        data-title="Pendataan Mesin V2"
+                        data-desc="Sistem manajemen pendataan mesin industri untuk menentukan ENPI (Energy Performance Indicator) dan SEU (Significant Energy Use) secara akurat per area maupun keseluruhan. Membantu optimasi konsumsi energi di lingkungan pabrik."
+                        data-tech="Laravel, MySQL, Bootstrap"
+                        data-image="images/pendataan-mesin.png"
+                        data-link="https://pendataanmesinv2.great-site.net/login">
+                        <div class="aspect-[16/10] overflow-hidden relative">
+                            <img src="images/pendataan-mesin.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                            <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
+                            </div>
+                        </div>
+                        <div class="p-8">
+                            <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">Pendataan Mesin V2</h3>
+                            <p class="text-slate-400 text-sm mb-6 leading-relaxed">Sistem analisis ENPI & SEU berbasis Laravel.</p>
+                            <div class="flex gap-3">
+                                <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Laravel</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest bg-accent/10 text-accent px-3 py-1 rounded-full border border-accent/20">MySQL</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="p-8">
-                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">Interactive 3D Portfolio</h3>
-                        <p class="text-slate-400 text-sm mb-6 leading-relaxed">Personal brand showcase dengan teknologi modern.</p>
-                        <div class="flex gap-3">
-                            <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Three.js</span>
-                            <span class="text-[10px] font-bold uppercase tracking-widest bg-accent/10 text-accent px-3 py-1 rounded-full border border-accent/20">Firebase</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Project: Pendataan Mesin V2 -->
-                <div class="project-card reveal group cursor-pointer" data-category="web" 
-                      onclick="openModal(this)"
-                      data-title="Pendataan Mesin V2"
-                      data-desc="Sistem manajemen pendataan mesin industri untuk menentukan ENPI (Energy Performance Indicator) dan SEU (Significant Energy Use) secara akurat per area maupun keseluruhan. Membantu optimasi konsumsi energi di lingkungan pabrik."
-                      data-tech="Laravel, MySQL, Bootstrap"
-                      data-image="images/pendataan-mesin.png"
-                      data-link="https://pendataanmesinv2.great-site.net/login">
-                    <div class="aspect-[16/10] overflow-hidden relative">
-                        <img src="images/pendataan-mesin.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                        <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                            <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
-                        </div>
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">Pendataan Mesin V2</h3>
-                        <p class="text-slate-400 text-sm mb-6 leading-relaxed">Sistem analisis ENPI & SEU berbasis Laravel.</p>
-                        <div class="flex gap-3">
-                            <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Laravel</span>
-                            <span class="text-[10px] font-bold uppercase tracking-widest bg-accent/10 text-accent px-3 py-1 rounded-full border border-accent/20">MySQL</span>
-                        </div>
-                    </div>
-                </div>
 
+                    <div class="project-card group cursor-pointer w-[85vw] md:w-[450px] flex-shrink-0 project-collage-item" data-category="mobile"
+                        onclick="openModal(this)"
+                        data-title="UAS Cashflow App"
+                        data-desc="Aplikasi pencatat keuangan (Cashflow) berbasis mobile. Dibangun menggunakan Flutter dengan integrasi Firebase Authentication dan Realtime Database untuk pengelolaan data pemasukan dan pengeluaran secara efisien."
+                        data-tech="Flutter, Firebase, Dart"
+                        data-image="images/cashflow-app.png"
+                        data-link="https://github.com/Julianarwansah/uas_cashflow_app">
+                        <div class="aspect-[16/10] overflow-hidden relative">
+                            <img src="images/cashflow-app.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                            <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
+                            </div>
+                        </div>
+                        <div class="p-8">
+                            <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">UAS Cashflow App</h3>
+                            <p class="text-slate-400 text-sm mb-6 leading-relaxed">Solusi cerdas pencatatan keuangan berbasis mobile.</p>
+                            <div class="flex gap-3">
+                                <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Flutter</span>
+                                <span class="text-[10px] font-bold uppercase tracking-widest bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full border border-yellow-500/20">Firebase</span>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="project-card reveal group cursor-pointer" data-category="mobile"
-                      onclick="openModal(this)"
-                      data-title="UAS Cashflow App"
-                      data-desc="Aplikasi pencatat keuangan (Cashflow) berbasis mobile. Dibangun menggunakan Flutter dengan integrasi Firebase Authentication dan Realtime Database untuk pengelolaan data pemasukan dan pengeluaran secara efisien."
-                      data-tech="Flutter, Firebase, Dart"
-                      data-image="images/cashflow-app.png"
-                      data-link="https://github.com/Julianarwansah/uas_cashflow_app">
-                    <div class="aspect-[16/10] overflow-hidden relative">
-                        <img src="images/cashflow-app.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                        <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                            <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
-                        </div>
-                    </div>
-                    <div class="p-8">
-                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">UAS Cashflow App</h3>
-                        <p class="text-slate-400 text-sm mb-6 leading-relaxed">Solusi cerdas pencatatan keuangan berbasis mobile.</p>
-                        <div class="flex gap-3">
-                            <span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">Flutter</span>
-                            <span class="text-[10px] font-bold uppercase tracking-widest bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full border border-yellow-500/20">Firebase</span>
-                        </div>
-                    </div>
                 </div>
-
-
             </div>
         </div>
     </section>
@@ -481,7 +533,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script src="script.js"></script>
