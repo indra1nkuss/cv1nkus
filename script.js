@@ -265,7 +265,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    window.addEventListener('scroll', handleScroll);
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                handleScroll();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
     handleScroll();
 
     if (backToTopBtn) {
@@ -601,27 +610,30 @@ document.addEventListener('DOMContentLoaded', () => {
         let projectsWrapper = document.querySelector(".projects-wrapper");
 
         if (projectsContainer && projectsWrapper) {
+            let mm = gsap.matchMedia();
             
-            function getScrollAmount() {
-                let containerWidth = projectsContainer.scrollWidth;
-                // Add an extra 10vw of padding to the end scroll to ensure the last item is fully visible
-                return -(containerWidth - window.innerWidth + (window.innerWidth * 0.1));
-            }
+            mm.add("(min-width: 768px)", () => {
+                function getScrollAmount() {
+                    let containerWidth = projectsContainer.scrollWidth;
+                    // Add an extra 10vw of padding to the end scroll to ensure the last item is fully visible
+                    return -(containerWidth - window.innerWidth + (window.innerWidth * 0.1));
+                }
 
-            const tween = gsap.to(projectsContainer, {
-                x: getScrollAmount,
-                ease: "none"
-            });
+                const tween = gsap.to(projectsContainer, {
+                    x: getScrollAmount,
+                    ease: "none"
+                });
 
-            ScrollTrigger.create({
-                trigger: projectsWrapper,
-                start: "top top",
-                end: () => `+=${projectsContainer.scrollWidth}`, // Sync scroll distance with total width
-                pin: true,
-                animation: tween,
-                scrub: 1,
-                invalidateOnRefresh: true,
-                anticipatePin: 1
+                ScrollTrigger.create({
+                    trigger: projectsWrapper,
+                    start: "top top",
+                    end: () => `+=${projectsContainer.scrollWidth * 0.5}`, // Mempersingkat scroll (tidak terlalu dalam)
+                    pin: true,
+                    animation: tween,
+                    scrub: 1,
+                    invalidateOnRefresh: true,
+                    anticipatePin: 1
+                });
             });
         }
 
@@ -631,52 +643,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const introTl = gsap.timeline();
         introTl.from("body", { opacity: 0, duration: 0.3 })
                .from(".mesh-bg", { scale: 0.8, opacity: 0, duration: 1, ease: "power3.out" })
-               // Spawn effect: Muncul (Fade in & slightly scale up smoothly)
-               .from("#hero-robot-container", { scale: 0.8, autoAlpha: 0, duration: 1.5, ease: "power2.out" }, "-=0.5")
-               .from("#home h1, #home h1 span", { y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" }, "-=1")
-               .from("#home p, #home a", { y: 20, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" }, "-=0.5");
+               // Spawn effect: Burung terbang murni dari kejauhan (tanpa fade/opacity)
+               .from("#hero-robot-container", { scale: 0.05, y: -600, x: 200, rotation: -30, duration: 4, ease: "power3.out" }, "-=0.5")
+               .to("#golden-glow", { opacity: 1, duration: 2, ease: "power2.inOut", yoyo: true, repeat: 1 }, "-=3.5")
+               .from("#home h1, #home h1 span", { y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" }, "-=3")
+               .from("#home p, #home .btn-premium, #download-cv", { y: 20, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out", clearProps: "all" }, "-=2.8")
+               .from("#home .fab", { y: 20, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" }, "-=2.5");
 
-        // Robot Animation Sequence
-        const robotModel = document.getElementById("interactive-robot");
-        if (robotModel) {
-            // Bind to the 'load' event to ensure it works reliably on mobile
-            robotModel.addEventListener("load", () => {
-                // Wait for the spawn animation to finish, then start the sequence
-                setTimeout(() => {
-                    // 1. Look at hand (ThumbsUp animation)
-                    robotModel.animationName = "ThumbsUp";
-                    
-                    // 2. Say Hello (Wave)
-                    setTimeout(() => {
-                        robotModel.animationName = "Wave";
-                        
-                        // 3. Walk in place (Walking)
-                        setTimeout(() => {
-                            robotModel.animationName = "Walking";
-                            
-                            // 4. Say Hello again (Wave)
-                            setTimeout(() => {
-                                robotModel.animationName = "Wave";
-                                
-                                // 5. Idle
-                                setTimeout(() => {
-                                    robotModel.animationName = "Idle";
-                                }, 3000);
-                                
-                            }, 3000);
-                            
-                        }, 3000); 
-                        
-                    }, 1500); 
-                }, 1000); 
+        // Bird Animation Logic
+        const birdModel = document.getElementById("interactive-bird");
+        if (birdModel) {
+            // Speed up flying when clicked
+            birdModel.addEventListener('click', () => {
+                birdModel.timeScale = 3.0; // Terbang sangat cepat!
+                setTimeout(() => { 
+                    birdModel.timeScale = 1.0; // Kembali ke kecepatan normal
+                }, 2000);
             });
-            
-            // Add interactive click: Wave when clicked
-            robotModel.addEventListener('click', () => {
-                robotModel.animationName = "Wave";
-                setTimeout(() => { robotModel.animationName = "Idle"; }, 3000);
-            });
-        }   // end if(robotModel)
+        }
     }       // end if(gsap)
 
     // =========================================
