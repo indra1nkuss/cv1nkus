@@ -501,68 +501,142 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================
     // 11. ENERGY CHART (CHART.JS)
     // =========================================
-    const ctx = document.getElementById('energyChart');
-    if (ctx) {
-        new Chart(ctx, {
+    const isMobile = window.innerWidth < 768;
+    const energyCtx = document.getElementById('energyChart');
+    if (energyCtx) {
+        new Chart(energyCtx, {
             type: 'bar',
             data: {
-                labels: ['Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025', 'Q1 2026', 'Q2 2026', 'Q3 2026', 'Q4 2026'],
+                labels: ['Q1 25', 'Q2 25', 'Q3 25', 'Q4 25', 'Q1 26', 'Q2 26', 'Q3 26', 'Q4 26'],
                 datasets: [
                     {
                         type: 'line',
-                        label: 'Akumulasi Penurunan Efisiensi (%)',
+                        label: 'Penurunan Efisiensi (%)',
                         data: [5, 10, 15, 20, 25, 30, 35, 40],
                         borderColor: '#38bdf8',
-                        backgroundColor: 'transparent',
-                        borderWidth: 3,
+                        backgroundColor: energyCtx.getContext('2d').createLinearGradient(0, 0, 0, 300),
+                        fill: false,
+                        borderWidth: 2,
                         tension: 0.4,
                         pointBackgroundColor: '#38bdf8',
                         pointBorderColor: '#fff',
+                        pointBorderWidth: 1,
+                        pointRadius: isMobile ? 2 : 4,
                         pointHoverRadius: 6,
                         yAxisID: 'y1'
                     },
                     {
                         type: 'bar',
-                        label: 'Total Proyek Selesai',
+                        label: 'Proyek Selesai',
                         data: [1, 2, 3, 4, 5, 6, 7, 8],
-                        backgroundColor: 'rgba(99, 102, 241, 0.5)',
+                        backgroundColor: (context) => {
+                            const chart = context.chart;
+                            const { ctx, chartArea } = chart;
+                            if (!chartArea) return 'rgba(99, 102, 241, 0.6)';
+                            const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                            gradient.addColorStop(0, 'rgba(56, 189, 248, 0.3)');
+                            gradient.addColorStop(1, 'rgba(99, 102, 241, 0.9)');
+                            return gradient;
+                        },
                         borderColor: '#6366f1',
                         borderWidth: 1,
-                        borderRadius: 4,
+                        borderRadius: 6,
+                        borderSkipped: false,
                         yAxisID: 'y'
                     }
                 ]
             },
             options: {
                 responsive: true,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
                 plugins: {
                     legend: {
-                        display: true,
-                        labels: { color: '#94a3b8', font: { family: 'Inter' } }
+                        display: !isMobile,
+                        position: 'top',
+                        labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 }, boxWidth: 12, padding: 8 }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        borderColor: 'rgba(99, 102, 241, 0.5)',
+                        borderWidth: 1,
+                        padding: 10,
+                        cornerRadius: 8
                     }
                 },
                 scales: {
                     y: {
                         type: 'linear',
-                        display: true,
+                        display: !isMobile,
                         position: 'left',
                         grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: { color: '#94a3b8' }
+                        ticks: { color: '#94a3b8', font: { size: 10 } }
                     },
                     y1: {
                         type: 'linear',
-                        display: true,
+                        display: false,
                         position: 'right',
                         grid: { drawOnChartArea: false },
-                        ticks: { color: '#38bdf8', callback: function(value) { return value + '%' } }
+                        ticks: { color: '#38bdf8', callback: (v) => v + '%' }
                     },
                     x: {
                         grid: { display: false },
-                        ticks: { color: '#94a3b8' }
+                        ticks: { color: '#94a3b8', font: { size: isMobile ? 9 : 11 }, maxRotation: 0 }
+                    }
+                }
+            }
+        });
+    }
+
+    // =========================================
+    // 11b. SOURCE CHART (DOUGHNUT)
+    // =========================================
+    const sourceCtx = document.getElementById('sourceChart');
+    if (sourceCtx) {
+        new Chart(sourceCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Solar PV', 'Grid PLN', 'Wind', 'Battery'],
+                datasets: [{
+                    data: [45, 30, 15, 10],
+                    backgroundColor: [
+                        'rgba(34, 197, 94, 0.85)',
+                        'rgba(99, 102, 241, 0.85)',
+                        'rgba(56, 189, 248, 0.85)',
+                        'rgba(249, 115, 22, 0.85)'
+                    ],
+                    borderColor: 'rgba(15, 23, 42, 1)',
+                    borderWidth: 3,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    legend: {
+                        position: isMobile ? 'bottom' : 'right',
+                        labels: {
+                            color: '#94a3b8',
+                            font: { family: 'Inter', size: isMobile ? 10 : 12 },
+                            boxWidth: 12,
+                            padding: isMobile ? 8 : 12
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        borderColor: 'rgba(99, 102, 241, 0.5)',
+                        borderWidth: 1,
+                        padding: 10,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: (ctx) => ` ${ctx.label}: ${ctx.parsed}%`
+                        }
                     }
                 }
             }

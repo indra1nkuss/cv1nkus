@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js" media="(min-width: 768px)"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
@@ -125,11 +125,29 @@
         
         <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full flex flex-col md:flex-row-reverse items-center justify-center gap-6 md:gap-12 relative z-10">
             
-            <!-- 3D Modern Sci-Fi Model (Transparent) -->
+            <!-- 3D Modern Sci-Fi Model (Lightweight on mobile) -->
             <div class="w-full flex justify-center items-center relative z-20 h-[40vh] min-h-[300px] md:h-[600px] md:flex-1" id="hero-robot-container">
                 <div class="w-full h-full animate-float relative flex justify-center items-center">
                     <div class="absolute w-64 h-64 md:w-96 md:h-96 bg-primary/40 rounded-full blur-[80px] md:blur-[100px] animate-pulse"></div>
                     <div id="golden-glow" class="absolute w-64 h-64 md:w-96 md:h-96 bg-yellow-500/60 rounded-full blur-[100px] opacity-0 mix-blend-screen pointer-events-none"></div>
+                    <!-- Lightweight CSS bird for mobile (no 3D load) -->
+                    <div id="hero-bird-light" class="absolute inset-0 flex items-center justify-center md:hidden pointer-events-none">
+                        <svg viewBox="0 0 200 200" class="w-40 h-40 animate-float" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="birdGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#38bdf8"/>
+                                    <stop offset="100%" stop-color="#6366f1"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M40 100 Q70 60 100 90 Q130 60 160 100 Q130 110 100 100 Q70 110 40 100 Z" fill="url(#birdGrad)"/>
+                            <circle cx="85" cy="95" r="3" fill="#fff"/>
+                            <circle cx="115" cy="95" r="3" fill="#fff"/>
+                            <path d="M85 105 Q100 115 115 105" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            <path d="M30 110 Q20 100 30 90" stroke="url(#birdGrad)" stroke-width="3" fill="none" stroke-linecap="round"/>
+                            <path d="M170 110 Q180 100 170 90" stroke="url(#birdGrad)" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <!-- Full 3D model only on desktop -->
                     <model-viewer 
                         id="interactive-bird"
                         src="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/gltf/Parrot.glb" 
@@ -143,8 +161,9 @@
                         environment-image="https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.hdr"
                         shadow-intensity="2"
                         shadow-softness="1"
-                        class="absolute inset-0 transition-transform hover:scale-105"
+                        class="absolute inset-0 transition-transform hover:scale-105 hidden md:block"
                         disable-zoom
+                        loading="lazy"
                         style="pointer-events: auto; outline: none; width: 100%; height: 100%;">
                     </model-viewer>
                 </div>
@@ -268,30 +287,86 @@
 
     <!-- Impact & Analytics Section -->
     <section id="analytics" class="py-16 md:py-32 relative overflow-hidden bg-dark/30">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="text-center mb-16 reveal">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-12 md:mb-16 reveal">
                 <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 font-heading">Analitik <span class="text-primary">Energi</span></h2>
-                <p class="text-slate-400">Statistik tingkat analisis proyek dan rekam jejak penurunan konsumsi energi.</p>
+                <p class="text-slate-400 max-w-2xl mx-auto px-4">Statistik tingkat analisis proyek dan rekam jejak penurunan konsumsi energi.</p>
             </div>
-            
-            <div class="grid lg:grid-cols-3 gap-8 items-center">
-                <div class="lg:col-span-2 glass-card p-4 md:p-8 rounded-3xl border border-white/10 reveal shadow-2xl shadow-primary/5 overflow-hidden">
-                    <div class="relative w-full h-[300px] md:h-auto">
-                        <canvas id="energyChart"></canvas>
+
+            <div class="flex flex-col gap-6 lg:gap-8">
+                <!-- Stats Cards Row -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+                    <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal group hover:bg-primary/5 transition-all text-center">
+                        <div class="text-primary text-2xl sm:text-3xl mb-2 sm:mb-3"><i class="fas fa-chart-line"></i></div>
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1">30+</div>
+                        <h4 class="text-white font-semibold text-xs sm:text-sm mb-1">Proyek Analisis</h4>
+                        <p class="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Selesai</p>
+                    </div>
+                    <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal group hover:bg-emerald-500/5 transition-all text-center">
+                        <div class="text-emerald-400 text-2xl sm:text-3xl mb-2 sm:mb-3"><i class="fas fa-leaf"></i></div>
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-emerald-400 mb-1">-60%</div>
+                        <h4 class="text-white font-semibold text-xs sm:text-sm mb-1">Penurunan Emisi</h4>
+                        <p class="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">CO₂ Reduction</p>
+                    </div>
+                    <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal group hover:bg-amber-500/5 transition-all text-center">
+                        <div class="text-amber-400 text-2xl sm:text-3xl mb-2 sm:mb-3"><i class="fas fa-smog"></i></div>
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-amber-400 mb-1">2.4</div>
+                        <h4 class="text-white font-semibold text-xs sm:text-sm mb-1">Ton CO₂</h4>
+                        <p class="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Total Saved</p>
+                    </div>
+                    <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal group hover:bg-teal-500/5 transition-all text-center">
+                        <div class="text-teal-400 text-2xl sm:text-3xl mb-2 sm:mb-3"><i class="fas fa-tree"></i></div>
+                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-teal-400 mb-1">38</div>
+                        <h4 class="text-white font-semibold text-xs sm:text-sm mb-1">Ekuivalen Pohon</h4>
+                        <p class="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Terselamatkan</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 gap-6">
-                    <div class="p-6 md:p-8 glass-card rounded-3xl border border-white/10 reveal group hover:bg-primary/5 transition-all">
-                        <div class="text-primary text-3xl mb-4"><i class="fas fa-chart-line"></i></div>
-                        <h4 class="text-white font-bold mb-2">Proyek Analisis</h4>
-                        <div class="text-4xl font-bold text-primary mb-2">30+</div>
-                        <p class="text-slate-400 text-xs uppercase tracking-widest font-bold">Proyek diselesaikan</p>
+
+                <!-- Main Emission Reduction Chart -->
+                <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal shadow-2xl shadow-emerald-500/5">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-white font-bold text-sm sm:text-base flex items-center gap-2">
+                            <i class="fas fa-chart-area text-emerald-400"></i>
+                            Grafik Penurunan Emisi CO₂
+                        </h3>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] sm:text-xs font-bold text-emerald-400 bg-emerald-500/20 px-3 py-1 rounded-full">↓ 60% Reduction</span>
+                            <span class="text-[10px] sm:text-xs text-slate-400 bg-white/5 px-2 py-1 rounded">2025</span>
+                        </div>
                     </div>
-                    <div class="p-6 md:p-8 glass-card rounded-3xl border border-white/10 reveal group hover:bg-accent/5 transition-all">
-                        <div class="text-accent text-3xl mb-4"><i class="fas fa-leaf"></i></div>
-                        <h4 class="text-white font-bold mb-2">Penurunan Efisiensi</h4>
-                        <div class="text-4xl font-bold text-accent mb-2">28%</div>
-                        <p class="text-slate-400 text-xs uppercase tracking-widest font-bold">Penghematan rata-rata</p>
+                    <div class="relative w-full h-[280px] sm:h-[350px] md:h-[400px]">
+                        <canvas id="emissionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Secondary Charts Row -->
+                <div class="grid lg:grid-cols-2 gap-4 lg:gap-6">
+                    <!-- Monthly Breakdown Chart -->
+                    <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal shadow-2xl shadow-primary/5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-white font-bold text-sm sm:text-base flex items-center gap-2">
+                                <i class="fas fa-chart-bar text-primary"></i>
+                                Breakdown Emisi per Kuartal
+                            </h3>
+                            <span class="text-[10px] sm:text-xs text-slate-400 bg-white/5 px-2 py-1 rounded">Q1-Q4</span>
+                        </div>
+                        <div class="relative w-full h-[220px] sm:h-[280px] md:h-[300px]">
+                            <canvas id="emissionBarChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Energy Source Distribution -->
+                    <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal shadow-2xl shadow-primary/5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-white font-bold text-sm sm:text-base flex items-center gap-2">
+                                <i class="fas fa-chart-pie text-accent"></i>
+                                Distribusi Sumber Energi
+                            </h3>
+                            <span class="text-[10px] sm:text-xs text-slate-400 bg-white/5 px-2 py-1 rounded">2025</span>
+                        </div>
+                        <div class="relative w-full h-[220px] sm:h-[280px] md:h-[300px]">
+                            <canvas id="sourceChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>

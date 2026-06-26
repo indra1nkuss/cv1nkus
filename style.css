@@ -200,6 +200,31 @@ h1, h2, h3, .font-heading {
 #robot-3d-container {
     opacity: 0.6;
     mix-blend-mode: screen;
+    touch-action: pan-y !important;
+}
+
+/* Fix mobile scroll performance */
+@media (max-width: 768px) {
+    #robot-3d-container {
+        opacity: 0.4;
+        pointer-events: none !important;
+        user-select: none !important;
+    }
+    #robot-3d-container model-viewer {
+        pointer-events: none !important;
+        touch-action: pan-y !important;
+    }
+}
+
+/* Reduce animation on mobile for better scroll performance */
+@media (max-width: 768px) {
+    .mesh-bg {
+        filter: blur(40px);
+        opacity: 0.5;
+    }
+    .animate-float {
+        animation: none;
+    }
 }
 
 .reveal {
