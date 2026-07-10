@@ -48,35 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Confetti on Download
-    const downloadCvBtn = document.getElementById('download-cv');
-    if (downloadCvBtn) {
-        downloadCvBtn.addEventListener('click', (e) => {
-            // Trigger confetti
-            if (typeof confetti === 'function') {
-                const duration = 3 * 1000;
-                const animationEnd = Date.now() + duration;
-                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
-
-                function randomInRange(min, max) {
-                    return Math.random() * (max - min) + min;
-                }
-
-                const interval = setInterval(function() {
-                    const timeLeft = animationEnd - Date.now();
-
-                    if (timeLeft <= 0) {
-                        return clearInterval(interval);
-                    }
-
-                    const particleCount = 50 * (timeLeft / duration);
-                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-                }, 250);
-            }
-        });
-    }
-
     // Interactive Terminal
     const terminalInput = document.getElementById('terminal-input');
     const terminalOutput = document.getElementById('terminal-output');
@@ -120,41 +91,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     // =========================================
-    // 1. TYPEWRITER EFFECT
+    // 1. TYPED.JS — Typewriter Effect
     // =========================================
     const typewriterElement = document.getElementById('typewriter');
-    if (typewriterElement) {
-        const phrases = ["Developer", "Data Analyst", "Problem Solver"];
-        let phraseIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-        let typeSpeed = 100;
-
-        function type() {
-            const currentPhrase = phrases[phraseIndex];
-            
-            if (isDeleting) {
-                typewriterElement.textContent = currentPhrase.substring(0, charIndex - 1);
-                charIndex--;
-                typeSpeed = 50;
-            } else {
-                typewriterElement.textContent = currentPhrase.substring(0, charIndex + 1);
-                charIndex++;
-                typeSpeed = 150;
-            }
-
-            if (!isDeleting && charIndex === currentPhrase.length) {
-                isDeleting = true;
-                typeSpeed = 2000;
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                phraseIndex = (phraseIndex + 1) % phrases.length;
-                typeSpeed = 500;
-            }
-
-            setTimeout(type, typeSpeed);
-        }
-        type();
+    if (typewriterElement && typeof Typed !== 'undefined') {
+        new Typed(typewriterElement, {
+            strings: ['Developer', 'Data Analyst', 'Problem Solver', 'Tech Enthusiast'],
+            typeSpeed: 80,
+            backSpeed: 50,
+            backDelay: 2000,
+            loop: true,
+            showCursor: false
+        });
     }
 
     // =========================================
@@ -225,16 +173,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.getElementById('navbar');
     const scrollProgress = document.getElementById('scroll-progress');
     const backToTopBtn = document.getElementById('back-to-top');
-    
-    const handleScroll = () => {
-        const scrolled = window.scrollY;
-        
+
+    const updateUIOnScroll = (y) => {
+        const scrolled = y || window.scrollY;
+
         // Navbar
         if (scrolled > 50) {
-            navbar.classList.add('py-2', 'bg-dark/80');
+            navbar.classList.add('scrolled');
             navbar.classList.remove('py-4');
+            navbar.classList.add('py-2');
         } else {
-            navbar.classList.remove('py-2', 'bg-dark/80');
+            navbar.classList.remove('scrolled');
+            navbar.classList.remove('py-2');
             navbar.classList.add('py-4');
         }
 
@@ -256,26 +206,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Reveal
+        // Reveal elements (using IntersectionObserver is better, but keep for compat)
         revealElements.forEach((reveal) => {
             const elementTop = reveal.getBoundingClientRect().top;
-            if (elementTop < window.innerHeight - 150) {
+            if (elementTop < window.innerHeight - 100) {
                 reveal.classList.add('active');
             }
         });
     };
 
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                handleScroll();
-                ticking = false;
-            });
-            ticking = true;
-        }
-    });
-    handleScroll();
+    // Initial call
+    updateUIOnScroll(window.scrollY);
 
     if (backToTopBtn) {
         backToTopBtn.addEventListener('click', () => {
@@ -308,11 +249,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Custom Cursor
+    // Custom Cursor (desktop only — mousemove is expensive)
     const cursorDot = document.getElementById('cursor-dot');
     const cursorOutline = document.getElementById('cursor-outline');
-    
-    if (cursorDot && cursorOutline) {
+
+    if (cursorDot && cursorOutline && window.innerWidth >= 768) {
         window.addEventListener('mousemove', (e) => {
             const posX = e.clientX;
             const posY = e.clientY;
@@ -498,210 +439,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const statsSection = document.querySelector('#about');
     if (statsSection) counterObserver.observe(statsSection);
 
-    // =========================================
-    // 11. ENERGY CHART (CHART.JS)
-    // =========================================
-    const isMobile = window.innerWidth < 768;
-    const energyCtx = document.getElementById('energyChart');
-    if (energyCtx) {
-        new Chart(energyCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Q1 25', 'Q2 25', 'Q3 25', 'Q4 25', 'Q1 26', 'Q2 26', 'Q3 26', 'Q4 26'],
-                datasets: [
-                    {
-                        type: 'line',
-                        label: 'Penurunan Efisiensi (%)',
-                        data: [5, 10, 15, 20, 25, 30, 35, 40],
-                        borderColor: '#38bdf8',
-                        backgroundColor: energyCtx.getContext('2d').createLinearGradient(0, 0, 0, 300),
-                        fill: false,
-                        borderWidth: 2,
-                        tension: 0.4,
-                        pointBackgroundColor: '#38bdf8',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 1,
-                        pointRadius: isMobile ? 2 : 4,
-                        pointHoverRadius: 6,
-                        yAxisID: 'y1'
-                    },
-                    {
-                        type: 'bar',
-                        label: 'Proyek Selesai',
-                        data: [1, 2, 3, 4, 5, 6, 7, 8],
-                        backgroundColor: (context) => {
-                            const chart = context.chart;
-                            const { ctx, chartArea } = chart;
-                            if (!chartArea) return 'rgba(99, 102, 241, 0.6)';
-                            const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
-                            gradient.addColorStop(0, 'rgba(56, 189, 248, 0.3)');
-                            gradient.addColorStop(1, 'rgba(99, 102, 241, 0.9)');
-                            return gradient;
-                        },
-                        borderColor: '#6366f1',
-                        borderWidth: 1,
-                        borderRadius: 6,
-                        borderSkipped: false,
-                        yAxisID: 'y'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
-                plugins: {
-                    legend: {
-                        display: !isMobile,
-                        position: 'top',
-                        labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 }, boxWidth: 12, padding: 8 }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                        titleColor: '#fff',
-                        bodyColor: '#cbd5e1',
-                        borderColor: 'rgba(99, 102, 241, 0.5)',
-                        borderWidth: 1,
-                        padding: 10,
-                        cornerRadius: 8
-                    }
-                },
-                scales: {
-                    y: {
-                        type: 'linear',
-                        display: !isMobile,
-                        position: 'left',
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: { color: '#94a3b8', font: { size: 10 } }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: false,
-                        position: 'right',
-                        grid: { drawOnChartArea: false },
-                        ticks: { color: '#38bdf8', callback: (v) => v + '%' }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: '#94a3b8', font: { size: isMobile ? 9 : 11 }, maxRotation: 0 }
-                    }
-                }
-            }
-        });
-    }
 
     // =========================================
-    // 11b. SOURCE CHART (DOUGHNUT)
+    // 12. GSAP ANIMATIONS (desktop only — mobile skip for perf)
     // =========================================
-    const sourceCtx = document.getElementById('sourceChart');
-    if (sourceCtx) {
-        new Chart(sourceCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Solar PV', 'Grid PLN', 'Wind', 'Battery'],
-                datasets: [{
-                    data: [45, 30, 15, 10],
-                    backgroundColor: [
-                        'rgba(34, 197, 94, 0.85)',
-                        'rgba(99, 102, 241, 0.85)',
-                        'rgba(56, 189, 248, 0.85)',
-                        'rgba(249, 115, 22, 0.85)'
-                    ],
-                    borderColor: 'rgba(15, 23, 42, 1)',
-                    borderWidth: 3,
-                    hoverOffset: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '65%',
-                plugins: {
-                    legend: {
-                        position: isMobile ? 'bottom' : 'right',
-                        labels: {
-                            color: '#94a3b8',
-                            font: { family: 'Inter', size: isMobile ? 10 : 12 },
-                            boxWidth: 12,
-                            padding: isMobile ? 8 : 12
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                        titleColor: '#fff',
-                        bodyColor: '#cbd5e1',
-                        borderColor: 'rgba(99, 102, 241, 0.5)',
-                        borderWidth: 1,
-                        padding: 10,
-                        cornerRadius: 8,
-                        callbacks: {
-                            label: (ctx) => ` ${ctx.label}: ${ctx.parsed}%`
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    // Fix for "Unsafe attempt to load URL" in file:// mode
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            const href = this.getAttribute('href');
-            if (href === '#' || !href.startsWith('#')) return;
-            
-            e.preventDefault();
-            const targetId = href.substring(1);
-            const targetElement = document.getElementById(targetId);
-            
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth' });
-                const mobileNav = document.getElementById('mobile-nav');
-                if (mobileNav) mobileNav.classList.add('-translate-y-full', 'opacity-0');
-            }
-        });
-    });
-
-    // =========================================
-    // 12. GSAP ANIMATIONS
-    // =========================================
-    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && window.innerWidth >= 768) {
         gsap.registerPlugin(ScrollTrigger);
 
-        // Parallax Background Text
-        gsap.to('.bg-text', {
-            x: "-20vw",
-            ease: "none",
-            scrollTrigger: {
-                trigger: "body",
-                start: "top top",
-                end: "bottom bottom",
-                scrub: 1
-            }
-        });
-
-        // Horizontal Scroll Collage for Projects (ULTRA SMOOTH)
+        // Horizontal Scroll Collage for Projects
         let projectsContainer = document.querySelector(".projects-container");
         let projectsWrapper = document.querySelector(".projects-wrapper");
 
         if (projectsContainer && projectsWrapper) {
             let mm = gsap.matchMedia();
-            
             mm.add("(min-width: 768px)", () => {
-                function getScrollAmount() {
-                    let containerWidth = projectsContainer.scrollWidth;
-                    // Add an extra 10vw of padding to the end scroll to ensure the last item is fully visible
-                    return -(containerWidth - window.innerWidth + (window.innerWidth * 0.1));
-                }
-
                 const tween = gsap.to(projectsContainer, {
-                    x: getScrollAmount,
+                    x: () => -(projectsContainer.scrollWidth - window.innerWidth + (window.innerWidth * 0.1)),
                     ease: "none"
                 });
-
                 ScrollTrigger.create({
                     trigger: projectsWrapper,
                     start: "top top",
-                    end: () => `+=${projectsContainer.scrollWidth * 0.5}`, // Mempersingkat scroll (tidak terlalu dalam)
+                    end: () => `+=${projectsContainer.scrollWidth * 0.5}`,
                     pin: true,
                     animation: tween,
                     scrub: 1,
@@ -711,30 +470,27 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // =========================================
-        // 13. RESPAWN / INTRO ANIMATION & ROBOT SEQUENCE
-        // =========================================
+        // Intro animation (once, no continuous)
         const introTl = gsap.timeline();
         introTl.from("body", { opacity: 0, duration: 0.3 })
-               .from(".mesh-bg", { scale: 0.8, opacity: 0, duration: 1, ease: "power3.out" })
-               // Spawn effect: Burung terbang murni dari kejauhan (tanpa fade/opacity)
-               .from("#hero-robot-container", { scale: 0.05, y: -600, x: 200, rotation: -30, duration: 4, ease: "power3.out" }, "-=0.5")
-               .to("#golden-glow", { opacity: 1, duration: 2, ease: "power2.inOut", yoyo: true, repeat: 1 }, "-=3.5")
-               .from("#home h1, #home h1 span", { y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" }, "-=3")
-               .from("#home p, #home .btn-premium, #download-cv", { y: 20, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out", clearProps: "all" }, "-=2.8")
-               .from("#home .fab", { y: 20, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" }, "-=2.5");
-
-        // Bird Animation Logic
-        const birdModel = document.getElementById("interactive-bird");
-        if (birdModel) {
-            // Speed up flying when clicked
-            birdModel.addEventListener('click', () => {
-                birdModel.timeScale = 3.0; // Terbang sangat cepat!
-                setTimeout(() => { 
-                    birdModel.timeScale = 1.0; // Kembali ke kecepatan normal
-                }, 2000);
-            });
-        }
+               .from(".mesh-bg", { scale: 0.95, opacity: 0, duration: 0.8, ease: "power3.out" })
+               .from("#logo-glow", { scale: 0, opacity: 0, duration: 1, ease: "power2.out" }, "-=0.3")
+               .fromTo("#logo-ring-1",
+                 { attr: { "stroke-dashoffset": 390 } },
+                 { attr: { "stroke-dashoffset": 0 }, duration: 1.8, ease: "power2.inOut" }, "-=0.8")
+               .fromTo("#logo-ring-2",
+                 { attr: { "stroke-dashoffset": 302 } },
+                 { attr: { "stroke-dashoffset": 0 }, duration: 1.4, ease: "power2.inOut" }, "-=1.0")
+               .from("#logo-diamond", { scale: 0, rotation: 90, opacity: 0, duration: 0.9, ease: "back.out(1.7)" }, "-=0.7")
+               .from("#logo-diamond-inner", { scale: 0, rotation: -45, opacity: 0, duration: 0.6, ease: "back.out(2)" }, "-=0.4")
+               .from("#logo-dot", { scale: 0, opacity: 0, duration: 0.4, ease: "back.out(3)" }, "-=0.2")
+               .from("#logo-dot-1, #logo-dot-2, #logo-dot-3, #logo-dot-4", { scale: 0, opacity: 0, duration: 0.4, stagger: 0.06, ease: "back.out(2)" }, "-=0.1")
+               .from("#logo-dot-5, #logo-dot-6, #logo-dot-7, #logo-dot-8", { scale: 0, opacity: 0, duration: 0.3, stagger: 0.05, ease: "back.out(2)" }, "-=0.1")
+               .from("#hero-visual .hero-brand > *:not(#gsap-logo)", { y: 30, opacity: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" }, "-=0.3")
+               .from("#home .hero-heading", { y: 30, opacity: 0, duration: 0.7, ease: "power3.out" }, "-=0.5")
+               .from("#home p", { y: 20, opacity: 0, duration: 0.6, ease: "power2.out" }, "-=0.4")
+               .from("#home .social-link", { y: 20, opacity: 0, duration: 0.5, stagger: 0.08, ease: "power2.out" }, "-=0.3")
+               .from("#home .btn-primary, #home .btn-download", { y: 20, opacity: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" }, "-=0.2");
     }       // end if(gsap)
 
     // =========================================
@@ -760,6 +516,79 @@ document.addEventListener('DOMContentLoaded', () => {
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
             }, 250);
         });
+    }
+
+    // =========================================
+    // 15. AOS — SCROLL ANIMATIONS
+    // =========================================
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 800,
+            easing: 'ease-out-cubic',
+            once: true,
+            offset: 100,
+            disable: window.innerWidth < 768 ? 'mobile' : false
+        });
+    }
+
+    // =========================================
+    // 16. SCROLL HANDLER (Ringan)
+    // =========================================
+    let rafId = false;
+    let revealBatch;
+
+    window.addEventListener('scroll', () => {
+        if (!rafId) {
+            rafId = true;
+            requestAnimationFrame(() => {
+                updateUIOnScroll(window.scrollY);
+                rafId = false;
+            });
+        }
+        clearTimeout(revealBatch);
+        revealBatch = setTimeout(() => {
+            revealElements.forEach((el) => {
+                if (el.getBoundingClientRect().top < window.innerHeight - 100) {
+                    el.classList.add('active');
+                }
+            });
+        }, 120);
+    }, { passive: true });
+
+    // Anchor smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href === '#' || !href.startsWith('#')) return;
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            const mobileNav = document.getElementById('mobile-nav');
+            if (mobileNav) mobileNav.classList.add('-translate-y-full', 'opacity-0');
+        });
+    });
+
+    // =========================================
+    // 17. PROGRESS BAR ANIMATION
+    // =========================================
+    const progressBars = document.querySelectorAll('.progress-bar-fill');
+    if (progressBars.length) {
+        const barObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const bar = entry.target;
+                    const width = bar.getAttribute('data-width');
+                    setTimeout(() => {
+                        bar.style.width = width + '%';
+                    }, 200);
+                    barObserver.unobserve(bar);
+                }
+            });
+        }, { threshold: 0.3 });
+
+        progressBars.forEach(bar => barObserver.observe(bar));
     }
 
 

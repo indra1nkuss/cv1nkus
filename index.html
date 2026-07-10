@@ -11,31 +11,34 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js" media="(min-width: 768px)"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
+
+    <!-- AOS Scroll Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        dark: '#0f172a',
-                        card: '#1e293b',
+                        dark: '#0b1120',
+                        card: '#111827',
                         primary: '#6366f1',
-                        accent: '#38bdf8',
+                        accent: '#06b6d4',
                         glow: '#818cf8',
                     },
                     fontFamily: {
-                        sans: ['Poppins', 'Inter', 'sans-serif'],
-                        heading: ['Space Grotesk', 'sans-serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        heading: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
                     }
                 }
             }
@@ -60,145 +63,136 @@
 
     <!-- Dynamic Background -->
     <div class="mesh-bg"></div>
-    <div class="bg-noise"></div>
 
-    <!-- Background Text for Aesthetic -->
-    <div class="bg-text text-[15vw] font-bold text-transparent fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap z-[-1] tracking-[1vw] pointer-events-none" style="-webkit-text-stroke: 2px rgba(255, 255, 255, 0.04); font-family: 'Space Grotesk', sans-serif;">DEVELOPER</div>
-
-    <nav class="fixed left-0 right-0 top-0 z-50 transition-all duration-500" id="navbar">
-        <div class="absolute inset-0 bg-dark/70 backdrop-blur-xl border-b border-white/5"></div>
+    <nav class="fixed left-0 right-0 top-0 z-50 transition-all duration-300" id="navbar">
+        <div class="absolute inset-0 bg-dark/80 backdrop-blur-xl border-b border-white/5"></div>
         <div class="relative max-w-7xl mx-auto px-4 md:px-8 py-3 flex justify-between items-center">
             <!-- Logo -->
-            <a href="#home" class="group flex items-center gap-2">
-                <span class="w-8 h-8 rounded-lg bg-primary/20 border border-primary/50 flex items-center justify-center text-primary font-bold text-sm group-hover:bg-primary/40 group-hover:shadow-[0_0_15px_rgba(99,102,241,0.7)] transition-all duration-300">1K</span>
-                <span class="text-lg font-bold text-white tracking-tight font-heading">Indra<span class="text-primary">NK.</span></span>
+            <a href="#home" class="group flex items-center gap-3 no-underline">
+                <span class="logo-mark">1K</span>
+                <span class="text-lg font-bold text-white tracking-tight" style="font-family: 'Plus Jakarta Sans', sans-serif;">Indra<span class="text-primary">.NK</span></span>
             </a>
-            
+
             <!-- Desktop Links -->
-            <div class="hidden md:flex items-center space-x-1 text-sm font-medium">
-                <a href="#home" class="nav-link px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 relative group">Beranda<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-4/5 transition-all duration-300 rounded-full"></span></a>
-                <a href="#about" class="nav-link px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 relative group">Tentang<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-4/5 transition-all duration-300 rounded-full"></span></a>
-                <a href="#skills" class="nav-link px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 relative group">Skills<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-4/5 transition-all duration-300 rounded-full"></span></a>
-                <a href="#projects" class="nav-link px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 relative group">Project<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-4/5 transition-all duration-300 rounded-full"></span></a>
-                <a href="#analytics" class="nav-link px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 relative group">Analytics<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-4/5 transition-all duration-300 rounded-full"></span></a>
-                <a href="#contact" class="nav-link px-4 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 relative group">Kontak<span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-4/5 transition-all duration-300 rounded-full"></span></a>
+            <div class="hidden md:flex items-center gap-1 text-sm font-medium">
+                <a href="#home" class="nav-link active" data-nav="home">Beranda</a>
+                <a href="#about" class="nav-link" data-nav="about">Tentang</a>
+                <a href="#skills" class="nav-link" data-nav="skills">Skills</a>
+                <a href="#projects" class="nav-link" data-nav="projects">Project</a>
+                <a href="#contact" class="nav-link" data-nav="contact">Kontak</a>
                 <div class="w-px h-5 bg-white/10 mx-2"></div>
-                <button id="theme-toggle" class="p-2 rounded-lg text-slate-400 hover:text-primary hover:bg-white/5 transition-all duration-200" title="Toggle Light/Dark Mode">
+                <button id="theme-toggle" class="icon-btn" title="Toggle Light/Dark Mode">
                     <i class="fas fa-sun text-sm"></i>
                 </button>
             </div>
 
             <!-- Hamburger Button -->
-            <button id="menu-toggle" class="md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white hover:border-primary/50 hover:text-primary transition-all duration-200 focus:outline-none">
+            <button id="menu-toggle" class="md:hidden icon-btn">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
     </nav>
 
     <!-- Mobile Nav Overlay -->
-    <div id="mobile-nav" class="fixed inset-0 z-[60] backdrop-blur-2xl flex flex-col items-center justify-center gap-6 transition-all duration-500 -translate-y-full opacity-0" style="background: rgba(7, 11, 22, 0.97);">
-        <!-- Close button -->
-        <button id="menu-close" class="absolute top-6 right-6 w-10 h-10 flex items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white hover:border-red-400/50 hover:text-red-400 transition-all">
+    <div id="mobile-nav" class="fixed inset-0 z-[60] flex flex-col items-center justify-center gap-6 transition-all duration-500 -translate-y-full opacity-0" style="background: rgba(11, 17, 32, 0.98); backdrop-filter: blur(30px);">
+        <button id="menu-close" class="absolute top-6 right-6 icon-btn text-red-400 border-red-400/30 hover:bg-red-400/10">
             <i class="fas fa-times"></i>
         </button>
-        <!-- Logo in mobile menu -->
         <div class="mb-4 flex flex-col items-center gap-2">
-            <span class="w-14 h-14 rounded-xl bg-primary/20 border border-primary/50 flex items-center justify-center text-primary font-bold text-xl">1K</span>
-            <span class="text-sm text-slate-400">Indra Nurul Kusuma</span>
+            <span class="logo-mark !w-14 !h-14 !text-xl">1K</span>
+            <span class="text-sm font-medium text-slate-400">Indra Nurul Kusuma</span>
         </div>
-        <a href="#home" class="mobile-link text-2xl font-bold text-slate-200 hover:text-primary transition-colors tracking-wide">Beranda</a>
-        <a href="#about" class="mobile-link text-2xl font-bold text-slate-200 hover:text-primary transition-colors tracking-wide">Tentang</a>
-        <a href="#skills" class="mobile-link text-2xl font-bold text-slate-200 hover:text-primary transition-colors tracking-wide">Skills</a>
-        <a href="#projects" class="mobile-link text-2xl font-bold text-slate-200 hover:text-primary transition-colors tracking-wide">Project</a>
-        <a href="#analytics" class="mobile-link text-2xl font-bold text-slate-200 hover:text-primary transition-colors tracking-wide">Analytics</a>
-        <a href="#contact" class="mobile-link text-2xl font-bold text-slate-200 hover:text-primary transition-colors tracking-wide">Kontak</a>
+        <a href="#home" class="mobile-link text-2xl font-bold text-white hover:text-primary transition-colors tracking-tight" style="font-family: 'Plus Jakarta Sans', sans-serif;">Beranda</a>
+        <a href="#about" class="mobile-link text-2xl font-bold text-white hover:text-primary transition-colors tracking-tight" style="font-family: 'Plus Jakarta Sans', sans-serif;">Tentang</a>
+        <a href="#skills" class="mobile-link text-2xl font-bold text-white hover:text-primary transition-colors tracking-tight" style="font-family: 'Plus Jakarta Sans', sans-serif;">Skills</a>
+        <a href="#projects" class="mobile-link text-2xl font-bold text-white hover:text-primary transition-colors tracking-tight" style="font-family: 'Plus Jakarta Sans', sans-serif;">Project</a>
+        <a href="#contact" class="mobile-link text-2xl font-bold text-white hover:text-primary transition-colors tracking-tight" style="font-family: 'Plus Jakarta Sans', sans-serif;">Kontak</a>
         <div class="mt-4">
-            <a href="cv1nkus.pdf" download class="btn-outline-glow py-3 px-8 rounded-full text-sm font-bold flex items-center gap-2">
+            <a href="cv1nkus.pdf" download class="btn-primary py-3 px-8 text-sm font-semibold flex items-center gap-2">
                 <i class="fas fa-file-download"></i> Download CV
             </a>
         </div>
     </div>
 
     <section id="home" class="relative min-h-[100dvh] w-full flex flex-col justify-center overflow-x-hidden pt-20 pb-12">
-        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-accent/10 rounded-full blur-[120px] animate-pulse"></div>
-        
+
         <div class="max-w-7xl mx-auto px-4 sm:px-6 w-full flex flex-col md:flex-row-reverse items-center justify-center gap-6 md:gap-12 relative z-10">
             
-            <!-- 3D Modern Sci-Fi Model (Lightweight on mobile) -->
-            <div class="w-full flex justify-center items-center relative z-20 h-[40vh] min-h-[300px] md:h-[600px] md:flex-1" id="hero-robot-container">
-                <div class="w-full h-full animate-float relative flex justify-center items-center">
-                    <div class="absolute w-64 h-64 md:w-96 md:h-96 bg-primary/40 rounded-full blur-[80px] md:blur-[100px] animate-pulse"></div>
-                    <div id="golden-glow" class="absolute w-64 h-64 md:w-96 md:h-96 bg-yellow-500/60 rounded-full blur-[100px] opacity-0 mix-blend-screen pointer-events-none"></div>
-                    <!-- Lightweight CSS bird for mobile (no 3D load) -->
-                    <div id="hero-bird-light" class="absolute inset-0 flex items-center justify-center md:hidden pointer-events-none">
-                        <svg viewBox="0 0 200 200" class="w-40 h-40 animate-float" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <linearGradient id="birdGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#38bdf8"/>
-                                    <stop offset="100%" stop-color="#6366f1"/>
-                                </linearGradient>
-                            </defs>
-                            <path d="M40 100 Q70 60 100 90 Q130 60 160 100 Q130 110 100 100 Q70 110 40 100 Z" fill="url(#birdGrad)"/>
-                            <circle cx="85" cy="95" r="3" fill="#fff"/>
-                            <circle cx="115" cy="95" r="3" fill="#fff"/>
-                            <path d="M85 105 Q100 115 115 105" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
-                            <path d="M30 110 Q20 100 30 90" stroke="url(#birdGrad)" stroke-width="3" fill="none" stroke-linecap="round"/>
-                            <path d="M170 110 Q180 100 170 90" stroke="url(#birdGrad)" stroke-width="3" fill="none" stroke-linecap="round"/>
-                        </svg>
+            <!-- Corporate Hero Visual -->
+            <div class="w-full flex justify-center items-center relative z-20 h-[40vh] min-h-[300px] md:h-[600px] md:flex-1" id="hero-visual">
+                <div class="hero-grid absolute inset-0 opacity-40 md:opacity-40 opacity-[0.15]"></div>
+                <div class="hero-orb hero-orb-1"></div>
+                <div class="hero-orb hero-orb-2"></div>
+                <div class="hero-orb hero-orb-3"></div>
+                <div class="relative w-full h-full flex items-center justify-center">
+                    <div class="hero-brand" id="hero-brand-container">
+                        <!-- GSAP Animated SVG Logo -->
+                        <div id="gsap-logo" class="relative w-32 h-32 md:w-48 md:h-48 flex items-center justify-center">
+                            <div id="logo-glow" class="absolute w-full h-full bg-primary/20 rounded-full blur-[60px] md:blur-[80px] scale-150"></div>
+                            <svg viewBox="0 0 140 140" class="w-full h-full relative z-10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Outer decorative ring -->
+                                <circle id="logo-ring-1" cx="70" cy="70" r="62" stroke="url(#logoGrad)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="390" stroke-dashoffset="390" opacity="0.6"/>
+                                <!-- Middle ring (thin, dashed-like) -->
+                                <circle id="logo-ring-2" cx="70" cy="70" r="48" stroke="url(#logoGrad)" stroke-width="1.2" stroke-linecap="round" stroke-dashoffset="302" opacity="0.4"/>
+                                <!-- Central diamond shape -->
+                                <path id="logo-diamond" d="M70 22 L96 70 L70 118 L44 70 Z" stroke="url(#logoGrad)" stroke-width="2" fill="rgba(99,102,241,0.06)" stroke-linejoin="round"/>
+                                <!-- Inner diamond -->
+                                <path id="logo-diamond-inner" d="M70 38 L85 70 L70 102 L55 70 Z" stroke="url(#logoGrad)" stroke-width="1" fill="rgba(6,182,212,0.06)" stroke-linejoin="round" opacity="0.7"/>
+                                <!-- Center gem dot -->
+                                <circle id="logo-dot" cx="70" cy="70" r="5" fill="url(#logoGrad)"/>
+                                <!-- Orbital accent dots -->
+                                <circle id="logo-dot-1" cx="70" cy="8" r="3.5" fill="#818cf8"/>
+                                <circle id="logo-dot-2" cx="70" cy="132" r="3.5" fill="#818cf8"/>
+                                <circle id="logo-dot-3" cx="8" cy="70" r="3.5" fill="#818cf8"/>
+                                <circle id="logo-dot-4" cx="132" cy="70" r="3.5" fill="#818cf8"/>
+                                <!-- Small accent dots diagonals -->
+                                <circle id="logo-dot-5" cx="28" cy="28" r="2" fill="#06b6d4" opacity="0.6"/>
+                                <circle id="logo-dot-6" cx="112" cy="112" r="2" fill="#06b6d4" opacity="0.6"/>
+                                <circle id="logo-dot-7" cx="112" cy="28" r="2" fill="#06b6d4" opacity="0.6"/>
+                                <circle id="logo-dot-8" cx="28" cy="112" r="2" fill="#06b6d4" opacity="0.6"/>
+                                <defs>
+                                    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#6366f1"/>
+                                        <stop offset="50%" stop-color="#818cf8"/>
+                                        <stop offset="100%" stop-color="#06b6d4"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="hero-brand-divider"></div>
+                        <span class="hero-brand-sub">Energy Data Analyst</span>
                     </div>
-                    <!-- Full 3D model only on desktop -->
-                    <model-viewer 
-                        id="interactive-bird"
-                        src="https://raw.githubusercontent.com/mrdoob/three.js/master/examples/models/gltf/Parrot.glb" 
-                        alt="3D Flying Bird" 
-                        autoplay
-                        camera-orbit="-45deg 85deg auto"
-                        camera-controls 
-                        touch-action="pan-y"
-                        interaction-prompt="none"
-                        exposure="1.2"
-                        environment-image="https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.hdr"
-                        shadow-intensity="2"
-                        shadow-softness="1"
-                        class="absolute inset-0 transition-transform hover:scale-105 hidden md:block"
-                        disable-zoom
-                        loading="lazy"
-                        style="pointer-events: auto; outline: none; width: 100%; height: 100%;">
-                    </model-viewer>
                 </div>
             </div>
 
             <!-- Text Content -->
             <div class="flex-1 flex flex-col items-center md:items-start text-center md:text-left gap-4 md:gap-6 w-full relative z-20 mt-4 md:mt-0">
-                <div class="inline-flex items-center px-4 py-2 rounded-full border border-white/10 glass">
-                    <span class="relative flex h-3 w-3 mr-3">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                    </span>
-                    <span class="text-slate-300 text-[10px] md:text-sm font-semibold tracking-wider uppercase">Available for Work</span>
-                </div>
 
-                <h1 class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-tight w-full break-words">
-                    Hi, I'm <span class="text-white block sm:inline">Indra N.K.</span> <br>
-                    <span class="text-gradient" id="typewriter">Developer</span>
-                    <span class="animate-blink text-accent ml-1">|</span>
+                <h1 class="hero-heading">
+                    Digital & Data<br>
+                    <span class="text-gradient">Solutions</span>
+                    <span class="hero-typewriter">
+                        <span id="typewriter"></span>
+                        <span class="text-primary ml-1">|</span>
+                    </span>
                 </h1>
 
-                <p class="text-slate-400 text-base md:text-xl max-w-xl leading-relaxed px-2 md:px-0">
-                    Mampu bekerja secara baik dalam <span class="text-white font-medium">Individu</span>, <span class="text-white font-medium">Team</span>, dan <span class="text-white font-medium">Fungsional</span>.
+                <p class="text-slate-400 text-base md:text-lg max-w-xl leading-relaxed px-2 md:px-0">
+                    Energy Data Analyst & Fullstack Developer — <span class="text-white font-semibold">turning complex data into actionable strategy.</span>
                 </p>
 
                 <!-- Hero Social Links -->
-                <div class="flex gap-4 md:gap-6 mt-2 justify-center md:justify-start w-full">
-                    <a href="#" class="text-slate-400 hover:text-primary transition-colors text-xl md:text-2xl hover:scale-110"><i class="fab fa-github"></i></a>
-                    <a href="#" class="text-slate-400 hover:text-primary transition-colors text-xl md:text-2xl hover:scale-110"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" class="text-slate-400 hover:text-primary transition-colors text-xl md:text-2xl hover:scale-110"><i class="fab fa-instagram"></i></a>
+                <div class="flex gap-3 mt-2 justify-center md:justify-start w-full">
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
                 </div>
 
                 <div class="flex flex-row flex-wrap gap-3 md:gap-4 w-full mt-2 md:mt-4 justify-center md:justify-start">
-                    <a href="#projects" class="btn-premium magnetic text-center text-sm md:text-base py-3 px-6 rounded-full flex items-center justify-center">Lihat Portfolio <i class="fas fa-arrow-right ml-2"></i></a>
-                    <a href="cv1nkus.pdf" id="download-cv" download class="btn-outline-glow py-3 px-6 rounded-full text-sm md:text-base font-bold flex items-center justify-center gap-2 magnetic">
+                    <a href="#projects" class="btn-primary magnetic text-center text-sm md:text-base py-3 px-6 flex items-center justify-center gap-2">
+                        Lihat Portfolio <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a href="cv1nkus.pdf" id="download-cv" download class="btn-download py-3 px-6 text-sm md:text-base font-bold flex items-center justify-center gap-2 magnetic">
                         <i class="fas fa-file-download"></i> Download CV
                     </a>
                 </div>
@@ -254,8 +248,11 @@
                     <div class="skill-card-marquee"><i class="devicon-css3-plain text-4xl text-[#264de4]"></i> CSS3</div>
                     <div class="skill-card-marquee"><i class="devicon-javascript-plain text-4xl text-[#f0db4f]"></i> JavaScript</div>
                     <div class="skill-card-marquee"><i class="devicon-react-original text-4xl text-[#61dafb]"></i> React</div>
+                    <div class="skill-card-marquee"><i class="devicon-nextjs-original text-4xl text-[#ffffff]"></i> Next.js</div>
                     <div class="skill-card-marquee"><i class="devicon-tailwindcss-original text-4xl text-[#38bdf8]"></i> Tailwind</div>
                     <div class="skill-card-marquee"><i class="devicon-laravel-original text-4xl text-[#FF2D20]"></i> Laravel</div>
+                    <div class="skill-card-marquee"><i class="devicon-go-plain text-4xl text-[#00ADD8]"></i> Golang</div>
+                    <div class="skill-card-marquee"><i class="devicon-docker-plain text-4xl text-[#2496ED]"></i> Docker</div>
                     <div class="skill-card-marquee"><i class="devicon-mysql-plain text-4xl text-[#4479A1]"></i> MySQL</div>
                     <div class="skill-card-marquee"><i class="devicon-flutter-plain text-4xl text-[#02569B]"></i> Flutter</div>
                     <div class="skill-card-marquee"><i class="devicon-firebase-plain text-4xl text-[#FFCA28]"></i> Firebase</div>
@@ -270,8 +267,11 @@
                     <div class="skill-card-marquee"><i class="devicon-css3-plain text-4xl text-[#264de4]"></i> CSS3</div>
                     <div class="skill-card-marquee"><i class="devicon-javascript-plain text-4xl text-[#f0db4f]"></i> JavaScript</div>
                     <div class="skill-card-marquee"><i class="devicon-react-original text-4xl text-[#61dafb]"></i> React</div>
+                    <div class="skill-card-marquee"><i class="devicon-nextjs-original text-4xl text-[#ffffff]"></i> Next.js</div>
                     <div class="skill-card-marquee"><i class="devicon-tailwindcss-original text-4xl text-[#38bdf8]"></i> Tailwind</div>
                     <div class="skill-card-marquee"><i class="devicon-laravel-original text-4xl text-[#FF2D20]"></i> Laravel</div>
+                    <div class="skill-card-marquee"><i class="devicon-go-plain text-4xl text-[#00ADD8]"></i> Golang</div>
+                    <div class="skill-card-marquee"><i class="devicon-docker-plain text-4xl text-[#2496ED]"></i> Docker</div>
                     <div class="skill-card-marquee"><i class="devicon-mysql-plain text-4xl text-[#4479A1]"></i> MySQL</div>
                     <div class="skill-card-marquee"><i class="devicon-flutter-plain text-4xl text-[#02569B]"></i> Flutter</div>
                     <div class="skill-card-marquee"><i class="devicon-firebase-plain text-4xl text-[#FFCA28]"></i> Firebase</div>
@@ -285,87 +285,126 @@
         </div>
     </section>
 
-    <!-- Impact & Analytics Section -->
-    <section id="analytics" class="py-16 md:py-32 relative overflow-hidden bg-dark/30">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6">
-            <div class="text-center mb-12 md:mb-16 reveal">
-                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 font-heading">Analitik <span class="text-primary">Energi</span></h2>
-                <p class="text-slate-400 max-w-2xl mx-auto px-4">Statistik tingkat analisis proyek dan rekam jejak penurunan konsumsi energi.</p>
+    <!-- Tech Stack Proficiency -->
+    <section id="tech-stack" class="py-16 md:py-32 relative bg-dark/20">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <span class="section-number">PROFICIENCY</span>
+                <h2 class="text-4xl md:text-5xl font-bold text-white font-heading">Tech Stack <span class="text-primary">Mastery</span></h2>
+                <p class="text-slate-400 max-w-2xl mx-auto mt-4 text-lg">Tingkat penguasaan teknologi yang saya gunakan sehari-hari.</p>
             </div>
 
-            <div class="flex flex-col gap-6 lg:gap-8">
-                <!-- Stats Cards Row -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-                    <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal group hover:bg-primary/5 transition-all text-center">
-                        <div class="text-primary text-2xl sm:text-3xl mb-2 sm:mb-3"><i class="fas fa-chart-line"></i></div>
-                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1">30+</div>
-                        <h4 class="text-white font-semibold text-xs sm:text-sm mb-1">Proyek Analisis</h4>
-                        <p class="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Selesai</p>
+            <div class="grid md:grid-cols-2 gap-x-16 gap-y-8">
+                <!-- Frontend -->
+                <div class="space-y-6">
+                    <h3 class="text-white font-bold text-lg font-heading flex items-center gap-2">
+                        <i class="fas fa-code text-primary"></i> Frontend
+                    </h3>
+                    <div class="progress-item" data-aos="fade-up" data-aos-delay="0">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-slate-300 font-medium text-sm flex items-center gap-2"><i class="devicon-html5-plain text-[#e34c26]"></i> HTML/CSS</span>
+                            <span class="text-primary text-sm font-bold">95%</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" data-width="95" style="background: linear-gradient(90deg, #e34c26, #f97316);"></div></div>
                     </div>
-                    <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal group hover:bg-emerald-500/5 transition-all text-center">
-                        <div class="text-emerald-400 text-2xl sm:text-3xl mb-2 sm:mb-3"><i class="fas fa-leaf"></i></div>
-                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-emerald-400 mb-1">-60%</div>
-                        <h4 class="text-white font-semibold text-xs sm:text-sm mb-1">Penurunan Emisi</h4>
-                        <p class="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">CO₂ Reduction</p>
+                    <div class="progress-item" data-aos="fade-up" data-aos-delay="50">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-slate-300 font-medium text-sm flex items-center gap-2"><i class="devicon-javascript-plain text-[#f0db4f]"></i> JavaScript</span>
+                            <span class="text-primary text-sm font-bold">88%</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" data-width="88" style="background: linear-gradient(90deg, #f0db4f, #eab308);"></div></div>
                     </div>
-                    <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal group hover:bg-amber-500/5 transition-all text-center">
-                        <div class="text-amber-400 text-2xl sm:text-3xl mb-2 sm:mb-3"><i class="fas fa-smog"></i></div>
-                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-amber-400 mb-1">2.4</div>
-                        <h4 class="text-white font-semibold text-xs sm:text-sm mb-1">Ton CO₂</h4>
-                        <p class="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Total Saved</p>
+                    <div class="progress-item" data-aos="fade-up" data-aos-delay="100">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-slate-300 font-medium text-sm flex items-center gap-2"><i class="devicon-react-original text-[#61dafb]"></i> React</span>
+                            <span class="text-primary text-sm font-bold">82%</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" data-width="82" style="background: linear-gradient(90deg, #61dafb, #3b82f6);"></div></div>
                     </div>
-                    <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal group hover:bg-teal-500/5 transition-all text-center">
-                        <div class="text-teal-400 text-2xl sm:text-3xl mb-2 sm:mb-3"><i class="fas fa-tree"></i></div>
-                        <div class="text-2xl sm:text-3xl md:text-4xl font-bold text-teal-400 mb-1">38</div>
-                        <h4 class="text-white font-semibold text-xs sm:text-sm mb-1">Ekuivalen Pohon</h4>
-                        <p class="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Terselamatkan</p>
+                    <div class="progress-item" data-aos="fade-up" data-aos-delay="125">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-slate-300 font-medium text-sm flex items-center gap-2"><i class="devicon-nextjs-original text-[#ffffff]"></i> Next.js</span>
+                            <span class="text-primary text-sm font-bold">78%</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" data-width="78" style="background: linear-gradient(90deg, #ffffff, #64748b);"></div></div>
+                    </div>
+                    <div class="progress-item" data-aos="fade-up" data-aos-delay="150">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-slate-300 font-medium text-sm flex items-center gap-2"><i class="devicon-tailwindcss-original text-[#38bdf8]"></i> Tailwind CSS</span>
+                            <span class="text-primary text-sm font-bold">90%</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" data-width="90" style="background: linear-gradient(90deg, #38bdf8, #6366f1);"></div></div>
                     </div>
                 </div>
 
-                <!-- Main Emission Reduction Chart -->
-                <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal shadow-2xl shadow-emerald-500/5">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-white font-bold text-sm sm:text-base flex items-center gap-2">
-                            <i class="fas fa-chart-area text-emerald-400"></i>
-                            Grafik Penurunan Emisi CO₂
-                        </h3>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[10px] sm:text-xs font-bold text-emerald-400 bg-emerald-500/20 px-3 py-1 rounded-full">↓ 60% Reduction</span>
-                            <span class="text-[10px] sm:text-xs text-slate-400 bg-white/5 px-2 py-1 rounded">2025</span>
+                <!-- Backend & Tools -->
+                <div class="space-y-6">
+                    <h3 class="text-white font-bold text-lg font-heading flex items-center gap-2">
+                        <i class="fas fa-database text-accent"></i> Backend & Tools
+                    </h3>
+                    <div class="progress-item" data-aos="fade-up" data-aos-delay="0">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-slate-300 font-medium text-sm flex items-center gap-2"><i class="devicon-laravel-original text-[#FF2D20]"></i> Laravel</span>
+                            <span class="text-primary text-sm font-bold">80%</span>
                         </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" data-width="80" style="background: linear-gradient(90deg, #FF2D20, #ef4444);"></div></div>
                     </div>
-                    <div class="relative w-full h-[280px] sm:h-[350px] md:h-[400px]">
-                        <canvas id="emissionChart"></canvas>
+                    <div class="progress-item" data-aos="fade-up" data-aos-delay="50">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-slate-300 font-medium text-sm flex items-center gap-2"><i class="devicon-mysql-plain text-[#4479A1]"></i> MySQL</span>
+                            <span class="text-primary text-sm font-bold">85%</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" data-width="85" style="background: linear-gradient(90deg, #4479A1, #06b6d4);"></div></div>
+                    </div>
+                    <div class="progress-item" data-aos="fade-up" data-aos-delay="100">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-slate-300 font-medium text-sm flex items-center gap-2"><i class="devicon-docker-plain text-[#2496ED]"></i> Docker</span>
+                            <span class="text-primary text-sm font-bold">76%</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" data-width="76" style="background: linear-gradient(90deg, #2496ED, #06b6d4);"></div></div>
+                    </div>
+                    <div class="progress-item" data-aos="fade-up" data-aos-delay="150">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-slate-300 font-medium text-sm flex items-center gap-2"><i class="devicon-go-plain text-[#00ADD8]"></i> Golang</span>
+                            <span class="text-primary text-sm font-bold">72%</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" data-width="72" style="background: linear-gradient(90deg, #00ADD8, #6366f1);"></div></div>
+                    </div>
+                    <div class="progress-item" data-aos="fade-up" data-aos-delay="200">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-slate-300 font-medium text-sm flex items-center gap-2"><i class="devicon-firebase-plain text-[#FFCA28]"></i> Firebase</span>
+                            <span class="text-primary text-sm font-bold">78%</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" data-width="78" style="background: linear-gradient(90deg, #FFCA28, #f59e0b);"></div></div>
+                    </div>
+                    <div class="progress-item" data-aos="fade-up" data-aos-delay="250">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-slate-300 font-medium text-sm flex items-center gap-2"><i class="devicon-flutter-plain text-[#02569B]"></i> Flutter</span>
+                            <span class="text-primary text-sm font-bold">75%</span>
+                        </div>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" data-width="75" style="background: linear-gradient(90deg, #02569B, #6366f1);"></div></div>
                     </div>
                 </div>
 
-                <!-- Secondary Charts Row -->
-                <div class="grid lg:grid-cols-2 gap-4 lg:gap-6">
-                    <!-- Monthly Breakdown Chart -->
-                    <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal shadow-2xl shadow-primary/5">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-white font-bold text-sm sm:text-base flex items-center gap-2">
-                                <i class="fas fa-chart-bar text-primary"></i>
-                                Breakdown Emisi per Kuartal
-                            </h3>
-                            <span class="text-[10px] sm:text-xs text-slate-400 bg-white/5 px-2 py-1 rounded">Q1-Q4</span>
+                <!-- Data & Analytics (Full width) -->
+                <div class="md:col-span-2 space-y-6 mt-6">
+                    <h3 class="text-white font-bold text-lg font-heading flex items-center gap-2">
+                        <i class="fas fa-chart-bar text-emerald-400"></i> Data & Analytics
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-x-16 gap-y-6">
+                        <div class="progress-item" data-aos="fade-up">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-slate-300 font-medium text-sm flex items-center gap-2"><i class="fas fa-file-excel text-[#1D6F42]"></i> Excel & Spreadsheet</span>
+                                <span class="text-primary text-sm font-bold">92%</span>
+                            </div>
+                            <div class="progress-bar-bg"><div class="progress-bar-fill" data-width="92" style="background: linear-gradient(90deg, #1D6F42, #10b981);"></div></div>
                         </div>
-                        <div class="relative w-full h-[220px] sm:h-[280px] md:h-[300px]">
-                            <canvas id="emissionBarChart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Energy Source Distribution -->
-                    <div class="glass-card p-4 sm:p-6 rounded-2xl border border-white/10 reveal shadow-2xl shadow-primary/5">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-white font-bold text-sm sm:text-base flex items-center gap-2">
-                                <i class="fas fa-chart-pie text-accent"></i>
-                                Distribusi Sumber Energi
-                            </h3>
-                            <span class="text-[10px] sm:text-xs text-slate-400 bg-white/5 px-2 py-1 rounded">2025</span>
-                        </div>
-                        <div class="relative w-full h-[220px] sm:h-[280px] md:h-[300px]">
-                            <canvas id="sourceChart"></canvas>
+                        <div class="progress-item" data-aos="fade-up">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-slate-300 font-medium text-sm flex items-center gap-2"><i class="fas fa-chart-pie text-[#6366f1]"></i> Data Visualization</span>
+                                <span class="text-primary text-sm font-bold">85%</span>
+                            </div>
+                            <div class="progress-bar-bg"><div class="progress-bar-fill" data-width="85" style="background: linear-gradient(90deg, #6366f1, #818cf8);"></div></div>
                         </div>
                     </div>
                 </div>
@@ -376,7 +415,7 @@
     <section id="projects" class="py-16 md:py-32">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-4xl md:text-5xl font-bold text-center text-white mb-10 reveal font-heading">Featured <span class="text-primary">Projects</span></h2>
-            
+
             <!-- Project Filters -->
             <div class="flex justify-center gap-4 mb-12 flex-wrap reveal">
                 <button class="filter-btn active px-6 py-2 rounded-full border border-primary text-white bg-primary/20 text-sm font-bold transition-all" data-filter="all">Semua</button>
@@ -547,7 +586,7 @@
                 <form id="guestbook-form" class="space-y-6 glass-card p-6 md:p-10 rounded-3xl">
                     <input type="text" id="guest-name" required class="w-full bg-dark/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:border-primary transition" placeholder="Nama Kamu">
                     <textarea id="guest-message" required rows="4" class="w-full bg-dark/40 border border-white/10 rounded-2xl px-5 py-4 text-white focus:border-primary transition" placeholder="Pesan Anda"></textarea>
-                    <button type="submit" class="btn-premium w-full py-4 text-lg magnetic"><i class="fas fa-paper-plane mr-2"></i> Kirim Pesan</button>
+                    <button type="submit" class="btn-primary w-full py-4 text-lg flex items-center justify-center gap-2"><i class="fas fa-paper-plane mr-2"></i> Kirim Pesan</button>
                 </form>
             </div>
             <div class="reveal flex flex-col h-full glass-card p-6 md:p-10 rounded-3xl">
@@ -557,19 +596,124 @@
         </div>
     </section>
 
-    <footer class="py-20 relative border-t border-white/5 text-center">
-        <div class="max-w-4xl mx-auto px-6">
-            <h2 class="text-2xl font-bold text-white mb-4 font-heading">Indra Nurul <span class="text-primary">Kusuma</span></h2>
-            <p class="text-slate-400 text-sm mb-10">Energy Data Analyst & Web Developer</p>
-            
-            <div class="flex justify-center gap-8 mb-12">
-                <a href="#" class="text-slate-400 hover:text-primary transition-all hover:scale-110"><i class="fab fa-github text-2xl"></i></a>
-                <a href="#" class="text-slate-400 hover:text-primary transition-all hover:scale-110"><i class="fab fa-linkedin text-2xl"></i></a>
-                <a href="#" class="text-slate-400 hover:text-primary transition-all hover:scale-110"><i class="fab fa-instagram text-2xl"></i></a>
-                <a href="mailto:email@anda.com" class="text-slate-400 hover:text-primary transition-all hover:scale-110"><i class="fas fa-envelope text-2xl"></i></a>
+    <footer class="relative border-t border-white/5 overflow-hidden">
+        <!-- Decorative top gradient line -->
+        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-60"></div>
+
+        <div class="relative max-w-6xl mx-auto px-6 py-16 md:py-20">
+            <!-- Main Grid -->
+            <div class="grid md:grid-cols-12 gap-10 md:gap-8">
+                <!-- Brand Column -->
+                <div class="md:col-span-4">
+                    <a href="#home" class="inline-flex items-center gap-3 mb-4">
+                        <span class="logo-mark">1K</span>
+                        <span class="text-xl font-bold text-white tracking-tight" style="font-family: 'Plus Jakarta Sans', sans-serif;">Indra<span class="text-primary">.NK</span></span>
+                    </a>
+                    <p class="text-slate-400 text-sm leading-relaxed max-w-xs">
+                        Energy Data Analyst & Fullstack Developer — transforming complex energy data into actionable strategies through modern technology.
+                    </p>
+                    <!-- Compact mini stats -->
+                    <div class="flex gap-4 mt-6">
+                        <div>
+                            <div class="text-primary font-bold text-lg">3+</div>
+                            <div class="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Tahun</div>
+                        </div>
+                        <div class="w-px bg-white/10"></div>
+                        <div>
+                            <div class="text-primary font-bold text-lg">9</div>
+                            <div class="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Proyek</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="md:col-span-2">
+                    <h4 class="text-white font-bold text-sm mb-5 font-heading uppercase tracking-wider">Navigasi</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="text-slate-400 hover:text-primary text-sm transition-colors flex items-center gap-2"><i class="fas fa-chevron-right text-[8px] text-primary"></i>Beranda</a></li>
+                        <li><a href="#about" class="text-slate-400 hover:text-primary text-sm transition-colors flex items-center gap-2"><i class="fas fa-chevron-right text-[8px] text-primary"></i>Tentang</a></li>
+                        <li><a href="#skills" class="text-slate-400 hover:text-primary text-sm transition-colors flex items-center gap-2"><i class="fas fa-chevron-right text-[8px] text-primary"></i>Skills</a></li>
+                        <li><a href="#projects" class="text-slate-400 hover:text-primary text-sm transition-colors flex items-center gap-2"><i class="fas fa-chevron-right text-[8px] text-primary"></i>Projects</a></li>
+                        <li><a href="#contact" class="text-slate-400 hover:text-primary text-sm transition-colors flex items-center gap-2"><i class="fas fa-chevron-right text-[8px] text-primary"></i>Kontak</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="md:col-span-3">
+                    <h4 class="text-white font-bold text-sm mb-5 font-heading uppercase tracking-wider">Kontak</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary flex-shrink-0 mt-0.5">
+                                <i class="fas fa-envelope text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 text-xs">Email</p>
+                                <a href="mailto:email@anda.com" class="text-white text-sm hover:text-primary transition-colors">email@anda.com</a>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary flex-shrink-0 mt-0.5">
+                                <i class="fas fa-map-marker-alt text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 text-xs">Lokasi</p>
+                                <span class="text-white text-sm">Indonesia</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary flex-shrink-0 mt-0.5">
+                                <i class="fas fa-briefcase text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-slate-400 text-xs">Tersedia</p>
+                                <span class="text-emerald-400 text-sm font-medium">Open to Work</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Social & Tech -->
+                <div class="md:col-span-3">
+                    <h4 class="text-white font-bold text-sm mb-5 font-heading uppercase tracking-wider">Sosial Media</h4>
+                    <div class="flex flex-wrap gap-3 mb-6">
+                        <a href="#" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/20">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#0077B5] hover:border-[#0077B5] transition-all duration-300 hover:shadow-lg hover:shadow-[#0077B5]/20">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-gradient-to-tr hover:from-[#f58529] hover:via-[#dd2a7b] hover:to-[#8134af] hover:border-transparent transition-all duration-300 hover:shadow-lg hover:shadow-[#dd2a7b]/20">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="mailto:email@anda.com" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/20">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                    <p class="text-slate-500 text-xs uppercase tracking-wider font-semibold mb-3">Tech Stack</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-slate-400 font-medium">React</span>
+                        <span class="text-[10px] px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-slate-400 font-medium">Laravel</span>
+                        <span class="text-[10px] px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-slate-400 font-medium">Go</span>
+                        <span class="text-[10px] px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-slate-400 font-medium">Docker</span>
+                        <span class="text-[10px] px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-slate-400 font-medium">Next.js</span>
+                    </div>
+                </div>
             </div>
-            
-            <p class="text-slate-500 text-xs tracking-widest uppercase">&copy; 2026 Crafted by Indra. All Rights Reserved.</p>
+
+            <!-- Divider -->
+            <div class="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-10"></div>
+
+            <!-- Bottom Bar -->
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-slate-400 text-xs tracking-widest uppercase order-2 md:order-1 footer-copyright">
+                    &copy; 2026 Crafted with <span class="footer-heart">&hearts;</span> by <span class="text-primary font-semibold footer-name">Indra Nurul Kusuma</span>
+                </p>
+                <div class="flex items-center gap-4 order-1 md:order-2">
+                    <a href="#home" class="text-slate-500 hover:text-primary text-xs transition-colors flex items-center gap-1">
+                        <i class="fas fa-arrow-up text-[10px]"></i> Back to top
+                    </a>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -584,7 +728,7 @@
                     <h3 id="modal-title" class="text-3xl font-bold text-white mb-4"></h3>
                     <p id="modal-desc" class="text-slate-300 mb-8"></p>
                     <div id="modal-tech" class="flex gap-3 mb-10"></div>
-                    <a id="modal-link" href="#" target="_blank" class="btn-premium text-center mb-4">Visit Website</a>
+                    <a id="modal-link" href="#" target="_blank" class="btn-primary text-center mb-4 py-3 px-6 font-semibold">Visit Website</a>
                     <button onclick="closeModal()" class="text-slate-400 hover:text-white transition-colors text-sm font-bold flex items-center justify-center gap-2">
                         <i class="fas fa-arrow-left"></i> Kembali ke Portfolio
                     </button>
@@ -593,7 +737,6 @@
         </div>
     </div>
 
-    <div id="robot-3d-container" class="fixed inset-0 z-0 pointer-events-none"></div>
 
     <!-- Back to Top Button -->
     <button id="back-to-top" class="fixed bottom-8 right-8 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg shadow-primary/30 opacity-0 translate-y-10 pointer-events-none transition-all duration-500 z-[90] magnetic">
@@ -612,6 +755,10 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <!-- AOS Scroll Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Typed.js -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="script.js"></script>
     </div>
 </body>
