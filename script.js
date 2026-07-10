@@ -441,7 +441,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // =========================================
-    // 12. GSAP ANIMATIONS (desktop only — mobile skip for perf)
+    // 12a. GSAP INTRO & LOGO ANIMATION (all devices — lightweight, once)
+    // =========================================
+    if (typeof gsap !== 'undefined') {
+        const introTl = gsap.timeline();
+        introTl.from("body", { opacity: 0, duration: 0.3 })
+               .from(".mesh-bg", { scale: 0.95, opacity: 0, duration: 0.8, ease: "power3.out" })
+               .from("#logo-glow", { scale: 0, opacity: 0, duration: 1, ease: "power2.out" }, "-=0.3")
+               .fromTo("#logo-ring-1",
+                 { attr: { "stroke-dashoffset": 390 } },
+                 { attr: { "stroke-dashoffset": 0 }, duration: 1.8, ease: "power2.inOut" }, "-=0.8")
+               .fromTo("#logo-ring-2",
+                 { attr: { "stroke-dashoffset": 302 } },
+                 { attr: { "stroke-dashoffset": 0 }, duration: 1.4, ease: "power2.inOut" }, "-=1.0")
+               .from("#logo-diamond", { scale: 0, rotation: 90, opacity: 0, duration: 0.9, ease: "back.out(1.7)" }, "-=0.7")
+               .from("#logo-diamond-inner", { scale: 0, rotation: -45, opacity: 0, duration: 0.6, ease: "back.out(2)" }, "-=0.4")
+               .from("#logo-dot", { scale: 0, opacity: 0, duration: 0.4, ease: "back.out(3)" }, "-=0.2")
+               .from("#logo-dot-1, #logo-dot-2, #logo-dot-3, #logo-dot-4", { scale: 0, opacity: 0, duration: 0.4, stagger: 0.06, ease: "back.out(2)" }, "-=0.1")
+               .from("#logo-dot-5, #logo-dot-6, #logo-dot-7, #logo-dot-8", { scale: 0, opacity: 0, duration: 0.3, stagger: 0.05, ease: "back.out(2)" }, "-=0.1")
+               .from("#hero-visual .hero-brand > *:not(#gsap-logo)", { y: 30, opacity: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" }, "-=0.3")
+               .from("#home .hero-heading", { y: 30, opacity: 0, duration: 0.7, ease: "power3.out" }, "-=0.5")
+               .from("#home p", { y: 20, opacity: 0, duration: 0.6, ease: "power2.out" }, "-=0.4")
+               .from("#home .social-link", { y: 20, opacity: 0, duration: 0.5, stagger: 0.08, ease: "power2.out" }, "-=0.3")
+               .from("#home .btn-primary, #home .btn-download", { y: 20, opacity: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" }, "-=0.2");
+    }
+
+    // =========================================
+    // 12b. GSAP SCROLLTRIGGER (desktop only — heavy)
     // =========================================
     if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && window.innerWidth >= 768) {
         gsap.registerPlugin(ScrollTrigger);
@@ -469,28 +495,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
         }
-
-        // Intro animation (once, no continuous)
-        const introTl = gsap.timeline();
-        introTl.from("body", { opacity: 0, duration: 0.3 })
-               .from(".mesh-bg", { scale: 0.95, opacity: 0, duration: 0.8, ease: "power3.out" })
-               .from("#logo-glow", { scale: 0, opacity: 0, duration: 1, ease: "power2.out" }, "-=0.3")
-               .fromTo("#logo-ring-1",
-                 { attr: { "stroke-dashoffset": 390 } },
-                 { attr: { "stroke-dashoffset": 0 }, duration: 1.8, ease: "power2.inOut" }, "-=0.8")
-               .fromTo("#logo-ring-2",
-                 { attr: { "stroke-dashoffset": 302 } },
-                 { attr: { "stroke-dashoffset": 0 }, duration: 1.4, ease: "power2.inOut" }, "-=1.0")
-               .from("#logo-diamond", { scale: 0, rotation: 90, opacity: 0, duration: 0.9, ease: "back.out(1.7)" }, "-=0.7")
-               .from("#logo-diamond-inner", { scale: 0, rotation: -45, opacity: 0, duration: 0.6, ease: "back.out(2)" }, "-=0.4")
-               .from("#logo-dot", { scale: 0, opacity: 0, duration: 0.4, ease: "back.out(3)" }, "-=0.2")
-               .from("#logo-dot-1, #logo-dot-2, #logo-dot-3, #logo-dot-4", { scale: 0, opacity: 0, duration: 0.4, stagger: 0.06, ease: "back.out(2)" }, "-=0.1")
-               .from("#logo-dot-5, #logo-dot-6, #logo-dot-7, #logo-dot-8", { scale: 0, opacity: 0, duration: 0.3, stagger: 0.05, ease: "back.out(2)" }, "-=0.1")
-               .from("#hero-visual .hero-brand > *:not(#gsap-logo)", { y: 30, opacity: 0, duration: 0.6, stagger: 0.1, ease: "power3.out" }, "-=0.3")
-               .from("#home .hero-heading", { y: 30, opacity: 0, duration: 0.7, ease: "power3.out" }, "-=0.5")
-               .from("#home p", { y: 20, opacity: 0, duration: 0.6, ease: "power2.out" }, "-=0.4")
-               .from("#home .social-link", { y: 20, opacity: 0, duration: 0.5, stagger: 0.08, ease: "power2.out" }, "-=0.3")
-               .from("#home .btn-primary, #home .btn-download", { y: 20, opacity: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" }, "-=0.2");
     }       // end if(gsap)
 
     // =========================================

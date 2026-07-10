@@ -862,10 +862,10 @@ body.light-mode #terminal-section .bg-\[\#1e1e1e\] {
   background: #1e293b !important;
 }
 
-/* --- 22. MOBILE PERFORMANCE --- */
+/* --- 22. MOBILE PERFORMANCE & RESPONSIVE --- */
 @media (max-width: 768px) {
-  .project-collage-item:nth-child(even) { margin-top: 40px; }
-  .project-collage-item:nth-child(odd) { margin-bottom: 40px; }
+  .project-collage-item:nth-child(even) { margin-top: 20px; }
+  .project-collage-item:nth-child(odd) { margin-bottom: 20px; }
   .glass-card { backdrop-filter: none; }
 
   /* Kill ALL heavy effects on mobile */
@@ -887,4 +887,73 @@ body.light-mode #terminal-section .bg-\[\#1e1e1e\] {
     transform: translateY(-2px);
   }
   .card-premium { box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+
+  /* ===== FOOTER MOBILE ===== */
+  footer .max-w-xs { max-width: 100%; }
+  footer .py-16 { padding-top: 3rem; padding-bottom: 3rem; }
+  footer .px-6 { padding-left: 1.25rem; padding-right: 1.25rem; }
+
+  /* ===== HERO MOBILE ===== */
+  #hero-visual { height: 15vh !important; min-height: 80px !important; }
+  #gsap-logo { width: 3.5rem !important; height: 3.5rem !important; }
+  .hero-heading { font-size: clamp(1.2rem, 6.5vw, 1.8rem) !important; }
+  .hero-typewriter { font-size: clamp(0.85rem, 3.5vw, 1.2rem) !important; }
+  #home .gap-4 { gap: 0.25rem; }
+  #home .gap-3 { gap: 0.1rem; }
+  #home .mt-2 { margin-top: 0.1rem; }
+  #home .px-4 { padding-left: 0.75rem; padding-right: 0.75rem; }
+  #home { padding-top: 2.5rem !important; }
+  #home .btn-primary, #home .btn-download { padding: 0.5rem 1rem !important; font-size: 0.7rem !important; }
+  #home .social-link { width: 34px; height: 34px; font-size: 0.8rem; }
+
+  /* ===== ABOUT MOBILE ===== */
+  #about { padding-top: 0.1rem !important; padding-bottom: 0.25rem !important; }
+  #about .gap-10 { gap: 0.2rem; }
+  #about .mb-5 { margin-bottom: 0.1rem; }
+  #about .mb-6 { margin-bottom: 0.1rem; }
+  #about .p-6 { padding: 0.5rem; }
+  #about .text-lg { font-size: 0.85rem; }
+  #about .text-4xl { font-size: 1.5rem; }
+  #about .text-3xl { font-size: 1.3rem; }
+  #about .gap-6 { gap: 0.5rem; }
+
+  /* ===== SKILLS ===== */
+  #skills .mb-24 { margin-bottom: 3rem; }
+  .skill-card-marquee { padding: 1rem 1.5rem; font-size: 0.8rem; }
+  .skill-card-marquee i { font-size: 1.8rem !important; }
+
+  /* ===== TECH STACK PROGRESS ===== */
+  #tech-stack .gap-x-16 { column-gap: 1.5rem; }
+  #tech-stack .gap-y-8 { row-gap: 1.5rem; }
+  #tech-stack .mt-6 { margin-top: 1rem; }
+
+  /* ===== PROJECTS MOBILE ===== */
+  .project-card { width: 80vw !important; }
+  .projects-wrapper { height: auto !important; }
+
+  /* ===== CONTACT ===== */
+  #contact .gap-20 { gap: 2rem; }
+  #contact .p-10 { padding: 1.5rem; }
+
+  /* ===== TERMINAL ===== */
+  #terminal-section .h-64 { height: 12rem; }
+  #terminal-section .p-6 { padding: 1rem; }
+
+  /* ===== MODAL MOBILE ===== */
+  #project-modal .md\:grid-cols-2 { grid-template-columns: 1fr; }
+  #project-modal .p-10 { padding: 1.5rem; }
+  #project-modal .h-80 { height: 200px; }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .px-6 { padding-left: 1rem; padding-right: 1rem; }
+  .py-32 { padding-top: 3rem; padding-bottom: 3rem; }
+  .py-16 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+
+  .hero-heading { font-size: clamp(1.3rem, 10vw, 1.8rem) !important; }
+  #gsap-logo { width: 5rem !important; height: 5rem !important; }
+  #hero-visual { height: 25vh !important; min-height: 160px !important; }
+
+  .btn-primary, .btn-download { padding: 0.6rem 1.25rem; font-size: 0.75rem; }
 }
