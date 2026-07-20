@@ -91,6 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     // =========================================
+    // (Background interaction removed for elegance)
+    // =========================================
     // 1. TYPED.JS — Typewriter Effect
     // =========================================
     const typewriterElement = document.getElementById('typewriter');

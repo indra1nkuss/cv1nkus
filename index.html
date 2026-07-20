@@ -45,8 +45,21 @@
         }
     </script>
 </head>
-<body class="bg-dark text-slate-200 font-sans selection:bg-primary selection:text-white">
-    <div class="overflow-x-hidden relative w-full">
+<body class="bg-transparent text-slate-200 font-sans selection:bg-primary selection:text-white">
+    <!-- Dynamic Background Layers -->
+    <div id="image-bg" class="image-bg"></div>
+    <div class="vignette-bg"></div>
+    <div class="aurora-bg"></div>
+    <div class="bokeh-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+        <div class="orb orb-5"></div>
+    </div>
+    <div class="mesh-bg"></div>
+
+    <div class="overflow-x-hidden relative w-full z-10">
 
     <!-- Preloader -->
     <div id="preloader" class="fixed inset-0 z-[9999] bg-dark flex flex-col items-center justify-center transition-all duration-700">
@@ -61,8 +74,7 @@
     <!-- Scroll Progress -->
     <div id="scroll-progress" class="fixed top-0 left-0 h-1 bg-primary z-[100] transition-all duration-300 w-0"></div>
 
-    <!-- Dynamic Background -->
-    <div class="mesh-bg"></div>
+
 
     <nav class="fixed left-0 right-0 top-0 z-50 transition-all duration-300" id="navbar">
         <div class="absolute inset-0 bg-dark/80 backdrop-blur-xl border-b border-white/5"></div>
@@ -84,6 +96,10 @@
                 <button id="theme-toggle" class="icon-btn" title="Toggle Light/Dark Mode">
                     <i class="fas fa-sun text-sm"></i>
                 </button>
+                <div class="w-px h-5 bg-white/10 mx-2"></div>
+                <a href="cv1nkus.pdf" download id="nav-download-cv" class="nav-download-btn">
+                    <i class="fas fa-file-download"></i> Download CV
+                </a>
             </div>
 
             <!-- Hamburger Button -->
