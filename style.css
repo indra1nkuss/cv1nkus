@@ -341,7 +341,7 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
+  width: 42px;
   height: 36px;
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
@@ -955,7 +955,334 @@ footer a {
   a, button, .cursor-pointer { cursor: none; }
 }
 
-/* --- 20. MISC --- */
+/* --- 18b. FOOTER COPYRIGHT --- */
+.footer-copyright-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.footer-copyright-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  min-width: 20px;
+}
+.footer-copyright {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+}
+.footer-copy {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  color: rgba(255, 255, 255, 0.25);
+  font-size: 0.65rem;
+}
+.footer-divider {
+  color: rgba(255, 255, 255, 0.1);
+  font-weight: 300;
+}
+.footer-craft {
+  color: rgba(255, 255, 255, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Heartbeat SVG */
+.footer-heart {
+  display: inline-flex;
+  color: #f43f5e;
+  filter: drop-shadow(0 0 4px rgba(244, 63, 94, 0.4));
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+.heart-icon {
+  width: 13px;
+  height: 13px;
+}
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  15%      { transform: scale(1.25); }
+  30%      { transform: scale(1); }
+  45%      { transform: scale(1.15); }
+  60%      { transform: scale(1); }
+}
+
+/* Name text with gradient shimmer */
+.footer-name-text {
+  font-weight: 700;
+  background: linear-gradient(135deg, #818cf8, #a5b4fc, #c7d2fe, #a5b4fc);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmerName 4s ease-in-out infinite;
+}
+@keyframes shimmerName {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+/* Sparkle accent */
+.footer-sparkle {
+  color: #818cf8;
+  font-size: 0.55rem;
+  animation: sparkleRotate 3s linear infinite;
+  opacity: 0.6;
+}
+@keyframes sparkleRotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* --- 19. ANIMATED LOGO TEXT --- */
+.logo-animated-text {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  position: relative;
+}
+.logo-letter {
+  display: inline-block;
+  color: var(--clr);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease, filter 0.3s ease;
+  animation: logoLetterIdle 3s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.15s);
+}
+.logo-letter-dot {
+  color: var(--primary) !important;
+  animation: logoDotPulse 2s ease-in-out infinite !important;
+}
+@keyframes logoLetterIdle {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2px); }
+}
+@keyframes logoDotPulse {
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%      { transform: scale(1.4); opacity: 0.7; }
+}
+
+/* Hover: each letter pops with bounce */
+.logo-animated-text:hover .logo-letter {
+  animation: logoLetterPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation-delay: calc(var(--i) * 0.03s);
+  filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.5));
+}
+@keyframes logoLetterPop {
+  0%   { transform: translateY(0) scale(1); }
+  40%  { transform: translateY(-6px) scale(1.15); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Footer logo sizing */
+footer .logo-animated-text {
+  font-size: 1.25rem;
+}
+
+/* --- 20. PRELOADER ANIMATIONS --- */
+
+/* Particles floating background */
+.preloader-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.preloader-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 50%;
+  opacity: 0;
+  animation: particleFloat 3s ease-in-out infinite;
+}
+@keyframes particleFloat {
+  0%   { opacity: 0; transform: translateY(0) scale(0); }
+  30%  { opacity: 0.6; transform: translateY(-30px) scale(1); }
+  100% { opacity: 0; transform: translateY(-120px) scale(0.3); }
+}
+
+/* Orbit wrapper */
+.preloader-orbit-wrapper {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin-bottom: 32px;
+}
+
+/* Orbit rings */
+.orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.orbit-ring-1 {
+  width: 100px;
+  height: 100px;
+  border-color: rgba(99, 102, 241, 0.15);
+  animation: orbitSpin 4s linear infinite;
+}
+.orbit-ring-2 {
+  width: 130px;
+  height: 130px;
+  border-color: rgba(99, 102, 241, 0.1);
+  animation: orbitSpin 6s linear infinite reverse;
+}
+.orbit-ring-3 {
+  width: 158px;
+  height: 158px;
+  border-color: rgba(99, 102, 241, 0.06);
+  animation: orbitSpin 8s linear infinite;
+  border-style: dashed;
+}
+@keyframes orbitSpin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Orbiting dots */
+.orbit-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  margin: -4px 0 0 -4px;
+}
+.orbit-dot-1 {
+  background: var(--primary);
+  box-shadow: 0 0 12px var(--primary);
+  animation: orbitMove1 4s linear infinite;
+}
+.orbit-dot-2 {
+  background: #818cf8;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  box-shadow: 0 0 10px #818cf8;
+  animation: orbitMove2 6s linear infinite;
+}
+.orbit-dot-3 {
+  background: #c7d2fe;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  box-shadow: 0 0 8px #c7d2fe;
+  animation: orbitMove3 8s linear infinite;
+}
+@keyframes orbitMove1 {
+  from { transform: rotate(0deg)   translateX(50px)  rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(50px)  rotate(-360deg); }
+}
+@keyframes orbitMove2 {
+  from { transform: rotate(0deg)   translateX(65px)  rotate(0deg); }
+  to   { transform: rotate(-360deg) translateX(65px) rotate(360deg); }
+}
+@keyframes orbitMove3 {
+  from { transform: rotate(0deg)   translateX(79px)  rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(79px)  rotate(-360deg); }
+}
+
+/* Center core */
+.preloader-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+.core-pulse {
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+  animation: corePulse 2s ease-in-out infinite;
+}
+@keyframes corePulse {
+  0%, 100% { transform: scale(1);   opacity: 0.4; }
+  50%      { transform: scale(1.3); opacity: 0.8; }
+}
+.core-icon {
+  display: block;
+  filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
+}
+
+/* Brand text with staggered letter reveal */
+.preloader-text-group {
+  text-align: center;
+}
+.preloader-brand {
+  font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: #fff;
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+}
+.preloader-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: charReveal 0.5s ease forwards;
+  animation-delay: calc(var(--i) * 0.08s + 0.6s);
+}
+@keyframes charReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Status dots */
+.preloader-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+}
+.status-dots span {
+  animation: dotBlink 1.4s ease-in-out infinite;
+}
+.status-dots span:nth-child(2) { animation-delay: 0.2s; }
+.status-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotBlink {
+  0%, 60%, 100% { opacity: 0; }
+  30%           { opacity: 1; }
+}
+
+/* Scan line at bottom */
+.preloader-scanline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  animation: scanLine 2s ease-in-out infinite;
+}
+@keyframes scanLine {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* --- 20b. MISC --- */
 .preloader-hidden {
   opacity: 0;
   visibility: hidden;

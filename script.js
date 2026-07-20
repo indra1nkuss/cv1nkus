@@ -3,6 +3,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================
     // 0. PRELOADER & TOAST UTILITY
     // =========================================
+    // Generate floating particles
+    const particlesContainer = document.getElementById('preloader-particles');
+    if (particlesContainer) {
+        for (let i = 0; i < 30; i++) {
+            const p = document.createElement('div');
+            p.className = 'preloader-particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.bottom = Math.random() * 30 + '%';
+            p.style.animationDuration = (2 + Math.random() * 3) + 's';
+            p.style.animationDelay = Math.random() * 4 + 's';
+            p.style.width = p.style.height = (1 + Math.random() * 3) + 'px';
+            particlesContainer.appendChild(p);
+        }
+    }
+
     window.addEventListener('load', () => {
         const preloader = document.getElementById('preloader');
         if (preloader) {
