@@ -485,7 +485,15 @@
         </div>
 
         <div class="projects-wrapper w-full md:h-[100dvh] flex items-center overflow-x-auto md:overflow-hidden overflow-y-hidden snap-x snap-mandatory bg-dark/30 border-y border-white/5 relative z-10 mt-10 pb-8 md:pb-0 custom-scrollbar">
-            <div class="projects-container flex gap-6 md:gap-12 px-[5vw] md:px-[10vw] w-max items-center h-full" id="project-grid">
+            <!-- Scroll progress bar (desktop) -->
+            <div class="hidden md:block absolute top-6 left-1/2 -translate-x-1/2 z-20">
+                <div class="project-scroll-track">
+                    <div class="project-scroll-fill" id="project-scroll-fill"></div>
+                </div>
+                <p class="text-center text-[10px] text-slate-500 mt-2 uppercase tracking-widest font-mono">Scroll to explore</p>
+            </div>
+
+            <div class="projects-container flex gap-6 md:gap-8 px-[5vw] md:px-[8vw] w-max items-center h-full" id="project-grid">
                 <!-- Project: Portal Energi IR -->
                 <div class="project-card group cursor-pointer w-[85vw] md:w-[450px] flex-shrink-0 project-collage-item" data-category="web" 
                         onclick="openModal(this)"
@@ -495,7 +503,7 @@
                         data-image="images/portal-energi.png"
                         data-link="https://irenergyportal.vercel.app/">
                         <div class="aspect-[16/10] overflow-hidden relative">
-                            <img src="images/portal-energi.png" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                            <img src="images/portal-energi.png" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                             <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                                 <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
                             </div>
@@ -519,7 +527,7 @@
                         data-image="images/portfolio-v3.webp"
                         data-link="https://indra1nkuss.github.io/cv1nkus/">
                         <div class="aspect-[16/10] overflow-hidden relative">
-                            <img src="images/portfolio-v3.webp" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                            <img src="images/portfolio-v3.webp" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                             <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                                 <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
                             </div>
@@ -542,7 +550,7 @@
                         data-image="images/pendataan-mesin.webp"
                         data-link="https://pendataanmesinv2.great-site.net/login">
                         <div class="aspect-[16/10] overflow-hidden relative">
-                            <img src="images/pendataan-mesin.webp" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                            <img src="images/pendataan-mesin.webp" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                             <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                                 <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
                             </div>
@@ -565,7 +573,7 @@
                         data-image="images/cashflow-app.webp"
                         data-link="https://github.com/Julianarwansah/uas_cashflow_app">
                         <div class="aspect-[16/10] overflow-hidden relative">
-                            <img src="images/cashflow-app.webp" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                            <img src="images/cashflow-app.webp" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                             <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                                 <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg">View Details</span>
                             </div>

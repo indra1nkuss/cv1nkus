@@ -496,20 +496,44 @@ document.addEventListener('DOMContentLoaded', () => {
         if (projectsContainer && projectsWrapper) {
             let mm = gsap.matchMedia();
             mm.add("(min-width: 768px)", () => {
+                const getScrollAmount = () => projectsContainer.scrollWidth - window.innerWidth + (window.innerWidth * 0.1);
+
                 const tween = gsap.to(projectsContainer, {
-                    x: () => -(projectsContainer.scrollWidth - window.innerWidth + (window.innerWidth * 0.1)),
-                    ease: "none"
+                    x: () => -getScrollAmount(),
+                    ease: "none",
+                    force3D: true
                 });
                 ScrollTrigger.create({
                     trigger: projectsWrapper,
                     start: "top top",
-                    end: () => `+=${projectsContainer.scrollWidth * 0.5}`,
+                    end: () => `+=${getScrollAmount()}`,
                     pin: true,
                     animation: tween,
                     scrub: 1,
                     invalidateOnRefresh: true,
-                    anticipatePin: 1
+                    anticipatePin: 1,
+                    onUpdate: (self) => {
+                        const fill = document.getElementById('project-scroll-fill');
+                        if (fill) fill.style.width = (self.progress * 100) + '%';
+                    }
                 });
+
+                // Refresh once after all images load for accurate widths
+                let imagesLoaded = 0;
+                const totalImages = projectsContainer.querySelectorAll('img').length;
+                if (totalImages > 0) {
+                    projectsContainer.querySelectorAll('img').forEach(img => {
+                        if (img.complete) {
+                            imagesLoaded++;
+                            if (imagesLoaded === totalImages) ScrollTrigger.refresh();
+                        } else {
+                            img.addEventListener('load', () => {
+                                imagesLoaded++;
+                                if (imagesLoaded === totalImages) ScrollTrigger.refresh();
+                            }, { once: true });
+                        }
+                    });
+                }
             });
         }
     }       // end if(gsap)

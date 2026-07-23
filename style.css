@@ -843,11 +843,40 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* --- 15. PROJECT COLLAGE --- */
-.project-collage-item:nth-child(even) { margin-top: 100px; }
-.project-collage-item:nth-child(odd) { margin-bottom: 100px; }
+.project-collage-item:nth-child(even) { margin-top: 20px; }
+.project-collage-item:nth-child(odd) { margin-bottom: 20px; }
 @media (max-width: 767px) {
-  .project-collage-item:nth-child(even) { margin-top: 40px; }
-  .project-collage-item:nth-child(odd) { margin-bottom: 40px; }
+  .project-collage-item:nth-child(even) { margin-top: 10px; }
+  .project-collage-item:nth-child(odd) { margin-bottom: 10px; }
+}
+
+/* GPU acceleration for smooth horizontal scroll */
+.projects-wrapper {
+  -webkit-overflow-scrolling: touch;
+}
+.projects-container {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+.project-card img {
+  backface-visibility: hidden;
+}
+
+/* Scroll progress indicator */
+.project-scroll-track {
+  width: 200px;
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.project-scroll-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #6366f1, #818cf8, #a5b4fc);
+  border-radius: 4px;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
 }
 
 /* --- 16. TERMINAL --- */
@@ -1351,8 +1380,6 @@ body.light-mode #terminal-section .bg-\[\#1e1e1e\] {
 
 /* --- 22. MOBILE PERFORMANCE & RESPONSIVE --- */
 @media (max-width: 768px) {
-  .project-collage-item:nth-child(even) { margin-top: 20px; }
-  .project-collage-item:nth-child(odd) { margin-bottom: 20px; }
   .glass-card { backdrop-filter: none; }
 
   /* Kill ALL heavy effects on mobile */
