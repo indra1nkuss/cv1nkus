@@ -248,6 +248,9 @@
                 <button onclick="switchTab('tab-media')" id="btn-tab-media" class="tab-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-left flex-shrink-0">
                     <i class="fas fa-image w-5 text-center text-accent"></i><span>Foto & Media</span>
                 </button>
+                <button onclick="switchTab('tab-projects')" id="btn-tab-projects" class="tab-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-left flex-shrink-0">
+                    <i class="fas fa-layer-group w-5 text-center text-indigo-400"></i><span>Kelola Proyek</span>
+                </button>
                 <button onclick="switchTab('tab-theme')" id="btn-tab-theme" class="tab-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-left flex-shrink-0">
                     <i class="fas fa-palette w-5 text-center text-pink-400"></i><span>Warna & Tema</span>
                 </button>
@@ -474,6 +477,24 @@
                     </div>
                 </div>
 
+                <!-- TAB PROYEK: KELOLA PROYEK PORTFOLIO -->
+                <div id="tab-projects" class="tab-content hidden space-y-8">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold font-heading text-white">Kelola Proyek Portfolio</h2>
+                            <p class="text-sm text-slate-400">Tambah proyek baru, ubah foto/narasi, dan perbarui link website agar pengunjung bisa langsung mengaksesnya.</p>
+                        </div>
+                        <button type="button" onclick="openProjectModal()" class="px-5 py-2.5 bg-gradient-to-r from-primary to-indigo-600 hover:opacity-90 text-white font-semibold text-xs rounded-xl shadow-lg shadow-primary/20 transition flex items-center gap-2 self-start sm:self-auto">
+                            <i class="fas fa-plus"></i> Tambah Proyek Baru
+                        </button>
+                    </div>
+
+                    <!-- List Kartu Proyek -->
+                    <div id="admin-projects-grid" class="grid sm:grid-cols-2 gap-6">
+                        <!-- Rendered by admin.js -->
+                    </div>
+                </div>
+
                 <!-- TAB 3: WARNA & TEMA -->
                 <div id="tab-theme" class="tab-content hidden space-y-8">
                     <div>
@@ -644,6 +665,91 @@
                 </div>
 
             </main>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MODAL TAMBAH / EDIT PROYEK
+    ============================================= -->
+    <div id="project-form-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-dark/90 backdrop-blur-xl">
+        <div class="w-full max-w-2xl glass p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl relative max-h-[92vh] overflow-y-auto custom-scrollbar">
+            <div class="flex items-center justify-between pb-4 mb-6 border-b border-white/10">
+                <h3 id="project-modal-title-text" class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fas fa-folder-plus text-primary"></i> Tambah Proyek Baru
+                </h3>
+                <button type="button" onclick="closeProjectModal()" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center transition">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+
+            <form id="project-item-form" onsubmit="saveProjectItem(event)" class="space-y-5 text-left">
+                <input type="hidden" id="proj-edit-id">
+
+                <div>
+                    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Judul Proyek *</label>
+                    <input type="text" id="proj-input-title" required class="input-field" placeholder="Contoh: Interactive 3D Portfolio">
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-medium text-slate-300 mb-1.5 block">Kategori Proyek</label>
+                        <select id="proj-input-category" class="input-field cursor-pointer">
+                            <option value="web">Web Application</option>
+                            <option value="mobile">Mobile Application</option>
+                            <option value="data">Data & AI</option>
+                            <option value="system">System & IoT</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-medium text-slate-300 mb-1.5 block">Teknologi / Stack (pisahkan koma)</label>
+                        <input type="text" id="proj-input-tech" class="input-field" placeholder="React, Laravel, Tailwind, MySQL">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Link Website / Live Demo (URL yang akan dibuka pengunjung) *</label>
+                    <div class="flex gap-2">
+                        <input type="url" id="proj-input-link" required class="input-field flex-1" placeholder="https://proyek-anda.vercel.app">
+                        <button type="button" onclick="testProjectLink()" class="px-4 py-2 bg-white/10 hover:bg-white/15 text-xs text-white rounded-xl transition flex items-center gap-1.5 flex-shrink-0" title="Buka link di tab baru untuk test">
+                            <i class="fas fa-arrow-up-right-from-square text-xs"></i> Test
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-1">Pastikan diawali dengan https:// atau http://</p>
+                </div>
+
+                <div>
+                    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Deskripsi Proyek</label>
+                    <textarea id="proj-input-desc" rows="3" class="input-field resize-none" placeholder="Jelaskan fitur utama, manfaat, dan arsitektur proyek ini..."></textarea>
+                </div>
+
+                <!-- Foto Proyek -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-3">
+                    <label class="text-xs font-semibold text-slate-300 block">Foto / Banner Proyek</label>
+                    <div class="flex flex-col sm:flex-row gap-4 items-start">
+                        <div class="w-full sm:w-44 h-28 rounded-xl overflow-hidden border border-white/10 relative flex-shrink-0 bg-dark" style="background:#0b1120;">
+                            <img id="proj-preview-image" src="../images/portfolio-v3.webp" alt="Preview" class="w-full h-full object-cover" onerror="this.src='../images/portfolio-v3.webp'">
+                        </div>
+                        <div class="flex-1 space-y-2.5 w-full">
+                            <div>
+                                <label class="text-[11px] text-slate-400 mb-1 block">Upload dari Laptop/HP (otomatis ke Cloudinary jika aktif):</label>
+                                <input type="file" id="proj-file-upload" accept="image/*" onchange="handleProjectImageUpload(event)"
+                                       class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/20 file:text-indigo-300 hover:file:bg-primary/30 cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="text-[11px] text-slate-400 mb-1 block">Atau URL Gambar Eksternal / Lokal:</label>
+                                <input type="text" id="proj-input-image" oninput="updateProjectPreviewFromInput()" class="input-field" placeholder="images/portfolio-v3.webp atau https://res.cloudinary.com/...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-white/10">
+                    <button type="button" onclick="closeProjectModal()" class="px-5 py-2.5 text-xs text-slate-400 hover:text-white transition">Batal</button>
+                    <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-primary to-indigo-600 hover:opacity-90 text-white font-semibold text-xs rounded-xl shadow-lg shadow-primary/20 transition flex items-center gap-2">
+                        <i class="fas fa-check"></i> Simpan Proyek
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 

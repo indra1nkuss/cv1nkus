@@ -47,7 +47,45 @@ const DEFAULT_CONFIG = {
         cloudName: "",
         uploadPreset: "",
         enabled: false
-    }
+    },
+    projects: [
+        {
+            id: "proj_1",
+            title: "Portal Energi - Hall of Fame",
+            category: "web",
+            desc: "Portal informasi pusat untuk pemenang training online tahun 2026. Dilengkapi dengan daftar pemenang interaktif, dokumentasi Solar Photovoltaic, dan Energy AI Assistant untuk mendukung pengembangan kompetensi tim.",
+            tech: "Tailwind, Three.js, Firebase",
+            image: "images/portal-energi.png",
+            link: "https://irenergyportal.vercel.app/"
+        },
+        {
+            id: "proj_2",
+            title: "Interactive 3D Portfolio",
+            category: "web",
+            desc: "Portfolio website pribadi dengan pengalaman pengguna yang imersif. Menggunakan Three.js untuk animasi 3D robot, Terminal CLI interaktif, dan integrasi Firebase untuk Guestbook realtime.",
+            tech: "Tailwind, Three.js, Firebase, ChartJS",
+            image: "images/portfolio-v3.webp",
+            link: "https://indra1nkuss.github.io/cv1nkus/"
+        },
+        {
+            id: "proj_3",
+            title: "Pendataan Mesin V2",
+            category: "web",
+            desc: "Sistem manajemen pendataan mesin industri untuk menentukan ENPI (Energy Performance Indicator) dan SEU (Significant Energy Use) secara akurat per area maupun keseluruhan. Membantu optimasi konsumsi energi di lingkungan pabrik.",
+            tech: "Laravel, MySQL, Bootstrap",
+            image: "images/pendataan-mesin.webp",
+            link: "https://pendataanmesinv2.great-site.net/login"
+        },
+        {
+            id: "proj_4",
+            title: "UAS Cashflow App",
+            category: "mobile",
+            desc: "Aplikasi pencatat keuangan (Cashflow) berbasis mobile. Dibangun menggunakan Flutter dengan integrasi Firebase Authentication dan Realtime Database untuk pengelolaan data pemasukan dan pengeluaran secara efisien.",
+            tech: "Flutter, Firebase, Dart",
+            image: "images/cashflow-app.webp",
+            link: "https://github.com/Julianarwansah/uas_cashflow_app"
+        }
+    ]
 };
 
 let currentConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
@@ -319,6 +357,9 @@ function populateFormFromConfig() {
     setChecked('cfg-anim-aurora', currentConfig.animations.auroraBg);
     setChecked('cfg-anim-bokeh', currentConfig.animations.bokehBg);
     setChecked('cfg-anim-tilt', currentConfig.animations.tilt3D);
+
+    // Projects CRUD
+    renderAdminProjects();
 }
 
 function readFormIntoConfig() {
@@ -762,6 +803,244 @@ function resetToFactoryDefaults() {
         saveAllChanges();
         showToast("Semua pengaturan telah di-reset ke setelan awal!", "success");
     }
+}
+
+// ========================================================
+// 8.5. PROJECT CRUD MANAGEMENT (TAMBAH / EDIT / HAPUS)
+// ========================================================
+function renderAdminProjects() {
+    const grid = document.getElementById('admin-projects-grid');
+    if (!grid) return;
+
+    if (!currentConfig.projects || !Array.isArray(currentConfig.projects)) {
+        currentConfig.projects = JSON.parse(JSON.stringify(DEFAULT_CONFIG.projects));
+    }
+
+    if (currentConfig.projects.length === 0) {
+        grid.innerHTML = `
+            <div class="sm:col-span-2 text-center py-12 glass-card rounded-2xl border border-white/5">
+                <i class="fas fa-folder-open text-4xl text-slate-500 mb-3"></i>
+                <h4 class="text-white font-bold text-base mb-1">Belum ada proyek</h4>
+                <p class="text-slate-400 text-xs mb-4">Klik tombol di atas untuk menambahkan proyek pertama Anda.</p>
+                <button type="button" onclick="openProjectModal()" class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-semibold transition">
+                    + Tambah Proyek Sekarang
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = currentConfig.projects.map((p, index) => {
+        const catBadge = {
+            'web': 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+            'mobile': 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+            'data': 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+            'system': 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+        }[p.category] || 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20';
+
+        const imgSrc = p.image.startsWith('http') || p.image.startsWith('data:') ? p.image : ('../' + p.image);
+
+        return `
+            <div class="glass-card rounded-2xl border border-white/10 overflow-hidden flex flex-col justify-between group hover:border-primary/40 transition duration-300">
+                <div>
+                    <div class="aspect-[16/9] w-full overflow-hidden relative bg-dark">
+                        <img src="${imgSrc}" alt="${escapeHtml(p.title)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='../images/portfolio-v3.webp'">
+                        <span class="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border backdrop-blur-md ${catBadge}">
+                            ${p.category || 'Web'}
+                        </span>
+                    </div>
+
+                    <div class="p-5">
+                        <h3 class="text-base font-bold text-white mb-2 line-clamp-1">${escapeHtml(p.title)}</h3>
+                        <p class="text-xs text-slate-400 mb-3 line-clamp-2 leading-relaxed">${escapeHtml(p.desc || '-')}</p>
+                        
+                        <div class="flex flex-wrap gap-1.5 mb-3">
+                            ${(p.tech || '').split(',').map(t => t.trim()).filter(Boolean).map(t => `
+                                <span class="text-[10px] px-2 py-0.5 rounded-md bg-white/5 border border-white/5 text-slate-300 font-mono">${escapeHtml(t)}</span>
+                            `).join('')}
+                        </div>
+
+                        ${p.link ? `
+                            <a href="${escapeHtml(p.link)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 font-medium transition">
+                                <i class="fas fa-link text-[10px]"></i> <span class="truncate max-w-[240px]">${escapeHtml(p.link)}</span> <i class="fas fa-arrow-up-right-from-square text-[9px]"></i>
+                            </a>
+                        ` : `
+                            <span class="text-xs text-slate-500 italic">Belum ada link website</span>
+                        `}
+                    </div>
+                </div>
+
+                <div class="p-4 bg-white/[0.02] border-t border-white/5 flex items-center justify-between gap-2">
+                    <span class="text-[11px] text-slate-500 font-mono">#${index + 1}</span>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="openProjectModal('${p.id}')" class="px-3 py-1.5 bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+                            <i class="fas fa-pen text-[10px]"></i> Edit
+                        </button>
+                        <button type="button" onclick="deleteProject('${p.id}')" class="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+                            <i class="fas fa-trash-can text-[10px]"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function openProjectModal(id) {
+    const modal = document.getElementById('project-form-modal');
+    const titleText = document.getElementById('project-modal-title-text');
+    if (!modal) return;
+
+    if (id) {
+        // Edit mode
+        const proj = (currentConfig.projects || []).find(p => p.id === id);
+        if (!proj) return;
+
+        titleText.innerHTML = '<i class="fas fa-pen-to-square text-primary"></i> Edit Proyek';
+        setVal('proj-edit-id', proj.id);
+        setVal('proj-input-title', proj.title);
+        setVal('proj-input-category', proj.category || 'web');
+        setVal('proj-input-tech', proj.tech || '');
+        setVal('proj-input-link', proj.link || '');
+        setVal('proj-input-desc', proj.desc || '');
+        setVal('proj-input-image', proj.image || '');
+
+        const preview = document.getElementById('proj-preview-image');
+        if (preview) {
+            const src = proj.image;
+            preview.src = src.startsWith('http') || src.startsWith('data:') ? src : ('../' + src);
+        }
+    } else {
+        // Create new mode
+        titleText.innerHTML = '<i class="fas fa-folder-plus text-primary"></i> Tambah Proyek Baru';
+        setVal('proj-edit-id', '');
+        setVal('proj-input-title', '');
+        setVal('proj-input-category', 'web');
+        setVal('proj-input-tech', '');
+        setVal('proj-input-link', '');
+        setVal('proj-input-desc', '');
+        setVal('proj-input-image', 'images/portfolio-v3.webp');
+
+        const preview = document.getElementById('proj-preview-image');
+        if (preview) preview.src = '../images/portfolio-v3.webp';
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function closeProjectModal() {
+    const modal = document.getElementById('project-form-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function saveProjectItem(e) {
+    e.preventDefault();
+
+    const id = getVal('proj-edit-id');
+    const title = getVal('proj-input-title');
+    const category = getVal('proj-input-category') || 'web';
+    const tech = getVal('proj-input-tech');
+    const link = getVal('proj-input-link');
+    const desc = getVal('proj-input-desc');
+    const image = getVal('proj-input-image') || 'images/portfolio-v3.webp';
+
+    if (!title) {
+        showToast("Judul proyek wajib diisi!", "error");
+        return;
+    }
+
+    if (!currentConfig.projects) currentConfig.projects = [];
+
+    if (id) {
+        // Update existing
+        const idx = currentConfig.projects.findIndex(p => p.id === id);
+        if (idx !== -1) {
+            currentConfig.projects[idx] = {
+                id,
+                title,
+                category,
+                tech,
+                link,
+                desc,
+                image
+            };
+            showToast("Proyek berhasil diperbarui!", "success");
+        }
+    } else {
+        // Create new
+        const newProj = {
+            id: 'proj_' + Date.now(),
+            title,
+            category,
+            tech,
+            link,
+            desc,
+            image
+        };
+        currentConfig.projects.unshift(newProj);
+        showToast("Proyek baru berhasil ditambahkan!", "success");
+    }
+
+    closeProjectModal();
+    saveAllChanges();
+    renderAdminProjects();
+}
+
+function deleteProject(id) {
+    const proj = (currentConfig.projects || []).find(p => p.id === id);
+    const title = proj ? proj.title : 'proyek ini';
+
+    if (confirm(`Apakah Anda yakin ingin menghapus "${title}"?`)) {
+        currentConfig.projects = (currentConfig.projects || []).filter(p => p.id !== id);
+        saveAllChanges();
+        renderAdminProjects();
+        showToast("Proyek berhasil dihapus.", "info");
+    }
+}
+
+async function handleProjectImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const useCloudinary = getChecked('cfg-cloudinary-enabled') && getVal('cfg-cloudinary-name') && getVal('cfg-cloudinary-preset');
+
+    if (useCloudinary) {
+        showToast("Mengunggah gambar proyek ke Cloudinary CDN...", "info");
+        try {
+            const url = await uploadToCloudinary(file);
+            setVal('proj-input-image', url);
+            const preview = document.getElementById('proj-preview-image');
+            if (preview) preview.src = url;
+            showToast("Foto proyek berhasil diupload ke Cloudinary!", "success");
+        } catch(err) {
+            console.error(err);
+            showToast(err.message, "error");
+        }
+    } else {
+        compressAndReadImage(file, 800, 500, (base64) => {
+            setVal('proj-input-image', base64);
+            const preview = document.getElementById('proj-preview-image');
+            if (preview) preview.src = base64;
+            showToast("Foto proyek siap disimpan!", "info");
+        });
+    }
+}
+
+function updateProjectPreviewFromInput() {
+    const url = getVal('proj-input-image');
+    const preview = document.getElementById('proj-preview-image');
+    if (preview && url) {
+        preview.src = url.startsWith('http') || url.startsWith('data:') ? url : ('../' + url);
+    }
+}
+
+function testProjectLink() {
+    const url = getVal('proj-input-link');
+    if (!url) {
+        showToast("Masukkan link website terlebih dahulu!", "error");
+        return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
 }
 
 // ========================================================

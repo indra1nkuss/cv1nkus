@@ -93,6 +93,14 @@
             } catch (err) {}
         })();
     </script>
+    <!-- Lenis Smooth Scroll -->
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+    <style>
+        html.lenis, html.lenis body { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+    </style>
 </head>
 <body class="bg-transparent text-slate-200 font-sans selection:bg-primary selection:text-white">
     <!-- Dynamic Background Layers -->
@@ -853,7 +861,7 @@
                     <h3 id="modal-title" class="text-3xl font-bold text-white mb-4"></h3>
                     <p id="modal-desc" class="text-slate-300 mb-8"></p>
                     <div id="modal-tech" class="flex gap-3 mb-10"></div>
-                    <a id="modal-link" href="#" target="_blank" class="btn-primary text-center mb-4 py-3 px-6 font-semibold">Visit Website</a>
+                    <a id="modal-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary text-center mb-4 py-3 px-6 font-semibold flex items-center justify-center gap-2"><span>Kunjungi Website</span> <i class="fas fa-arrow-up-right-from-square text-xs"></i></a>
                     <button onclick="closeModal()" class="text-slate-400 hover:text-white transition-colors text-sm font-bold flex items-center justify-center gap-2">
                         <i class="fas fa-arrow-left"></i> Kembali ke Portfolio
                     </button>

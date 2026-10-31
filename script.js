@@ -1,4 +1,38 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    // =========================================
+    // 0. LENIS SMOOTH SCROLL (GSAP POWERED)
+    // =========================================
+    let lenis = null;
+    if (typeof Lenis !== 'undefined') {
+        lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            orientation: 'vertical',
+            gestureOrientation: 'vertical',
+            smoothWheel: true,
+            wheelMultiplier: 1.0,
+            touchMultiplier: 1.5,
+        });
+
+        window.lenis = lenis;
+
+        if (typeof ScrollTrigger !== 'undefined' && typeof gsap !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+            lenis.on('scroll', ScrollTrigger.update);
+            gsap.ticker.add((time) => {
+                lenis.raf(time * 1000);
+            });
+            gsap.ticker.lagSmoothing(0);
+        } else {
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+        }
+    }
+
     
     // =========================================
     // 0. PRELOADER & TOAST UTILITY
@@ -273,6 +307,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 bokehEl.style.display = cfg.animations.bokehBg === false ? 'none' : 'block';
             }
         }
+
+        // 7. Projects Dynamic Sync
+        if (cfg.projects && Array.isArray(cfg.projects) && cfg.projects.length > 0) {
+            window.renderProjects(cfg.projects);
+        } else {
+            window.renderProjects(DEFAULT_PROJECTS);
+        }
     };
 
     // Apply saved config immediately from localStorage
@@ -288,65 +329,199 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================
+    // 1.8. DEFAULT PROJECTS & DYNAMIC RENDERER
+    // =========================================
+    const DEFAULT_PROJECTS = [
+        {
+            id: "proj_1",
+            title: "Portal Energi - Hall of Fame",
+            category: "web",
+            desc: "Portal informasi pusat untuk pemenang training online tahun 2026. Dilengkapi dengan daftar pemenang interaktif, dokumentasi Solar Photovoltaic, dan Energy AI Assistant untuk mendukung pengembangan kompetensi tim.",
+            tech: "Tailwind, Three.js, Firebase",
+            image: "images/portal-energi.png",
+            link: "https://irenergyportal.vercel.app/"
+        },
+        {
+            id: "proj_2",
+            title: "Interactive 3D Portfolio",
+            category: "web",
+            desc: "Portfolio website pribadi dengan pengalaman pengguna yang imersif. Menggunakan Three.js untuk animasi 3D robot, Terminal CLI interaktif, dan integrasi Firebase untuk Guestbook realtime.",
+            tech: "Tailwind, Three.js, Firebase, ChartJS",
+            image: "images/portfolio-v3.webp",
+            link: "https://indra1nkuss.github.io/cv1nkus/"
+        },
+        {
+            id: "proj_3",
+            title: "Pendataan Mesin V2",
+            category: "web",
+            desc: "Sistem manajemen pendataan mesin industri untuk menentukan ENPI (Energy Performance Indicator) dan SEU (Significant Energy Use) secara akurat per area maupun keseluruhan. Membantu optimasi konsumsi energi di lingkungan pabrik.",
+            tech: "Laravel, MySQL, Bootstrap",
+            image: "images/pendataan-mesin.webp",
+            link: "https://pendataanmesinv2.great-site.net/login"
+        },
+        {
+            id: "proj_4",
+            title: "UAS Cashflow App",
+            category: "mobile",
+            desc: "Aplikasi pencatat keuangan (Cashflow) berbasis mobile. Dibangun menggunakan Flutter dengan integrasi Firebase Authentication dan Realtime Database untuk pengelolaan data pemasukan dan pengeluaran secara efisien.",
+            tech: "Flutter, Firebase, Dart",
+            image: "images/cashflow-app.webp",
+            link: "https://github.com/Julianarwansah/uas_cashflow_app"
+        }
+    ];
+
+    window.escapeHtml = function(str) {
+        return str ? String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+    };
+
+    window.renderProjects = function(projects) {
+        const grid = document.getElementById('project-grid');
+        if (!grid) return;
+
+        const list = (projects && Array.isArray(projects) && projects.length > 0) ? projects : DEFAULT_PROJECTS;
+
+        grid.innerHTML = list.map(p => {
+            const techBadges = (p.tech || '').split(',').map(t => t.trim()).filter(Boolean).map(t => {
+                return `<span class="text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">${escapeHtml(t)}</span>`;
+            }).join(' ');
+
+            const safeLink = p.link || '#';
+
+            return `
+                <div class="project-card group cursor-pointer w-[85vw] md:w-[450px] flex-shrink-0 project-collage-item" 
+                     data-category="${p.category || 'web'}" 
+                     data-title="${escapeHtml(p.title)}"
+                     data-desc="${escapeHtml(p.desc)}"
+                     data-tech="${escapeHtml(p.tech)}"
+                     data-image="${p.image}"
+                     data-link="${escapeHtml(safeLink)}"
+                     onclick="openModal(this)">
+                    <div class="aspect-[16/10] overflow-hidden relative">
+                        <img src="${p.image}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <span class="bg-primary text-white px-6 py-2 rounded-full font-bold shadow-lg flex items-center gap-2">
+                                <span>Lihat Detail</span> <i class="fas fa-arrow-right text-xs"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold text-white mb-3 group-hover:text-primary transition">${escapeHtml(p.title)}</h3>
+                        <p class="text-slate-400 text-sm mb-6 leading-relaxed line-clamp-2">${escapeHtml(p.desc)}</p>
+                        <div class="flex gap-2 flex-wrap">
+                            ${techBadges}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // Re-bind filter logic
+        initProjectFiltering();
+
+        // Refresh GSAP ScrollTrigger
+        if (typeof ScrollTrigger !== 'undefined') {
+            setTimeout(() => {
+                ScrollTrigger.refresh();
+            }, 100);
+        }
+    };
+
+    // =========================================
     // 2. MODAL LOGIC
     // =========================================
     window.openModal = (card) => {
         const modal = document.getElementById('project-modal');
-        document.getElementById('modal-title').textContent = card.dataset.title;
-        document.getElementById('modal-desc').textContent = card.dataset.desc;
-        document.getElementById('modal-image').src = card.dataset.image;
-        document.getElementById('modal-link').href = card.dataset.link;
+        if (!modal) return;
+
+        document.getElementById('modal-title').textContent = card.dataset.title || '';
+        document.getElementById('modal-desc').textContent = card.dataset.desc || '';
+        document.getElementById('modal-image').src = card.dataset.image || '';
+        
+        const linkEl = document.getElementById('modal-link');
+        const liveUrl = card.dataset.link;
+        if (linkEl) {
+            if (liveUrl && liveUrl !== '#' && liveUrl !== 'undefined') {
+                linkEl.href = liveUrl;
+                linkEl.style.display = 'inline-flex';
+                linkEl.target = '_blank';
+                linkEl.rel = 'noopener noreferrer';
+                linkEl.innerHTML = '<span>Kunjungi Website / Live Demo</span> <i class="fas fa-arrow-up-right-from-square text-xs ml-2"></i>';
+            } else {
+                linkEl.href = '#';
+                linkEl.style.display = 'none';
+            }
+        }
         
         const techContainer = document.getElementById('modal-tech');
-        techContainer.innerHTML = '';
-        card.dataset.tech.split(',').forEach(t => {
-            const span = document.createElement('span');
-            span.className = 'px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs';
-            span.textContent = t.trim();
-            techContainer.appendChild(span);
-        });
+        if (techContainer) {
+            techContainer.innerHTML = '';
+            (card.dataset.tech || '').split(',').forEach(t => {
+                if (!t.trim()) return;
+                const span = document.createElement('span');
+                span.className = 'px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-xs font-semibold';
+                span.textContent = t.trim();
+                techContainer.appendChild(span);
+            });
+        }
 
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
+        if (window.lenis) window.lenis.stop();
     };
 
     window.closeModal = () => {
-        document.getElementById('project-modal').classList.add('hidden');
+        const modal = document.getElementById('project-modal');
+        if (modal) modal.classList.add('hidden');
         document.body.style.overflow = 'auto';
+        if (window.lenis) window.lenis.start();
     };
 
     // =========================================
     // 2.5. PROJECT FILTERING
     // =========================================
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const projectCards = document.querySelectorAll('.project-card');
+    function initProjectFiltering() {
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
 
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Scroll to projects section
-            document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+        filterBtns.forEach(btn => {
+            // Remove previous listeners by cloning
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
 
-            // Reset styles
-            filterBtns.forEach(b => {
-                b.classList.remove('active', 'bg-primary/20', 'text-white', 'border-primary');
-                b.classList.add('text-slate-400', 'border-white/10');
-            });
-            
-            // Set active style
-            btn.classList.remove('text-slate-400', 'border-white/10');
-            btn.classList.add('active', 'bg-primary/20', 'text-white', 'border-primary');
+            newBtn.addEventListener('click', () => {
+                // Smooth scroll to projects
+                const projSec = document.getElementById('projects');
+                if (window.lenis && projSec) {
+                    window.lenis.scrollTo(projSec, { offset: -60, duration: 1.2 });
+                } else if (projSec) {
+                    projSec.scrollIntoView({ behavior: 'smooth' });
+                }
 
-            const filterValue = btn.getAttribute('data-filter');
+                // Reset button states
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('active', 'bg-primary/20', 'text-white', 'border-primary');
+                    b.classList.add('text-slate-400', 'border-white/10');
+                });
+                
+                newBtn.classList.remove('text-slate-400', 'border-white/10');
+                newBtn.classList.add('active', 'bg-primary/20', 'text-white', 'border-primary');
 
-            projectCards.forEach(card => {
-                if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
-                    card.classList.remove('hide');
-                } else {
-                    card.classList.add('hide');
+                const filterValue = newBtn.getAttribute('data-filter');
+                document.querySelectorAll('.project-card').forEach(card => {
+                    if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                if (typeof ScrollTrigger !== 'undefined') {
+                    ScrollTrigger.refresh();
                 }
             });
         });
-    });
+    }
+    initProjectFiltering();
 
     // =========================================
     // 3. REVEAL, NAVBAR, UI EXTENSIONS
@@ -662,10 +837,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================
-    // 12b. GSAP SCROLLTRIGGER (desktop only — heavy)
+    // 12b. GSAP SCROLLTRIGGER & ELEGANT REVEALS
     // =========================================
-    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && window.innerWidth >= 768) {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
         gsap.registerPlugin(ScrollTrigger);
+
+        // Elegant fade-in-up stagger reveals for headings and cards
+        gsap.utils.toArray('.reveal').forEach((el) => {
+            gsap.fromTo(el, 
+                { opacity: 0, y: 35 },
+                { 
+                    opacity: 1, 
+                    y: 0, 
+                    duration: 1.0, 
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top 88%",
+                        toggleActions: "play none none none"
+                    }
+                }
+            );
+        });
+
+        // Subtle parallax on hero visual
+        const heroVisual = document.getElementById('hero-visual');
+        if (heroVisual && window.innerWidth >= 768) {
+            gsap.to('#hero-brand-container', {
+                y: -60,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: '#home',
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 1.2
+                }
+            });
+        }
 
         // Horizontal Scroll Collage for Projects
         let projectsContainer = document.querySelector(".projects-container");
@@ -778,7 +986,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 120);
     }, { passive: true });
 
-    // Anchor smooth scroll
+    // Smooth anchor navigation using Lenis / GSAP
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
@@ -786,7 +994,11 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const target = document.querySelector(href);
             if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (window.lenis) {
+                    window.lenis.scrollTo(target, { offset: -60, duration: 1.2 });
+                } else {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             }
             const mobileNav = document.getElementById('mobile-nav');
             if (mobileNav) mobileNav.classList.add('-translate-y-full', 'opacity-0');
