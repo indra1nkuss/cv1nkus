@@ -42,7 +42,7 @@ body {
 }
 
 @media (pointer: fine) {
-  body { cursor: none; }
+  body { cursor: default; }
 }
 
 a { color: inherit; text-decoration: none; }
@@ -74,22 +74,9 @@ section { padding: 96px 0; }
   will-change: transform;
 }
 
-/* ─── Custom cursor ───────────────────────────────────────── */
+/* ─── Custom cursor (Disabled - Native Cursor Restored) ─────── */
 #cursor-dot {
-  position: fixed;
-  top: 0; left: 0;
-  width: 9px; height: 9px;
-  margin: -4.5px 0 0 -4.5px;
-  border-radius: 50%;
-  background: var(--accent);
-  pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: multiply;
-  will-change: transform;
-}
-@media (pointer: coarse), (max-width: 767px) {
-  #cursor-dot { display: none; }
-  body { cursor: auto; }
+  display: none !important;
 }
 
 /* ─── Preloader ───────────────────────────────────────────── */

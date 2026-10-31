@@ -820,9 +820,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* --- 13. REVEAL ANIMATION --- */
 .reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
 }
 .reveal.active {
   opacity: 1;
@@ -979,9 +977,15 @@ footer a {
   pointer-events: none;
   transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
 }
-@media (pointer: fine) {
-  body { cursor: none; }
-  a, button, .cursor-pointer { cursor: none; }
+/* Normal system cursor restored - always visible and accessible */
+body {
+  cursor: default;
+}
+a, button, [role="button"], .cursor-pointer, .project-card, .filter-btn, .tab-btn, .social-link {
+  cursor: pointer !important;
+}
+.custom-cursor-dot, .custom-cursor-outline {
+  display: none !important;
 }
 
 /* --- 18b. FOOTER COPYRIGHT --- */

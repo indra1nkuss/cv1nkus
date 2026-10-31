@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let lenis = null;
     if (typeof Lenis !== 'undefined') {
         lenis = new Lenis({
-            duration: 1.2,
+            duration: 0.9,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             orientation: 'vertical',
             gestureOrientation: 'vertical',
@@ -436,6 +436,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('modal-title').textContent = card.dataset.title || '';
         document.getElementById('modal-desc').textContent = card.dataset.desc || '';
         document.getElementById('modal-image').src = card.dataset.image || '';
+
+        const catEl = document.getElementById('modal-category');
+        if (catEl) {
+            const cat = card.dataset.category || 'Web App';
+            catEl.textContent = cat === 'mobile' ? 'Mobile App' : (cat === 'web' ? 'Web App' : cat.toUpperCase());
+        }
         
         const linkEl = document.getElementById('modal-link');
         const liveUrl = card.dataset.link;
@@ -475,6 +481,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = 'auto';
         if (window.lenis) window.lenis.start();
     };
+
+    // Close modal on Escape key
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            window.closeModal();
+        }
+    });
 
     // =========================================
     // 2.5. PROJECT FILTERING
@@ -606,36 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Custom Cursor (desktop only — mousemove is expensive)
-    const cursorDot = document.getElementById('cursor-dot');
-    const cursorOutline = document.getElementById('cursor-outline');
-
-    if (cursorDot && cursorOutline && window.innerWidth >= 768) {
-        window.addEventListener('mousemove', (e) => {
-            const posX = e.clientX;
-            const posY = e.clientY;
-
-            cursorDot.style.left = `${posX}px`;
-            cursorDot.style.top = `${posY}px`;
-
-            cursorOutline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 500, fill: "forwards" });
-        });
-
-        const clickables = document.querySelectorAll('a, button, .cursor-pointer, .project-card');
-        clickables.forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursorOutline.style.transform = 'translate(-50%, -50%) scale(1.5)';
-                cursorOutline.style.backgroundColor = 'rgba(99, 102, 241, 0.1)';
-            });
-            el.addEventListener('mouseleave', () => {
-                cursorOutline.style.transform = 'translate(-50%, -50%) scale(1)';
-                cursorOutline.style.backgroundColor = 'transparent';
-            });
-        });
-    }
+    // Custom cursor removed — native system cursor active everywhere
 
     // 3D Tilt Effect
     const tiltElements = document.querySelectorAll('.tilt-element, .project-card, .skill-card');
