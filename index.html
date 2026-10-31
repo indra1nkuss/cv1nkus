@@ -44,6 +44,55 @@
             }
         }
     </script>
+    <!-- Dynamic Customizer Styles & Admin Routing -->
+    <style id="dynamic-theme-css"></style>
+    <script>
+        // 1. Secret Admin Routing Check (/admin, #/admin, or Ctrl+Shift+A)
+        (function() {
+            const hash = window.location.hash;
+            const path = window.location.pathname;
+            if (hash === '#/admin' || hash === '#admin' || path.endsWith('/admin')) {
+                window.location.href = './admin/';
+            }
+            window.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                    e.preventDefault();
+                    window.location.href = './admin/';
+                }
+            });
+
+            // 2. Immediate Local Theme Applier to prevent flash
+            try {
+                const raw = localStorage.getItem('cv1nkus_site_config');
+                if (raw) {
+                    const cfg = JSON.parse(raw);
+                    if (cfg && cfg.theme) {
+                        const p = cfg.theme.primaryColor || '#6366f1';
+                        const a = cfg.theme.accentColor || '#06b6d4';
+                        const styleEl = document.getElementById('dynamic-theme-css');
+                        if (styleEl) {
+                            styleEl.innerHTML = `
+                                :root {
+                                    --primary: ${p} !important;
+                                    --primary-light: ${p}dd !important;
+                                    --primary-dark: ${p}aa !important;
+                                    --primary-glow: ${p}40 !important;
+                                    --accent: ${a} !important;
+                                    --accent-glow: ${a}40 !important;
+                                }
+                                .text-primary { color: ${p} !important; }
+                                .bg-primary { background-color: ${p} !important; }
+                                .border-primary { border-color: ${p} !important; }
+                                .text-accent { color: ${a} !important; }
+                                .bg-accent { background-color: ${a} !important; }
+                                .border-accent { border-color: ${a} !important; }
+                            `;
+                        }
+                    }
+                }
+            } catch (err) {}
+        })();
+    </script>
 </head>
 <body class="bg-transparent text-slate-200 font-sans selection:bg-primary selection:text-white">
     <!-- Dynamic Background Layers -->
@@ -219,7 +268,7 @@
                             </svg>
                         </div>
                         <div class="hero-brand-divider"></div>
-                        <span class="hero-brand-sub">Energy Data Analyst</span>
+                        <span class="hero-brand-sub" id="hero-role-badge">Energy Data Analyst</span>
                     </div>
                 </div>
             </div>
@@ -228,24 +277,24 @@
             <div class="flex-1 flex flex-col items-center md:items-start text-center md:text-left gap-4 md:gap-6 w-full relative z-20 mt-4 md:mt-0">
 
                 <h1 class="hero-heading">
-                    Digital & Data<br>
-                    <span class="text-gradient">Solutions</span>
+                    <span id="hero-title-line1">Digital & Data</span><br>
+                    <span class="text-gradient" id="hero-title-gradient">Solutions</span>
                     <span class="hero-typewriter">
                         <span id="typewriter"></span>
                         <span class="text-primary ml-1">|</span>
                     </span>
                 </h1>
 
-                <p class="text-slate-400 text-base md:text-lg max-w-xl leading-relaxed px-2 md:px-0">
+                <p class="text-slate-400 text-base md:text-lg max-w-xl leading-relaxed px-2 md:px-0" id="hero-subtitle">
                     Energy Data Analyst & Fullstack Developer — <span class="text-white font-semibold">turning complex data into actionable strategy.</span>
                 </p>
 
                 <!-- Hero Social Links -->
                 <div class="flex gap-3 mt-2 justify-center md:justify-start w-full">
-                    <a href="https://github.com/indra1nkuss" target="_blank" rel="noopener" class="social-link" title="GitHub"><i class="fab fa-github"></i></a>
-                    <a href="https://www.linkedin.com/in/indra-nurul-kusuma-0143773ba" target="_blank" rel="noopener" class="social-link" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="https://www.instagram.com/gus.1nkuss" target="_blank" rel="noopener" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="mailto:indra1nkuss@gmail.com" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>
+                    <a href="https://github.com/indra1nkuss" target="_blank" rel="noopener" class="social-link" id="hero-github" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/indra-nurul-kusuma-0143773ba" target="_blank" rel="noopener" class="social-link" id="hero-linkedin" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.instagram.com/gus.1nkuss" target="_blank" rel="noopener" class="social-link" id="hero-instagram" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="mailto:indra1nkuss@gmail.com" class="social-link" id="hero-email" title="Email"><i class="fas fa-envelope"></i></a>
                 </div>
 
                 <div class="flex flex-row flex-wrap gap-3 md:gap-4 w-full mt-2 md:mt-4 justify-center md:justify-start">
@@ -266,19 +315,19 @@
                 <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 font-heading">
                     About <span class="text-primary">Me</span>
                 </h2>
-                <p class="text-slate-400 leading-relaxed mb-5 text-lg md:text-xl">
+                <p class="text-slate-400 leading-relaxed mb-5 text-lg md:text-xl" id="about-bio-1">
                     Halo, saya Indra Nurul Kusuma, seorang profesional yang mengombinasikan keahlian Web Development dengan analisis data yang mendalam. Saat ini, saya berkarier sebagai <span class="text-white font-medium">Energy Data Analyst di PT Pratama Abadi Industri (IR)</span>.
                 </p>
-                <p class="text-slate-400 leading-relaxed mb-5 text-lg md:text-xl">
+                <p class="text-slate-400 leading-relaxed mb-5 text-lg md:text-xl" id="about-bio-2">
                     Saya memiliki passion dalam mengolah data energi yang kompleks menjadi wawasan strategis melalui pengembangan sistem dan visualisasi data yang efisien. Dengan latar belakang teknis yang kuat, saya mampu membangun solusi digital yang tidak hanya estetik secara visual tetapi juga fungsional dan berbasis data untuk mendukung pengambilan keputusan yang cerdas.
                 </p>
                 <div class="grid grid-cols-2 gap-6">
                     <div class="p-6 glass-card rounded-2xl border border-white/5 hover:border-primary/30 transition-colors">
-                        <h3 class="text-3xl font-bold text-white mb-1 counter" data-target="3">0</h3>
+                        <h3 class="text-3xl font-bold text-white mb-1 counter" data-target="3" id="stat-exp-counter">0</h3>
                         <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Tahun Pengalaman</p>
                     </div>
                     <div class="p-6 glass-card rounded-2xl border border-white/5 hover:border-primary/30 transition-colors">
-                        <h3 class="text-3xl font-bold text-white mb-1 counter" data-target="15">0</h3>
+                        <h3 class="text-3xl font-bold text-white mb-1 counter" data-target="15" id="stat-proj-counter">0</h3>
                         <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Proyek Selesai</p>
                     </div>
                 </div>
@@ -287,10 +336,10 @@
             <div class="flex justify-center perspective">
                 <div id="tilt-card" class="tilt-element w-[320px] h-[440px] glass-card rounded-3xl relative p-3 overflow-hidden group cursor-pointer">
                     <div class="w-full h-full rounded-2xl overflow-hidden relative">
-                        <img src="images/indra.webp" alt="Profile" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110">
+                        <img src="images/indra.webp" alt="Profile" id="profile-img" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110">
                         <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-transparent to-transparent"></div>
                     </div>
-                    <div class="absolute bottom-8 right-8 bg-white/10 backdrop-blur-xl border border-white/20 px-5 py-2 rounded-xl text-white text-sm font-bold shadow-2xl">My Vision</div>
+                    <div id="vision-badge" class="absolute bottom-8 right-8 bg-white/10 backdrop-blur-xl border border-white/20 px-5 py-2 rounded-xl text-white text-sm font-bold shadow-2xl">My Vision</div>
                 </div>
             </div>
         </div>
@@ -716,7 +765,7 @@
                             </div>
                             <div>
                                 <p class="text-slate-400 text-xs">Email</p>
-                                <a href="mailto:indra1nkuss@gmail.com" class="text-white text-sm hover:text-primary transition-colors">indra1nkuss@gmail.com</a>
+                                <a href="mailto:indra1nkuss@gmail.com" id="footer-email-link" class="text-white text-sm hover:text-primary transition-colors">indra1nkuss@gmail.com</a>
                             </div>
                         </li>
                         <li class="flex items-start gap-3">
@@ -725,7 +774,7 @@
                             </div>
                             <div>
                                 <p class="text-slate-400 text-xs">Lokasi</p>
-                                <span class="text-white text-sm">Tangerang, Indonesia</span>
+                                <span class="text-white text-sm" id="footer-location-text">Tangerang, Indonesia</span>
                             </div>
                         </li>
 
@@ -736,16 +785,16 @@
                 <div class="md:col-span-3">
                     <h4 class="text-white font-bold text-sm mb-5 font-heading uppercase tracking-wider">Sosial Media</h4>
                     <div class="flex flex-wrap gap-3 mb-6">
-                        <a href="https://github.com/indra1nkuss" target="_blank" rel="noopener" title="GitHub" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/20">
+                        <a href="https://github.com/indra1nkuss" id="footer-github" target="_blank" rel="noopener" title="GitHub" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/20">
                             <i class="fab fa-github"></i>
                         </a>
-                        <a href="https://www.linkedin.com/in/indra-nurul-kusuma-0143773ba" target="_blank" rel="noopener" title="LinkedIn" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#0077B5] hover:border-[#0077B5] transition-all duration-300 hover:shadow-lg hover:shadow-[#0077B5]/20">
+                        <a href="https://www.linkedin.com/in/indra-nurul-kusuma-0143773ba" id="footer-linkedin" target="_blank" rel="noopener" title="LinkedIn" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#0077B5] hover:border-[#0077B5] transition-all duration-300 hover:shadow-lg hover:shadow-[#0077B5]/20">
                             <i class="fab fa-linkedin-in"></i>
                         </a>
-                        <a href="https://www.instagram.com/gus.1nkuss" target="_blank" rel="noopener" title="Instagram" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-gradient-to-tr hover:from-[#f58529] hover:via-[#dd2a7b] hover:to-[#8134af] hover:border-transparent transition-all duration-300 hover:shadow-lg hover:shadow-[#dd2a7b]/20">
+                        <a href="https://www.instagram.com/gus.1nkuss" id="footer-instagram" target="_blank" rel="noopener" title="Instagram" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-gradient-to-tr hover:from-[#f58529] hover:via-[#dd2a7b] hover:to-[#8134af] hover:border-transparent transition-all duration-300 hover:shadow-lg hover:shadow-[#dd2a7b]/20">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="mailto:indra1nkuss@gmail.com" title="Email" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/20">
+                        <a href="mailto:indra1nkuss@gmail.com" id="footer-email" title="Email" class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-primary hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/20">
                             <i class="fas fa-envelope"></i>
                         </a>
                     </div>

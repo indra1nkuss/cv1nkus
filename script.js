@@ -106,20 +106,185 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     // =========================================
-    // (Background interaction removed for elegance)
+    // 1. DYNAMIC CMS & CONFIG APPLIER
     // =========================================
-    // 1. TYPED.JS — Typewriter Effect
-    // =========================================
-    const typewriterElement = document.getElementById('typewriter');
-    if (typewriterElement && typeof Typed !== 'undefined') {
-        new Typed(typewriterElement, {
-            strings: ['Developer', 'Data Analyst', 'Problem Solver', 'Tech Enthusiast'],
-            typeSpeed: 80,
+    let typedInstance = null;
+
+    function initTypewriter(words, speed) {
+        const typewriterElement = document.getElementById('typewriter');
+        if (!typewriterElement || typeof Typed === 'undefined') return;
+        if (typedInstance) {
+            try { typedInstance.destroy(); } catch(e) {}
+        }
+        typedInstance = new Typed(typewriterElement, {
+            strings: words || ['Developer', 'Data Analyst', 'Problem Solver', 'Tech Enthusiast'],
+            typeSpeed: speed || 80,
             backSpeed: 50,
             backDelay: 2000,
             loop: true,
             showCursor: false
         });
+    }
+
+    window.applySiteConfig = function(cfg) {
+        if (!cfg) return;
+
+        // 1. Theme & Colors
+        if (cfg.theme) {
+            const p = cfg.theme.primaryColor || '#6366f1';
+            const a = cfg.theme.accentColor || '#06b6d4';
+            let styleEl = document.getElementById('dynamic-theme-css');
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = 'dynamic-theme-css';
+                document.head.appendChild(styleEl);
+            }
+            styleEl.innerHTML = `
+                :root {
+                    --primary: ${p} !important;
+                    --primary-light: ${p}dd !important;
+                    --primary-dark: ${p}aa !important;
+                    --primary-glow: ${p}40 !important;
+                    --accent: ${a} !important;
+                    --accent-glow: ${a}40 !important;
+                }
+                .text-primary { color: ${p} !important; }
+                .bg-primary { background-color: ${p} !important; }
+                .border-primary { border-color: ${p} !important; }
+                .text-accent { color: ${a} !important; }
+                .bg-accent { background-color: ${a} !important; }
+                .border-accent { border-color: ${a} !important; }
+            `;
+        }
+
+        // 2. Hero Content
+        if (cfg.hero) {
+            const roleEl = document.getElementById('hero-role-badge');
+            if (roleEl && cfg.hero.role) roleEl.textContent = cfg.hero.role;
+
+            const t1 = document.getElementById('hero-title-line1');
+            if (t1 && cfg.hero.title1) t1.textContent = cfg.hero.title1;
+
+            const tg = document.getElementById('hero-title-gradient');
+            if (tg && cfg.hero.titleHighlight) tg.textContent = cfg.hero.titleHighlight;
+
+            const sub = document.getElementById('hero-subtitle');
+            if (sub && cfg.hero.subtitle) sub.textContent = cfg.hero.subtitle;
+
+            // Typewriter
+            if (cfg.hero.typewriterWords && cfg.hero.typewriterWords.length > 0) {
+                initTypewriter(cfg.hero.typewriterWords, cfg.hero.typewriterSpeed);
+            }
+        }
+
+        // 3. About Section
+        if (cfg.about) {
+            const vBadge = document.getElementById('vision-badge');
+            if (vBadge && cfg.about.vision) vBadge.textContent = cfg.about.vision;
+
+            const bio1 = document.getElementById('about-bio-1');
+            if (bio1 && cfg.about.bio1) bio1.textContent = cfg.about.bio1;
+
+            const bio2 = document.getElementById('about-bio-2');
+            if (bio2 && cfg.about.bio2) bio2.textContent = cfg.about.bio2;
+
+            const cExp = document.getElementById('stat-exp-counter');
+            if (cExp && cfg.about.expYears !== undefined) {
+                cExp.setAttribute('data-target', cfg.about.expYears);
+                cExp.textContent = cfg.about.expYears;
+            }
+
+            const cProj = document.getElementById('stat-proj-counter');
+            if (cProj && cfg.about.projectsCount !== undefined) {
+                cProj.setAttribute('data-target', cfg.about.projectsCount);
+                cProj.textContent = cfg.about.projectsCount;
+            }
+        }
+
+        // 4. Contact & Socials
+        if (cfg.contact) {
+            const emailLink = document.getElementById('footer-email-link');
+            if (emailLink && cfg.contact.email) {
+                emailLink.href = 'mailto:' + cfg.contact.email;
+                emailLink.textContent = cfg.contact.email;
+            }
+            const locText = document.getElementById('footer-location-text');
+            if (locText && cfg.contact.location) locText.textContent = cfg.contact.location;
+
+            const gh = cfg.contact.github;
+            const li = cfg.contact.linkedin;
+            const ig = cfg.contact.instagram;
+            const em = cfg.contact.email ? 'mailto:' + cfg.contact.email : null;
+
+            if (gh) {
+                const el1 = document.getElementById('hero-github');
+                const el2 = document.getElementById('footer-github');
+                if (el1) el1.href = gh;
+                if (el2) el2.href = gh;
+            }
+            if (li) {
+                const el1 = document.getElementById('hero-linkedin');
+                const el2 = document.getElementById('footer-linkedin');
+                if (el1) el1.href = li;
+                if (el2) el2.href = li;
+            }
+            if (ig) {
+                const el1 = document.getElementById('hero-instagram');
+                const el2 = document.getElementById('footer-instagram');
+                if (el1) el1.href = ig;
+                if (el2) el2.href = ig;
+            }
+            if (em) {
+                const el1 = document.getElementById('hero-email');
+                const el2 = document.getElementById('footer-email');
+                if (el1) el1.href = em;
+                if (el2) el2.href = em;
+            }
+        }
+
+        // 5. Media (Images)
+        if (cfg.media) {
+            const profImg = document.getElementById('profile-img');
+            if (profImg && cfg.media.profileImg) {
+                profImg.src = cfg.media.profileImg;
+            }
+            const bgEl = document.getElementById('image-bg');
+            if (bgEl && cfg.media.bgImg) {
+                bgEl.style.backgroundImage = `url('${cfg.media.bgImg}')`;
+            }
+        }
+
+        // 6. Animations
+        if (cfg.animations) {
+            const bgEl = document.getElementById('image-bg');
+            if (bgEl) {
+                if (cfg.animations.bgZoom === false) {
+                    bgEl.style.animation = 'none';
+                } else {
+                    bgEl.style.animation = '';
+                }
+            }
+            const auroraEl = document.querySelector('.aurora-bg');
+            if (auroraEl) {
+                auroraEl.style.display = cfg.animations.auroraBg === false ? 'none' : 'block';
+            }
+            const bokehEl = document.querySelector('.bokeh-bg');
+            if (bokehEl) {
+                bokehEl.style.display = cfg.animations.bokehBg === false ? 'none' : 'block';
+            }
+        }
+    };
+
+    // Apply saved config immediately from localStorage
+    try {
+        const localSaved = localStorage.getItem('cv1nkus_site_config');
+        if (localSaved) {
+            window.applySiteConfig(JSON.parse(localSaved));
+        } else {
+            initTypewriter();
+        }
+    } catch(e) {
+        initTypewriter();
     }
 
     // =========================================
@@ -358,6 +523,19 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             firebase.initializeApp(firebaseConfig);
             const database = firebase.database();
+
+            // Realtime Sync with Admin Control Hub
+            const siteConfigRef = database.ref('site_config');
+            siteConfigRef.on('value', (snap) => {
+                const cloudConfig = snap.val();
+                if (cloudConfig) {
+                    window.applySiteConfig(cloudConfig);
+                    try {
+                        localStorage.setItem('cv1nkus_site_config', JSON.stringify(cloudConfig));
+                    } catch(e) {}
+                }
+            });
+
             const guestbookRef = database.ref('guestbook');
             
             database.ref(".info/connected").on("value", (snap) => {

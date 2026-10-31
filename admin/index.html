@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control Hub - 1nkuss Portfolio</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0b1120',
+                        darker: '#060913',
+                        surface: '#111827',
+                        surface2: '#1f2937',
+                        primary: '#6366f1',
+                        accent: '#06b6d4',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Admin Styles -->
+    <style>
+        :root {
+            --primary: #6366f1;
+            --accent: #06b6d4;
+        }
+        body {
+            background-color: #0b1120;
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass {
+            background: rgba(17, 24, 39, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+        .tab-btn.active {
+            background: rgba(99, 102, 241, 0.15);
+            color: #ffffff;
+            border-left: 3px solid #6366f1;
+        }
+        .tab-btn:not(.active) {
+            color: #94a3b8;
+        }
+        .tab-btn:not(.active):hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #e2e8f0;
+        }
+        /* Toggle Switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #6366f1;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #6366f1;
+        }
+        /* Shake animation for wrong password */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+    </style>
+
+    <!-- Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body class="min-h-screen flex flex-col bg-dark selection:bg-indigo-600 selection:text-white">
+
+    <!-- ======================================================== -->
+    <!-- 1. LOGIN / AUTH OVERLAY (Shown if not logged in) -->
+    <!-- ======================================================== -->
+    <div id="login-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark/95 backdrop-blur-xl">
+        <div id="login-box" class="w-full max-w-md glass p-8 rounded-3xl shadow-2xl border border-white/10 text-center relative overflow-hidden">
+            <!-- Glow background decor -->
+            <div class="absolute -top-24 -left-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-accent/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center mx-auto mb-5 shadow-lg shadow-primary/20">
+                <i class="fas fa-shield-halved text-2xl text-white"></i>
+            </div>
+            
+            <h2 class="text-2xl font-bold font-heading text-white mb-2">1nkuss Admin Hub</h2>
+            <p class="text-slate-400 text-sm mb-6">Area khusus admin untuk mengelola narasi, foto, warna, dan animasi.</p>
+
+            <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
+                <div class="relative text-left">
+                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5 block">PIN / Password Keamanan</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500">
+                            <i class="fas fa-key"></i>
+                        </span>
+                        <input type="password" id="login-pin" required 
+                               class="w-full pl-11 pr-11 py-3 bg-darker/70 border border-white/10 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" 
+                               placeholder="Masukkan PIN Admin...">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500 hover:text-white">
+                            <i id="eye-icon" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="login-error" class="hidden text-xs text-rose-400 font-medium bg-rose-500/10 border border-rose-500/20 py-2 rounded-lg">
+                    <i class="fas fa-triangle-exclamation mr-1"></i> PIN tidak sesuai!
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/90 hover:to-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-primary/25 transition duration-200 flex items-center justify-center gap-2">
+                    <i class="fas fa-arrow-right-to-bracket"></i> Masuk ke Dashboard
+                </button>
+            </form>
+
+            <div class="mt-6 pt-5 border-t border-white/5 flex items-center justify-between text-xs text-slate-500">
+                <span>PIN Bawaan: <code class="text-indigo-400 font-mono">1nkuss2026</code></span>
+                <a href="../" class="hover:text-white transition flex items-center gap-1">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Web
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ======================================================== -->
+    <!-- 2. MAIN ADMIN DASHBOARD -->
+    <!-- ======================================================== -->
+    <div id="admin-dashboard" class="hidden flex-1 flex flex-col min-h-screen">
+        
+        <!-- Top Navbar -->
+        <header class="glass sticky top-0 z-40 px-6 py-4 border-b border-white/10 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center font-bold text-white shadow-md shadow-primary/20">
+                    <i class="fas fa-sliders"></i>
+                </div>
+                <div>
+                    <h1 class="text-base font-bold font-heading text-white flex items-center gap-2">
+                        1nkuss Control Hub
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-indigo-400 font-mono border border-primary/30">v2.0</span>
+                    </h1>
+                    <div class="flex items-center gap-2 text-xs text-slate-400">
+                        <span id="cloud-status-badge" class="flex items-center gap-1.5 text-emerald-400">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Cloud & Local Synced
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header Quick Actions -->
+            <div class="flex items-center gap-3">
+                <a href="../" target="_blank" class="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition flex items-center gap-2" title="Buka website di tab baru">
+                    <i class="fas fa-external-link-alt text-xs"></i> <span class="hidden sm:inline">Lihat Web</span>
+                </a>
+                
+                <button onclick="saveAllChanges()" class="px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-primary to-indigo-600 hover:opacity-95 rounded-xl shadow-lg shadow-primary/30 transition flex items-center gap-2">
+                    <i class="fas fa-floppy-disk"></i> <span>Simpan Semua</span>
+                </button>
+
+                <button onclick="handleLogout()" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-rose-400 bg-white/5 hover:bg-rose-500/10 border border-white/10 rounded-xl transition" title="Keluar">
+                    <i class="fas fa-power-off text-sm"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Dashboard Layout: Sidebar + Main Content -->
+        <div class="flex-1 flex flex-col md:flex-row">
+            
+            <!-- Sidebar Navigation -->
+            <aside class="w-full md:w-64 glass border-r border-white/5 p-4 flex md:flex-col gap-1 overflow-x-auto custom-scrollbar flex-shrink-0">
+                <div class="hidden md:block text-[11px] font-bold text-slate-500 uppercase tracking-wider px-3 py-2">
+                    Menu Kelola
+                </div>
+
+                <button onclick="switchTab('tab-narrative')" id="btn-tab-narrative" class="tab-btn active w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-left flex-shrink-0">
+                    <i class="fas fa-pen-nib w-5 text-center text-primary"></i>
+                    <span>Narasi & Teks</span>
+                </button>
+
+                <button onclick="switchTab('tab-media')" id="btn-tab-media" class="tab-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-left flex-shrink-0">
+                    <i class="fas fa-image w-5 text-center text-accent"></i>
+                    <span>Foto & Media</span>
+                </button>
+
+                <button onclick="switchTab('tab-theme')" id="btn-tab-theme" class="tab-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-left flex-shrink-0">
+                    <i class="fas fa-palette w-5 text-center text-pink-400"></i>
+                    <span>Warna & Tema</span>
+                </button>
+
+                <button onclick="switchTab('tab-animations')" id="btn-tab-animations" class="tab-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-left flex-shrink-0">
+                    <i class="fas fa-wand-magic-sparkles w-5 text-center text-amber-400"></i>
+                    <span>Animasi & Efek</span>
+                </button>
+
+                <div class="hidden md:block my-2 border-t border-white/5"></div>
+
+                <button onclick="switchTab('tab-settings')" id="btn-tab-settings" class="tab-btn w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition text-left flex-shrink-0">
+                    <i class="fas fa-shield-cat w-5 text-center text-emerald-400"></i>
+                    <span>Keamanan & Data</span>
+                </button>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 sm:p-8 max-w-5xl overflow-y-auto custom-scrollbar">
+                
+                <!-- ==================================================== -->
+                <!-- TAB 1: NARASI & TEKS -->
+                <!-- ==================================================== -->
+                <div id="tab-narrative" class="tab-content space-y-8">
+                    <div>
+                        <h2 class="text-xl font-bold font-heading text-white">Narasi & Teks Konten</h2>
+                        <p class="text-sm text-slate-400">Kustomisasi judul, tagline, deskripsi profil, statistik, dan kontak.</p>
+                    </div>
+
+                    <!-- HERO SECTION CARD -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/5 space-y-5">
+                        <div class="flex items-center gap-2 pb-3 border-b border-white/5 text-primary font-semibold text-sm">
+                            <i class="fas fa-crown"></i> Bagian Utama (Hero Section)
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block">Role / Sub-Badge (Atas Logo)</label>
+                                <input type="text" id="cfg-hero-role" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="Contoh: Energy Data Analyst">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block">Judul Baris 1</label>
+                                <input type="text" id="cfg-hero-title-1" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="Contoh: Digital & Data">
+                            </div>
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block">Judul Gradient Highlight</label>
+                                <input type="text" id="cfg-hero-title-highlight" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="Contoh: Solutions">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block">Kecepatan Ketik Typewriter (ms)</label>
+                                <input type="number" id="cfg-typewriter-speed" min="20" max="250" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="80">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-medium text-slate-300 mb-1.5 block">Tagline / Sub-heading Hero</label>
+                            <textarea id="cfg-hero-subtitle" rows="2" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="Energy Data Analyst & Fullstack Developer..."></textarea>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="text-xs font-medium text-slate-300">Kata-Kata Bergantian (Typewriter Words)</label>
+                                <button type="button" onclick="addTypewriterWord()" class="text-xs text-primary hover:underline font-semibold flex items-center gap-1">
+                                    <i class="fas fa-plus"></i> Tambah Kata
+                                </button>
+                            </div>
+                            <div id="typewriter-words-list" class="space-y-2">
+                                <!-- Dynamic word items -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ABOUT SECTION CARD -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/5 space-y-5">
+                        <div class="flex items-center gap-2 pb-3 border-b border-white/5 text-accent font-semibold text-sm">
+                            <i class="fas fa-user-astronaut"></i> Bagian Tentang Saya (About Section)
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block">Teks Badge Vision</label>
+                                <input type="text" id="cfg-about-vision" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="My Vision">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Tahun Pengalaman</label>
+                                    <input type="number" id="cfg-stat-exp" min="0" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="3">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Proyek Selesai</label>
+                                    <input type="number" id="cfg-stat-projects" min="0" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="15">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-medium text-slate-300 mb-1.5 block">Paragraf 1 (Perkenalan & Posisi)</label>
+                            <textarea id="cfg-about-bio-1" rows="3" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-medium text-slate-300 mb-1.5 block">Paragraf 2 (Passion & Keahlian)</label>
+                            <textarea id="cfg-about-bio-2" rows="3" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- CONTACT & SOCIAL CARD -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/5 space-y-5">
+                        <div class="flex items-center gap-2 pb-3 border-b border-white/5 text-pink-400 font-semibold text-sm">
+                            <i class="fas fa-address-book"></i> Informasi Kontak & Media Sosial
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block"><i class="fas fa-envelope mr-1 text-primary"></i> Email Utama</label>
+                                <input type="email" id="cfg-contact-email" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="indra1nkuss@gmail.com">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block"><i class="fas fa-map-marker-alt mr-1 text-rose-400"></i> Lokasi / Kota</label>
+                                <input type="text" id="cfg-contact-location" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="Tangerang, Indonesia">
+                            </div>
+                        </div>
+
+                        <div class="grid sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block"><i class="fab fa-github mr-1"></i> URL GitHub</label>
+                                <input type="url" id="cfg-social-github" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="https://github.com/...">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block"><i class="fab fa-linkedin text-blue-400 mr-1"></i> URL LinkedIn</label>
+                                <input type="url" id="cfg-social-linkedin" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="https://linkedin.com/in/...">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block"><i class="fab fa-instagram text-pink-400 mr-1"></i> URL Instagram</label>
+                                <input type="text" id="cfg-social-instagram" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="https://instagram.com/...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ==================================================== -->
+                <!-- TAB 2: FOTO & MEDIA -->
+                <!-- ==================================================== -->
+                <div id="tab-media" class="tab-content hidden space-y-8">
+                    <div>
+                        <h2 class="text-xl font-bold font-heading text-white">Foto & Aset Media</h2>
+                        <p class="text-sm text-slate-400">Ganti foto profil dan latar belakang visual website.</p>
+                    </div>
+
+                    <!-- PROFILE PHOTO CARD -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/5 space-y-6">
+                        <div class="flex items-center gap-2 pb-3 border-b border-white/5 text-accent font-semibold text-sm">
+                            <i class="fas fa-portrait"></i> Foto Profil (Hero Card)
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-6 items-start">
+                            <!-- Preview Box -->
+                            <div class="w-40 h-52 rounded-2xl glass overflow-hidden border border-white/15 relative flex-shrink-0 shadow-lg">
+                                <img id="preview-profile-img" src="../images/indra.webp" alt="Preview Foto" class="w-full h-full object-cover">
+                                <div class="absolute bottom-2 right-2 bg-black/60 px-2 py-0.5 rounded text-[10px] text-white">Preview</div>
+                            </div>
+
+                            <div class="flex-1 space-y-4 w-full">
+                                <div>
+                                    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Upload Foto Baru (Langsung dari Perangkat)</label>
+                                    <input type="file" id="upload-profile-file" accept="image/*" onchange="handleProfileUpload(event)"
+                                           class="w-full text-xs text-slate-400 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/20 file:text-indigo-300 hover:file:bg-primary/30 cursor-pointer">
+                                    <p class="text-[11px] text-slate-500 mt-1">Format: JPG, PNG, atau WebP. Gambar dikompres otomatis secara cepat.</p>
+                                </div>
+
+                                <div class="pt-2 border-t border-white/5">
+                                    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Atau Gunakan URL Gambar Eksternal / Lokal</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="cfg-profile-img-url" class="flex-1 px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="images/indra.webp atau https://...">
+                                        <button type="button" onclick="applyProfileUrl()" class="px-4 py-2 bg-white/10 hover:bg-white/15 text-xs text-white rounded-xl transition">Pakai</button>
+                                    </div>
+                                </div>
+
+                                <button type="button" onclick="resetProfileImg()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition">
+                                    <i class="fas fa-rotate-left"></i> Reset ke Foto Bawaan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BACKGROUND IMAGE CARD -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/5 space-y-6">
+                        <div class="flex items-center gap-2 pb-3 border-b border-white/5 text-primary font-semibold text-sm">
+                            <i class="fas fa-panorama"></i> Background Website
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-6 items-start">
+                            <!-- Preview Box -->
+                            <div class="w-full sm:w-56 h-36 rounded-2xl glass overflow-hidden border border-white/15 relative flex-shrink-0 shadow-lg">
+                                <img id="preview-bg-img" src="../images/background-web.webp" alt="Preview Background" class="w-full h-full object-cover">
+                                <div class="absolute bottom-2 right-2 bg-black/60 px-2 py-0.5 rounded text-[10px] text-white">Preview</div>
+                            </div>
+
+                            <div class="flex-1 space-y-4 w-full">
+                                <div>
+                                    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Upload Background Baru</label>
+                                    <input type="file" id="upload-bg-file" accept="image/*" onchange="handleBackgroundUpload(event)"
+                                           class="w-full text-xs text-slate-400 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/20 file:text-indigo-300 hover:file:bg-primary/30 cursor-pointer">
+                                </div>
+
+                                <div class="pt-2 border-t border-white/5">
+                                    <label class="text-xs font-medium text-slate-300 mb-1.5 block">Atau URL Gambar Background</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="cfg-bg-img-url" class="flex-1 px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="images/background-web.webp">
+                                        <button type="button" onclick="applyBgUrl()" class="px-4 py-2 bg-white/10 hover:bg-white/15 text-xs text-white rounded-xl transition">Pakai</button>
+                                    </div>
+                                </div>
+
+                                <button type="button" onclick="resetBgImg()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1.5 transition">
+                                    <i class="fas fa-rotate-left"></i> Reset ke Background Bawaan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ==================================================== -->
+                <!-- TAB 3: WARNA & TEMA -->
+                <!-- ==================================================== -->
+                <div id="tab-theme" class="tab-content hidden space-y-8">
+                    <div>
+                        <h2 class="text-xl font-bold font-heading text-white">Warna & Tema Tampilan</h2>
+                        <p class="text-sm text-slate-400">Ubah palet warna website, tombol, efek glow, dan aksen secara instan.</p>
+                    </div>
+
+                    <!-- PRESET THEMES -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/5 space-y-4">
+                        <div class="flex items-center gap-2 pb-3 border-b border-white/5 text-pink-400 font-semibold text-sm">
+                            <i class="fas fa-swatchbook"></i> Pilihan Palet Siap Pakai (Presets)
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            <!-- Preset 1: Indigo Tech (Default) -->
+                            <button type="button" onclick="applyColorPreset('#6366f1', '#06b6d4', 'indigo')" class="p-3.5 rounded-xl border border-white/10 hover:border-indigo-500 bg-white/5 text-left transition flex items-center gap-3 group">
+                                <div class="flex -space-x-1.5">
+                                    <span class="w-6 h-6 rounded-full bg-[#6366f1] ring-2 ring-dark"></span>
+                                    <span class="w-6 h-6 rounded-full bg-[#06b6d4] ring-2 ring-dark"></span>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white group-hover:text-indigo-400 transition">Royal Indigo</h4>
+                                    <p class="text-[10px] text-slate-400">Default Tech</p>
+                                </div>
+                            </button>
+
+                            <!-- Preset 2: Emerald Energy -->
+                            <button type="button" onclick="applyColorPreset('#10b981', '#06b6d4', 'emerald')" class="p-3.5 rounded-xl border border-white/10 hover:border-emerald-500 bg-white/5 text-left transition flex items-center gap-3 group">
+                                <div class="flex -space-x-1.5">
+                                    <span class="w-6 h-6 rounded-full bg-[#10b981] ring-2 ring-dark"></span>
+                                    <span class="w-6 h-6 rounded-full bg-[#06b6d4] ring-2 ring-dark"></span>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white group-hover:text-emerald-400 transition">Emerald Energy</h4>
+                                    <p class="text-[10px] text-slate-400">Green Data</p>
+                                </div>
+                            </button>
+
+                            <!-- Preset 3: Cyberpunk Neon -->
+                            <button type="button" onclick="applyColorPreset('#ec4899', '#8b5cf6', 'neon')" class="p-3.5 rounded-xl border border-white/10 hover:border-pink-500 bg-white/5 text-left transition flex items-center gap-3 group">
+                                <div class="flex -space-x-1.5">
+                                    <span class="w-6 h-6 rounded-full bg-[#ec4899] ring-2 ring-dark"></span>
+                                    <span class="w-6 h-6 rounded-full bg-[#8b5cf6] ring-2 ring-dark"></span>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white group-hover:text-pink-400 transition">Cyberpunk Pink</h4>
+                                    <p class="text-[10px] text-slate-400">High Contrast</p>
+                                </div>
+                            </button>
+
+                            <!-- Preset 4: Electric Blue -->
+                            <button type="button" onclick="applyColorPreset('#2563eb', '#38bdf8', 'blue')" class="p-3.5 rounded-xl border border-white/10 hover:border-blue-500 bg-white/5 text-left transition flex items-center gap-3 group">
+                                <div class="flex -space-x-1.5">
+                                    <span class="w-6 h-6 rounded-full bg-[#2563eb] ring-2 ring-dark"></span>
+                                    <span class="w-6 h-6 rounded-full bg-[#38bdf8] ring-2 ring-dark"></span>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white group-hover:text-blue-400 transition">Electric Blue</h4>
+                                    <p class="text-[10px] text-slate-400">Corporate Pro</p>
+                                </div>
+                            </button>
+
+                            <!-- Preset 5: Sunset Amber -->
+                            <button type="button" onclick="applyColorPreset('#f59e0b', '#f43f5e', 'sunset')" class="p-3.5 rounded-xl border border-white/10 hover:border-amber-500 bg-white/5 text-left transition flex items-center gap-3 group">
+                                <div class="flex -space-x-1.5">
+                                    <span class="w-6 h-6 rounded-full bg-[#f59e0b] ring-2 ring-dark"></span>
+                                    <span class="w-6 h-6 rounded-full bg-[#f43f5e] ring-2 ring-dark"></span>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white group-hover:text-amber-400 transition">Sunset Glow</h4>
+                                    <p class="text-[10px] text-slate-400">Warm & Energetic</p>
+                                </div>
+                            </button>
+
+                            <!-- Preset 6: Deep Purple -->
+                            <button type="button" onclick="applyColorPreset('#9333ea', '#c084fc', 'purple')" class="p-3.5 rounded-xl border border-white/10 hover:border-purple-500 bg-white/5 text-left transition flex items-center gap-3 group">
+                                <div class="flex -space-x-1.5">
+                                    <span class="w-6 h-6 rounded-full bg-[#9333ea] ring-2 ring-dark"></span>
+                                    <span class="w-6 h-6 rounded-full bg-[#c084fc] ring-2 ring-dark"></span>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white group-hover:text-purple-400 transition">Deep Nebula</h4>
+                                    <p class="text-[10px] text-slate-400">Creative Modern</p>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CUSTOM COLOR PICKERS -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/5 space-y-6">
+                        <div class="flex items-center gap-2 pb-3 border-b border-white/5 text-primary font-semibold text-sm">
+                            <i class="fas fa-eye-dropper"></i> Kustom Warna Bebas (Hex Code)
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-2 block">Warna Utama (Primary Color)</label>
+                                <div class="flex items-center gap-3">
+                                    <input type="color" id="cfg-color-primary" oninput="updateColorPreview()" class="w-12 h-12 rounded-xl bg-transparent border-0 cursor-pointer">
+                                    <input type="text" id="cfg-color-primary-text" oninput="syncColorInput('primary')" class="flex-1 font-mono uppercase px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="#6366F1">
+                                </div>
+                                <p class="text-[11px] text-slate-500 mt-1.5">Mempengaruhi tombol utama, highlight teks, border glow, dan icon penting.</p>
+                            </div>
+
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-2 block">Warna Aksen (Accent Color)</label>
+                                <div class="flex items-center gap-3">
+                                    <input type="color" id="cfg-color-accent" oninput="updateColorPreview()" class="w-12 h-12 rounded-xl bg-transparent border-0 cursor-pointer">
+                                    <input type="text" id="cfg-color-accent-text" oninput="syncColorInput('accent')" class="flex-1 font-mono uppercase px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="#06B6D4">
+                                </div>
+                                <p class="text-[11px] text-slate-500 mt-1.5">Mempengaruhi gradien judul, badge sekunder, dan efek ambient aurora.</p>
+                            </div>
+                        </div>
+
+                        <!-- LIVE BUTTON / BADGE PREVIEW -->
+                        <div class="pt-4 border-t border-white/5">
+                            <label class="text-xs font-medium text-slate-400 mb-3 block">Pratinjau Hasil Elemen UI:</label>
+                            <div class="p-6 rounded-2xl glass-card flex flex-wrap items-center gap-4">
+                                <button id="preview-btn-sample" class="px-5 py-2.5 rounded-xl font-bold text-sm text-white shadow-lg transition">
+                                    Tombol Primary
+                                </button>
+                                <span id="preview-badge-sample" class="px-3 py-1 rounded-full text-xs font-semibold">
+                                    Tag Aksen
+                                </span>
+                                <span id="preview-text-sample" class="text-lg font-bold">
+                                    Contoh Judul Gradien
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ==================================================== -->
+                <!-- TAB 4: ANIMASI & EFEK -->
+                <!-- ==================================================== -->
+                <div id="tab-animations" class="tab-content hidden space-y-8">
+                    <div>
+                        <h2 class="text-xl font-bold font-heading text-white">Animasi & Efek Visual</h2>
+                        <p class="text-sm text-slate-400">Aktifkan atau nonaktifkan animasi untuk menjaga estetika dan performa.</p>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl border border-white/5 divide-y divide-white/5">
+                        
+                        <!-- Toggle 1: Ken Burns Background Zoom -->
+                        <div class="py-4 flex items-center justify-between first:pt-0">
+                            <div>
+                                <h4 class="text-sm font-semibold text-white flex items-center gap-2">
+                                    <i class="fas fa-film text-primary"></i> Efek Zoom Halus Background (Ken-Burns)
+                                </h4>
+                                <p class="text-xs text-slate-400 mt-0.5">Animasi zoom in/out perlahan pada latar belakang gambar secara sinematik.</p>
+                            </div>
+                            <label class="relative inline-block w-12 h-6 cursor-pointer">
+                                <input type="checkbox" id="cfg-anim-zoom" class="sr-only toggle-checkbox">
+                                <div class="toggle-label block w-12 h-6 bg-slate-700 rounded-full transition-colors"></div>
+                                <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div>
+                            </label>
+                        </div>
+
+                        <!-- Toggle 2: Aurora Ambient Glow -->
+                        <div class="py-4 flex items-center justify-between">
+                            <div>
+                                <h4 class="text-sm font-semibold text-white flex items-center gap-2">
+                                    <i class="fas fa-water text-accent"></i> Aurora Waves Ambient
+                                </h4>
+                                <p class="text-xs text-slate-400 mt-0.5">Cahaya aurora bergelombang lembut di bagian belakang halaman.</p>
+                            </div>
+                            <label class="relative inline-block w-12 h-6 cursor-pointer">
+                                <input type="checkbox" id="cfg-anim-aurora" class="sr-only toggle-checkbox">
+                                <div class="toggle-label block w-12 h-6 bg-slate-700 rounded-full transition-colors"></div>
+                                <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div>
+                            </label>
+                        </div>
+
+                        <!-- Toggle 3: Bokeh Floating Orbs -->
+                        <div class="py-4 flex items-center justify-between">
+                            <div>
+                                <h4 class="text-sm font-semibold text-white flex items-center gap-2">
+                                    <i class="fas fa-meteor text-amber-400"></i> Partikel Floating Bokeh Orbs
+                                </h4>
+                                <p class="text-xs text-slate-400 mt-0.5">Partikel cahaya mengambang elegan di latar belakang.</p>
+                            </div>
+                            <label class="relative inline-block w-12 h-6 cursor-pointer">
+                                <input type="checkbox" id="cfg-anim-bokeh" class="sr-only toggle-checkbox">
+                                <div class="toggle-label block w-12 h-6 bg-slate-700 rounded-full transition-colors"></div>
+                                <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div>
+                            </label>
+                        </div>
+
+                        <!-- Toggle 4: 3D Tilt Card -->
+                        <div class="py-4 flex items-center justify-between last:pb-0">
+                            <div>
+                                <h4 class="text-sm font-semibold text-white flex items-center gap-2">
+                                    <i class="fas fa-cube text-purple-400"></i> Efek 3D Tilt Foto Profil
+                                </h4>
+                                <p class="text-xs text-slate-400 mt-0.5">Kartu foto profil miring mengikuti pergerakan kursor mouse.</p>
+                            </div>
+                            <label class="relative inline-block w-12 h-6 cursor-pointer">
+                                <input type="checkbox" id="cfg-anim-tilt" class="sr-only toggle-checkbox">
+                                <div class="toggle-label block w-12 h-6 bg-slate-700 rounded-full transition-colors"></div>
+                                <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ==================================================== -->
+                <!-- TAB 5: KEAMANAN & DATA -->
+                <!-- ==================================================== -->
+                <div id="tab-settings" class="tab-content hidden space-y-8">
+                    <div>
+                        <h2 class="text-xl font-bold font-heading text-white">Keamanan & Pencadangan Data</h2>
+                        <p class="text-sm text-slate-400">Ganti kode PIN, cadangkan konfigurasi ke file JSON, atau reset ke setelan pabrik.</p>
+                    </div>
+
+                    <!-- GANTI PIN CARD -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/5 space-y-4">
+                        <div class="flex items-center gap-2 pb-3 border-b border-white/5 text-emerald-400 font-semibold text-sm">
+                            <i class="fas fa-key"></i> Pengaturan PIN Admin
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block">PIN Admin Baru</label>
+                                <input type="password" id="cfg-new-pin" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="Minimal 4 karakter...">
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block">Konfirmasi PIN Baru</label>
+                                <input type="password" id="cfg-confirm-pin" class="w-full px-3.5 py-2.5 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary transition" placeholder="Ulangi PIN baru...">
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="updateAdminPin()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold text-white rounded-xl transition flex items-center gap-2">
+                            <i class="fas fa-check"></i> Perbarui PIN Admin
+                        </button>
+                    </div>
+
+                    <!-- BACKUP & EXPORT/IMPORT -->
+                    <div class="glass-card p-6 rounded-2xl border border-white/5 space-y-4">
+                        <div class="flex items-center gap-2 pb-3 border-b border-white/5 text-primary font-semibold text-sm">
+                            <i class="fas fa-database"></i> Backup & Sinkronisasi
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+                                <h4 class="text-sm font-bold text-white mb-1"><i class="fas fa-download mr-1 text-primary"></i> Export Cadangan (JSON)</h4>
+                                <p class="text-xs text-slate-400 mb-3">Unduh semua narasi, tema, dan konfigurasi saat ini ke file JSON di komputer.</p>
+                                <button type="button" onclick="exportBackupJSON()" class="px-4 py-2 bg-white/10 hover:bg-white/15 text-xs text-white font-medium rounded-xl transition flex items-center gap-2">
+                                    <i class="fas fa-file-arrow-down"></i> Unduh File JSON
+                                </button>
+                            </div>
+
+                            <div class="p-4 rounded-xl bg-white/5 border border-white/5">
+                                <h4 class="text-sm font-bold text-white mb-1"><i class="fas fa-upload mr-1 text-accent"></i> Import / Pulihkan Cadangan</h4>
+                                <p class="text-xs text-slate-400 mb-3">Upload file JSON konfigurasi yang telah diunduh sebelumnya.</p>
+                                <input type="file" id="import-json-file" accept=".json" onchange="importBackupJSON(event)" class="hidden">
+                                <button type="button" onclick="document.getElementById('import-json-file').click()" class="px-4 py-2 bg-white/10 hover:bg-white/15 text-xs text-white font-medium rounded-xl transition flex items-center gap-2">
+                                    <i class="fas fa-file-arrow-up"></i> Pilih File JSON
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FACTORY RESET -->
+                    <div class="glass-card p-6 rounded-2xl border border-rose-500/20 bg-rose-500/5 space-y-3">
+                        <div class="flex items-center gap-2 text-rose-400 font-semibold text-sm">
+                            <i class="fas fa-triangle-exclamation"></i> Zona Berbahaya: Reset Pabrik
+                        </div>
+                        <p class="text-xs text-slate-400">Kembalikan semua teks, foto, tema warna, dan pengaturan animasi ke default original.</p>
+                        <button type="button" onclick="resetToFactoryDefaults()" class="px-4 py-2 bg-rose-600/80 hover:bg-rose-600 text-xs font-semibold text-white rounded-xl transition flex items-center gap-2">
+                            <i class="fas fa-rotate"></i> Kembalikan ke Setelan Awal
+                        </button>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+
+    <!-- ======================================================== -->
+    <!-- 3. TOAST NOTIFICATION -->
+    <!-- ======================================================== -->
+    <div id="admin-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="glass px-5 py-3.5 rounded-2xl border border-white/15 shadow-2xl flex items-center gap-3">
+            <div id="admin-toast-icon" class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">
+                <i class="fas fa-check"></i>
+            </div>
+            <div>
+                <h5 id="admin-toast-title" class="text-xs font-bold text-white">Sukses</h5>
+                <p id="admin-toast-msg" class="text-xs text-slate-400">Pengaturan berhasil disimpan.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin JS Core -->
+    <script src="admin.js"></script>
+</body>
+</html>
+
