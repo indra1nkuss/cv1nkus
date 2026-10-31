@@ -1106,6 +1106,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =========================================
+    // 16b. ACTIVE NAV LINK SCROLLSPY
+    // =========================================
+    const navSections = document.querySelectorAll('section[id]');
+    const desktopNavLinks = document.querySelectorAll('.nav-link[data-nav]');
+    if (navSections.length > 0 && desktopNavLinks.length > 0) {
+        const spyObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    desktopNavLinks.forEach(link => {
+                        if (link.getAttribute('data-nav') === id) {
+                            link.classList.add('active');
+                        } else {
+                            link.classList.remove('active');
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.25, rootMargin: "-70px 0px -40% 0px" });
+
+        navSections.forEach(sec => spyObserver.observe(sec));
+    }
+
+    // =========================================
     // 17. PROGRESS BAR ANIMATION
     // =========================================
     const progressBars = document.querySelectorAll('.progress-bar-fill');
