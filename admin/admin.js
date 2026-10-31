@@ -4,7 +4,28 @@
 
 const STORAGE_KEY = 'cv1nkus_site_config';
 const AUTH_KEY = 'cv1nkus_admin_auth';
+const PIN_KEY = 'cv1nkus_admin_pin';   // PIN disimpan TERPISAH dari config utama
 const DEFAULT_PIN = '1nkuss2026';
+
+// Helper: baca PIN aktif - HANYA dari localStorage terpisah, bukan dari Firebase
+function getActivePin() {
+    return localStorage.getItem(PIN_KEY) || DEFAULT_PIN;
+}
+
+// Helper: simpan PIN baru
+function savePin(pin) {
+    localStorage.setItem(PIN_KEY, pin);
+}
+
+// Helper: reset PIN ke default (bisa dipanggil dari halaman login jika lupa)
+function resetPinToDefault() {
+    if (confirm('Reset PIN ke default "1nkuss2026"? Gunakan ini jika Anda lupa PIN yang pernah diganti.')) {
+        localStorage.removeItem(PIN_KEY);
+        const hint = document.getElementById('pin-hint');
+        if (hint) { hint.textContent = '1nkuss2026'; hint.style.color = '#34d399'; }
+        alert('PIN berhasil di-reset!\n\nGunakan PIN: 1nkuss2026 untuk masuk sekarang.');
+    }
+}
 
 // 1. Factory Default Configuration
 const DEFAULT_CONFIG = {
@@ -123,7 +144,8 @@ function handleLogin(event) {
     const loginBox = document.getElementById('login-box');
     const loginError = document.getElementById('login-error');
 
-    const validPin = (currentConfig.security && currentConfig.security.adminPin) ? currentConfig.security.adminPin : DEFAULT_PIN;
+    // PIN dibaca dari localStorage terpisah — tidak terpengaruh async Firebase
+    const validPin = getActivePin();
 
     if (pinInput === validPin) {
         sessionStorage.setItem(AUTH_KEY, 'true');
@@ -656,6 +678,7 @@ function updateAdminPin() {
         return;
     }
 
+    savePin(p1);
     if (!currentConfig.security) currentConfig.security = {};
     currentConfig.security.adminPin = p1;
     saveAllChanges();

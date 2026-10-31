@@ -135,7 +135,7 @@
                             <i class="fas fa-key"></i>
                         </span>
                         <input type="password" id="login-pin" required 
-                               class="w-full pl-11 pr-11 py-3 bg-darker/70 border border-white/10 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" 
+                               class="w-full pl-11 pr-11 py-3 rounded-xl text-white transition" style="background:#0d1526; border:1px solid rgba(255,255,255,0.13); outline:none;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.13)'" 
                                placeholder="Masukkan PIN Admin...">
                         <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500 hover:text-white">
                             <i id="eye-icon" class="fas fa-eye"></i>
@@ -153,7 +153,12 @@
             </form>
 
             <div class="mt-6 pt-5 border-t border-white/5 flex items-center justify-between text-xs text-slate-500">
-                <span>PIN Bawaan: <code class="text-indigo-400 font-mono">1nkuss2026</code></span>
+                <div class="flex flex-col gap-1.5 text-left">
+                    <span>PIN Default: <code class="text-indigo-400 font-mono bg-indigo-500/10 px-1.5 py-0.5 rounded">1nkuss2026</code></span>
+                    <button type="button" onclick="resetPinToDefault()" class="text-slate-500 hover:text-rose-400 text-left transition text-[11px] flex items-center gap-1">
+                        <i class="fas fa-rotate-left text-[10px]"></i> Reset PIN ke default jika lupa
+                    </button>
+                </div>
                 <a href="../" class="hover:text-white transition flex items-center gap-1">
                     <i class="fas fa-arrow-left"></i> Kembali ke Web
                 </a>
