@@ -1,7 +1,6 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/admin",
@@ -10,7 +9,10 @@
     {
       "source": "/admin/",
       "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin.js",
+      "destination": "/admin/admin.js"
     }
   ]
 }
-

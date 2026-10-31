@@ -102,6 +102,12 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script>
+        // Ensure trailing slash so relative paths resolve to /admin/ and not /
+        if (window.location.pathname === '/admin') {
+            window.location.replace('/admin/' + window.location.search + window.location.hash);
+        }
+    </script>
 </head>
 <body class="min-h-screen flex flex-col bg-dark selection:bg-indigo-600 selection:text-white">
 
@@ -120,11 +126,18 @@
             Memeriksa sesi...
         </div>
     </div>
+    <script>
+        // Failsafe: Maksimal 1.2 detik periksa sesi. Jika jaringan lambat/offline, tampilkan form login
+        setTimeout(function() {
+            var loader = document.getElementById('loading-screen');
+            if (loader) loader.classList.add('hidden');
+        }, 1200);
+    </script>
 
     <!-- ============================================
          LOGIN SCREEN (Firebase Email/Password)
     ============================================= -->
-    <div id="login-overlay" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark/95 backdrop-blur-xl">
+    <div id="login-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark/95 backdrop-blur-xl">
         <div id="login-box" class="w-full max-w-md glass p-8 rounded-3xl shadow-2xl text-center relative overflow-hidden">
             <!-- Glow decor -->
             <div class="absolute -top-24 -left-24 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -648,5 +661,13 @@
     </div>
 
     <script src="admin.js"></script>
+    <script>
+        // Fallback jika browser memuat dari root /admin.js
+        if (typeof handleLogin !== 'function') {
+            var fallbackScript = document.createElement('script');
+            fallbackScript.src = '/admin/admin.js';
+            document.body.appendChild(fallbackScript);
+        }
+    </script>
 </body>
 </html>
