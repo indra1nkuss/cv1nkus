@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Set dynamic current year in footer
+    const footerYearEl = document.getElementById('footer-year');
+    if (footerYearEl) {
+        footerYearEl.textContent = new Date().getFullYear();
+    }
+
 
     // =========================================
     // 0. LENIS SMOOTH SCROLL (GSAP POWERED)
@@ -205,6 +211,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const sub = document.getElementById('hero-subtitle');
             if (sub && cfg.hero.subtitle) sub.textContent = cfg.hero.subtitle;
 
+            const fBio = document.getElementById('footer-bio');
+            if (fBio && cfg.hero.subtitle) fBio.textContent = cfg.hero.subtitle;
+
             // Typewriter
             if (cfg.hero.typewriterWords && cfg.hero.typewriterWords.length > 0) {
                 initTypewriter(cfg.hero.typewriterWords, cfg.hero.typewriterSpeed);
@@ -227,11 +236,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 cExp.setAttribute('data-target', cfg.about.expYears);
                 cExp.textContent = cfg.about.expYears;
             }
+            const fExp = document.getElementById('footer-stat-exp');
+            if (fExp && cfg.about.expYears !== undefined) {
+                fExp.textContent = cfg.about.expYears + '+';
+            }
 
             const cProj = document.getElementById('stat-proj-counter');
             if (cProj && cfg.about.projectsCount !== undefined) {
                 cProj.setAttribute('data-target', cfg.about.projectsCount);
                 cProj.textContent = cfg.about.projectsCount;
+            }
+            const fProj = document.getElementById('footer-stat-proj');
+            if (fProj && cfg.about.projectsCount !== undefined) {
+                fProj.textContent = cfg.about.projectsCount + '+';
             }
         }
 

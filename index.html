@@ -766,22 +766,32 @@
             <div class="grid md:grid-cols-12 gap-10 md:gap-8">
                 <!-- Brand Column -->
                 <div class="md:col-span-4">
-                    <a href="#home" class="inline-flex items-center gap-3 mb-4">
-                        <span class="logo-mark">1NKS</span>
-                        <span class="logo-animated-text"><span class="logo-letter" style="--i:0; --clr:#818cf8;">m</span><span class="logo-letter" style="--i:1; --clr:#818cf8;">y</span><span class="logo-letter logo-letter-dot" style="--i:2; --clr:transparent;"></span><span class="logo-letter" style="--i:3; --clr:#a5b4fc;">P</span><span class="logo-letter" style="--i:4; --clr:#a5b4fc;">o</span><span class="logo-letter" style="--i:5; --clr:#c7d2fe;">r</span><span class="logo-letter" style="--i:6; --clr:#c7d2fe;">t</span><span class="logo-letter" style="--i:7; --clr:#e0e7ff;">f</span><span class="logo-letter" style="--i:8; --clr:#e0e7ff;">o</span><span class="logo-letter" style="--i:9; --clr:#c7d2fe;">l</span><span class="logo-letter" style="--i:10; --clr:#c7d2fe;">i</span><span class="logo-letter" style="--i:11; --clr:#a5b4fc;">o</span><span class="logo-letter logo-letter-dot" style="--i:12; --clr:#818cf8;">.</span></span>
+                    <a href="#home" class="inline-flex items-center gap-3 mb-4 group no-underline">
+                        <!-- Geometric SVG Mark (Letter I) -->
+                        <svg width="34" height="34" viewBox="22 2 156 196" class="flex-shrink-0 transition-transform group-hover:scale-110 duration-300 drop-shadow-[0_4px_12px_rgba(139,108,255,0.3)]" role="img" aria-label="Logo Indra">
+                            <g stroke="#0B0B1A" stroke-width="4.5" stroke-linejoin="miter">
+                                <path d="M100 10 H70 A40 40 0 0 0 30 50 H100 Z" fill="#FF6B4A"/>
+                                <polygon points="100,10 170,10 100,50" fill="#2EE6C5"/>
+                                <polygon points="70,58 130,58 70,142" fill="#8B6CFF"/>
+                                <polygon points="130,58 130,142 70,142" fill="#D4CBFF"/>
+                                <polygon points="100,190 30,190 100,150" fill="#2EE6C5"/>
+                                <path d="M100 190 H130 A40 40 0 0 0 170 150 H100 Z" fill="#FF6B4A"/>
+                            </g>
+                        </svg>
+                        <span style="font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: 1.45rem; letter-spacing: -1.5px; color: #F4F2FF;">indra</span>
                     </a>
-                    <p class="text-slate-400 text-sm leading-relaxed max-w-xs">
-                        Energy Data Analyst & Fullstack Developer — transforming complex energy data into actionable strategies through modern technology.
+                    <p id="footer-bio" class="text-slate-400 text-sm leading-relaxed max-w-xs">
+                        Energy Data Analyst & Fullstack Developer — turning complex data into actionable strategy.
                     </p>
-                    <!-- Compact mini stats -->
+                    <!-- Compact mini stats (synchronized with about section & admin config) -->
                     <div class="flex gap-4 mt-6">
                         <div>
-                            <div class="text-primary font-bold text-lg">3+</div>
+                            <div class="text-primary font-bold text-lg" id="footer-stat-exp">3+</div>
                             <div class="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Tahun</div>
                         </div>
                         <div class="w-px bg-white/10"></div>
                         <div>
-                            <div class="text-primary font-bold text-lg">9</div>
+                            <div class="text-primary font-bold text-lg" id="footer-stat-proj">15+</div>
                             <div class="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Proyek</div>
                         </div>
                     </div>
@@ -795,6 +805,7 @@
                         <li><a href="#about" class="text-slate-400 hover:text-primary text-sm transition-colors flex items-center gap-2"><i class="fas fa-chevron-right text-[8px] text-primary"></i>Tentang</a></li>
                         <li><a href="#skills" class="text-slate-400 hover:text-primary text-sm transition-colors flex items-center gap-2"><i class="fas fa-chevron-right text-[8px] text-primary"></i>Skills</a></li>
                         <li><a href="#projects" class="text-slate-400 hover:text-primary text-sm transition-colors flex items-center gap-2"><i class="fas fa-chevron-right text-[8px] text-primary"></i>Projects</a></li>
+                        <li><a href="#certificates" class="text-slate-400 hover:text-primary text-sm transition-colors flex items-center gap-2"><i class="fas fa-chevron-right text-[8px] text-primary"></i>Sertifikat</a></li>
                         <li><a href="#contact" class="text-slate-400 hover:text-primary text-sm transition-colors flex items-center gap-2"><i class="fas fa-chevron-right text-[8px] text-primary"></i>Kontak</a></li>
                     </ul>
                 </div>
@@ -861,7 +872,7 @@
                 <div class="footer-copyright-wrapper order-2 md:order-1">
                     <span class="footer-copyright-line"></span>
                     <p class="footer-copyright">
-                        <span class="footer-copy">&copy; 2026</span>
+                        <span class="footer-copy">&copy; <span id="footer-year">2026</span></span>
                         <span class="footer-divider">|</span>
                         <span class="footer-craft">
                             Crafted with
