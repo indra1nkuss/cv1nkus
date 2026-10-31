@@ -47,6 +47,11 @@ const DEFAULT_CONFIG = {
     },
     security: {
         adminPin: DEFAULT_PIN
+    },
+    cloudinary: {
+        cloudName: "",
+        uploadPreset: "",
+        enabled: false
     }
 };
 
@@ -214,6 +219,14 @@ function populateFormFromConfig() {
     setVal('cfg-social-linkedin', currentConfig.contact.linkedin);
     setVal('cfg-social-instagram', currentConfig.contact.instagram);
 
+    // Cloudinary
+    if (currentConfig.cloudinary) {
+        setChecked('cfg-cloudinary-enabled', currentConfig.cloudinary.enabled);
+        setVal('cfg-cloudinary-name', currentConfig.cloudinary.cloudName);
+        setVal('cfg-cloudinary-preset', currentConfig.cloudinary.uploadPreset);
+        toggleCloudinaryUI();
+    }
+
     // Media
     setVal('cfg-profile-img-url', currentConfig.media.profileImg);
     setVal('cfg-bg-img-url', currentConfig.media.bgImg);
@@ -256,6 +269,12 @@ function readFormIntoConfig() {
     currentConfig.contact.github = getVal('cfg-social-github');
     currentConfig.contact.linkedin = getVal('cfg-social-linkedin');
     currentConfig.contact.instagram = getVal('cfg-social-instagram');
+
+    // Cloudinary
+    if (!currentConfig.cloudinary) currentConfig.cloudinary = {};
+    currentConfig.cloudinary.enabled = getChecked('cfg-cloudinary-enabled');
+    currentConfig.cloudinary.cloudName = getVal('cfg-cloudinary-name');
+    currentConfig.cloudinary.uploadPreset = getVal('cfg-cloudinary-preset');
 
     // Media
     currentConfig.media.profileImg = getVal('cfg-profile-img-url') || currentConfig.media.profileImg;
@@ -347,28 +366,139 @@ function getTypewriterWordsFromDOM() {
 // ========================================================
 // 6. MEDIA & IMAGE UPLOADS (WITH FAST COMPRESSION)
 // ========================================================
-function handleProfileUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+function toggleCloudinaryUI() {
+    const enabled = getChecked('cfg-cloudinary-enabled');
+    const name = getVal('cfg-cloudinary-name');
+    const preset = getVal('cfg-cloudinary-preset');
+    const badge = document.getElementById('cloudinary-status-badge');
+    const fields = document.getElementById('cloudinary-fields');
 
-    compressAndReadImage(file, 600, 800, (base64) => {
-        currentConfig.media.profileImg = base64;
-        setVal('cfg-profile-img-url', base64);
-        updateImagePreview('preview-profile-img', base64);
-        showToast("Foto profil baru dimuat! Klik 'Simpan Semua' untuk menerapkannya.", "info");
-    });
+    if (fields) {
+        fields.style.opacity = enabled ? '1' : '0.5';
+    }
+
+    if (!badge) return;
+
+    if (!enabled) {
+        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-slate-500"></span> Mode Upload Lokal (Base64)';
+        badge.className = 'text-xs text-slate-400 flex items-center gap-1.5';
+    } else if (name && preset) {
+        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Cloudinary Siap Digunakan';
+        badge.className = 'text-xs text-emerald-400 font-medium flex items-center gap-1.5';
+    } else {
+        badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400"></span> Isi Cloud Name & Preset Cloudinary';
+        badge.className = 'text-xs text-amber-400 flex items-center gap-1.5';
+    }
 }
 
-function handleBackgroundUpload(e) {
+async function uploadToCloudinary(file) {
+    const cloudName = getVal('cfg-cloudinary-name') || (currentConfig.cloudinary && currentConfig.cloudinary.cloudName);
+    const uploadPreset = getVal('cfg-cloudinary-preset') || (currentConfig.cloudinary && currentConfig.cloudinary.uploadPreset);
+
+    if (!cloudName || !uploadPreset) {
+        throw new Error("Harap lengkapi Cloud Name dan Upload Preset Cloudinary!");
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', uploadPreset.trim());
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName.trim()}/image/upload`, {
+        method: 'POST',
+        body: formData
+    });
+
+    if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        throw new Error(errJson.error?.message || "Upload ke Cloudinary gagal. Pastikan Upload Preset bertipe 'Unsigned'.");
+    }
+
+    const data = await res.json();
+    return data.secure_url;
+}
+
+async function testCloudinaryConnection() {
+    const cloudName = getVal('cfg-cloudinary-name');
+    const uploadPreset = getVal('cfg-cloudinary-preset');
+
+    if (!cloudName || !uploadPreset) {
+        showToast("Isi Cloud Name dan Upload Preset terlebih dahulu!", "error");
+        return;
+    }
+
+    showToast("Menguji koneksi ke Cloudinary...", "info");
+    try {
+        // Upload 1x1 transparent png test blob
+        const byteCharacters = atob("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAA=");
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const testBlob = new Blob([byteArray], { type: 'image/png' });
+
+        const url = await uploadToCloudinary(testBlob);
+        showToast("Koneksi Cloudinary Berhasil! CDN siap digunakan.", "success");
+        toggleCloudinaryUI();
+    } catch(err) {
+        showToast(err.message, "error");
+    }
+}
+
+async function handleProfileUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
 
-    compressAndReadImage(file, 1920, 1080, (base64) => {
-        currentConfig.media.bgImg = base64;
-        setVal('cfg-bg-img-url', base64);
-        updateImagePreview('preview-bg-img', base64);
-        showToast("Background baru dimuat! Klik 'Simpan Semua' untuk menerapkannya.", "info");
-    });
+    const useCloudinary = getChecked('cfg-cloudinary-enabled') && getVal('cfg-cloudinary-name') && getVal('cfg-cloudinary-preset');
+
+    if (useCloudinary) {
+        showToast("Mengunggah foto profil ke Cloudinary CDN...", "info");
+        try {
+            const url = await uploadToCloudinary(file);
+            currentConfig.media.profileImg = url;
+            setVal('cfg-profile-img-url', url);
+            updateImagePreview('preview-profile-img', url);
+            showToast("Foto profil tersimpan di Cloudinary CDN! Klik 'Simpan Semua'.", "success");
+        } catch (err) {
+            console.error(err);
+            showToast(err.message, "error");
+        }
+    } else {
+        compressAndReadImage(file, 600, 800, (base64) => {
+            currentConfig.media.profileImg = base64;
+            setVal('cfg-profile-img-url', base64);
+            updateImagePreview('preview-profile-img', base64);
+            showToast("Foto profil baru dimuat! Klik 'Simpan Semua' untuk menerapkannya.", "info");
+        });
+    }
+}
+
+async function handleBackgroundUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const useCloudinary = getChecked('cfg-cloudinary-enabled') && getVal('cfg-cloudinary-name') && getVal('cfg-cloudinary-preset');
+
+    if (useCloudinary) {
+        showToast("Mengunggah background ke Cloudinary CDN...", "info");
+        try {
+            const url = await uploadToCloudinary(file);
+            currentConfig.media.bgImg = url;
+            setVal('cfg-bg-img-url', url);
+            updateImagePreview('preview-bg-img', url);
+            showToast("Background tersimpan di Cloudinary CDN! Klik 'Simpan Semua'.", "success");
+        } catch (err) {
+            console.error(err);
+            showToast(err.message, "error");
+        }
+    } else {
+        compressAndReadImage(file, 1920, 1080, (base64) => {
+            currentConfig.media.bgImg = base64;
+            setVal('cfg-bg-img-url', base64);
+            updateImagePreview('preview-bg-img', base64);
+            showToast("Background baru dimuat! Klik 'Simpan Semua' untuk menerapkannya.", "info");
+        });
+    }
 }
 
 function applyProfileUrl() {
