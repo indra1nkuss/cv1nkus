@@ -1,31 +1,8 @@
 // ========================================================
-// 1NKUSS ADMIN CONTROL HUB - JAVASCRIPT CORE
+// 1NKUSS ADMIN CONTROL HUB - FIREBASE AUTH & CMS CORE
 // ========================================================
 
 const STORAGE_KEY = 'cv1nkus_site_config';
-const AUTH_KEY = 'cv1nkus_admin_auth';
-const PIN_KEY = 'cv1nkus_admin_pin';   // PIN disimpan TERPISAH dari config utama
-const DEFAULT_PIN = '1nkuss2026';
-
-// Helper: baca PIN aktif - HANYA dari localStorage terpisah, bukan dari Firebase
-function getActivePin() {
-    return localStorage.getItem(PIN_KEY) || DEFAULT_PIN;
-}
-
-// Helper: simpan PIN baru
-function savePin(pin) {
-    localStorage.setItem(PIN_KEY, pin);
-}
-
-// Helper: reset PIN ke default (bisa dipanggil dari halaman login jika lupa)
-function resetPinToDefault() {
-    if (confirm('Reset PIN ke default "1nkuss2026"? Gunakan ini jika Anda lupa PIN yang pernah diganti.')) {
-        localStorage.removeItem(PIN_KEY);
-        const hint = document.getElementById('pin-hint');
-        if (hint) { hint.textContent = '1nkuss2026'; hint.style.color = '#34d399'; }
-        alert('PIN berhasil di-reset!\n\nGunakan PIN: 1nkuss2026 untuk masuk sekarang.');
-    }
-}
 
 // 1. Factory Default Configuration
 const DEFAULT_CONFIG = {
@@ -66,9 +43,6 @@ const DEFAULT_CONFIG = {
         bokehBg: true,
         tilt3D: true
     },
-    security: {
-        adminPin: DEFAULT_PIN
-    },
     cloudinary: {
         cloudName: "",
         uploadPreset: "",
@@ -79,9 +53,11 @@ const DEFAULT_CONFIG = {
 let currentConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
 let firebaseDb = null;
 let firebaseConfigRef = null;
+let firebaseAuth = null;
+let currentUser = null;
 
 // ========================================================
-// 2. FIREBASE INITIALIZATION
+// 2. FIREBASE INITIALIZATION & AUTH STATE
 // ========================================================
 const firebaseConfig = {
     apiKey: "AIzaSyC9JkHeCRkgHuw5_YHhC7W5c8TpEge_OWY",
@@ -100,8 +76,9 @@ try {
         }
         firebaseDb = firebase.database();
         firebaseConfigRef = firebaseDb.ref('site_config');
+        firebaseAuth = firebase.auth();
 
-        // Check connection
+        // Realtime connection status
         firebaseDb.ref('.info/connected').on('value', (snap) => {
             const badge = document.getElementById('cloud-status-badge');
             if (badge) {
@@ -114,66 +91,140 @@ try {
                 }
             }
         });
+
+        // Firebase Auth Listener
+        firebaseAuth.onAuthStateChanged((user) => {
+            hideLoadingScreen();
+            if (user) {
+                currentUser = user;
+                onUserLoggedIn(user);
+            } else {
+                currentUser = null;
+                onUserLoggedOut();
+            }
+        });
     }
 } catch (e) {
-    console.warn("Firebase init skipped:", e);
+    console.error("Firebase init error:", e);
+    hideLoadingScreen();
 }
 
 // ========================================================
-// 3. AUTHENTICATION & SESSION
+// 3. AUTHENTICATION HANDLERS
 // ========================================================
-function checkAuth() {
-    loadConfigFromStorage();
-    const isAuth = sessionStorage.getItem(AUTH_KEY);
-    const loginOverlay = document.getElementById('login-overlay');
-    const adminDashboard = document.getElementById('admin-dashboard');
+function onUserLoggedIn(user) {
+    document.getElementById('login-overlay').classList.add('hidden');
+    document.getElementById('admin-dashboard').classList.remove('hidden');
 
-    if (isAuth === 'true') {
-        loginOverlay.classList.add('hidden');
-        adminDashboard.classList.remove('hidden');
-        populateFormFromConfig();
-    } else {
-        loginOverlay.classList.remove('hidden');
-        adminDashboard.classList.add('hidden');
-    }
+    // Update user info badges
+    const emailBadge = document.getElementById('user-email-badge');
+    const emailDisplay = document.getElementById('user-email-display');
+    const avatar = document.getElementById('user-avatar');
+
+    if (emailBadge) emailBadge.textContent = user.email || 'Admin';
+    if (emailDisplay) emailDisplay.textContent = user.email || 'Admin';
+    if (avatar) avatar.textContent = (user.email ? user.email.charAt(0).toUpperCase() : 'A');
+
+    // Load CMS data
+    loadConfigFromStorage();
+}
+
+function onUserLoggedOut() {
+    document.getElementById('admin-dashboard').classList.add('hidden');
+    document.getElementById('login-overlay').classList.remove('hidden');
+}
+
+function hideLoadingScreen() {
+    const loader = document.getElementById('loading-screen');
+    if (loader) loader.classList.add('hidden');
 }
 
 function handleLogin(event) {
     event.preventDefault();
-    const pinInput = document.getElementById('login-pin').value;
-    const loginBox = document.getElementById('login-box');
+
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
     const loginError = document.getElementById('login-error');
+    const loginErrorMsg = document.getElementById('login-error-msg');
+    const loginBtn = document.getElementById('login-btn');
+    const loginBtnText = document.getElementById('login-btn-text');
+    const loginBox = document.getElementById('login-box');
 
-    // PIN dibaca dari localStorage terpisah — tidak terpengaruh async Firebase
-    const validPin = getActivePin();
+    if (!firebaseAuth) {
+        showLoginError("Firebase Auth belum siap. Cek koneksi internet Anda.");
+        return;
+    }
 
-    if (pinInput === validPin) {
-        sessionStorage.setItem(AUTH_KEY, 'true');
-        loginError.classList.add('hidden');
-        document.getElementById('login-overlay').classList.add('hidden');
-        document.getElementById('admin-dashboard').classList.remove('hidden');
-        populateFormFromConfig();
-        showToast("Selamat datang di Admin Control Hub!", "success");
-    } else {
+    // Set loading state
+    loginError.classList.add('hidden');
+    loginBtn.disabled = true;
+    loginBtn.classList.add('opacity-75');
+    loginBtnText.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Memeriksa Akun...';
+
+    firebaseAuth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+            showToast("Login berhasil! Selamat datang di Control Hub.", "success");
+            loginBtnText.textContent = "Masuk ke Dashboard";
+            loginBtn.disabled = false;
+            loginBtn.classList.remove('opacity-75');
+        })
+        .catch((error) => {
+            loginBtnText.textContent = "Masuk ke Dashboard";
+            loginBtn.disabled = false;
+            loginBtn.classList.remove('opacity-75');
+
+            let msg = "Email atau password salah.";
+            if (error.code === 'auth/user-not-found') {
+                msg = "Email belum terdaftar di Firebase Authentication.";
+            } else if (error.code === 'auth/wrong-password') {
+                msg = "Password salah. Silakan coba lagi.";
+            } else if (error.code === 'auth/invalid-email') {
+                msg = "Format email tidak valid.";
+            } else if (error.code === 'auth/too-many-requests') {
+                msg = "Terlalu banyak percobaan gagal. Silakan coba beberapa saat lagi.";
+            } else if (error.code === 'auth/operation-not-allowed') {
+                msg = "Metode Email/Password belum diaktifkan di Firebase Console.";
+            } else if (error.code === 'auth/network-request-failed') {
+                msg = "Gagal terhubung ke server Firebase. Cek koneksi internet Anda.";
+            } else {
+                msg = error.message;
+            }
+
+            showLoginError(msg);
+            loginBox.classList.add('animate-shake');
+            setTimeout(() => loginBox.classList.remove('animate-shake'), 400);
+        });
+}
+
+function showLoginError(msg) {
+    const loginError = document.getElementById('login-error');
+    const loginErrorMsg = document.getElementById('login-error-msg');
+    if (loginError && loginErrorMsg) {
+        loginErrorMsg.textContent = msg;
         loginError.classList.remove('hidden');
-        loginBox.classList.add('animate-shake');
-        setTimeout(() => loginBox.classList.remove('animate-shake'), 400);
     }
 }
 
 function handleLogout() {
-    sessionStorage.removeItem(AUTH_KEY);
-    window.location.reload();
+    if (confirm("Apakah Anda yakin ingin keluar dari Admin Hub?")) {
+        if (firebaseAuth) {
+            firebaseAuth.signOut().then(() => {
+                showToast("Anda telah keluar.", "info");
+            });
+        }
+    }
 }
 
-function togglePasswordVisibility() {
-    const pinInput = document.getElementById('login-pin');
+function togglePwdVisibility() {
+    const pwdInput = document.getElementById('login-password');
     const eyeIcon = document.getElementById('eye-icon');
-    if (pinInput.type === 'password') {
-        pinInput.type = 'text';
+    if (!pwdInput || !eyeIcon) return;
+
+    if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
         eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
     } else {
-        pinInput.type = 'password';
+        pwdInput.type = 'password';
         eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
     }
 }
@@ -192,8 +243,9 @@ function loadConfigFromStorage() {
             console.error("Local parse error", e);
         }
     }
+    populateFormFromConfig();
 
-    // 2. Fetch from Firebase if online
+    // 2. Fetch latest from Firebase
     if (firebaseConfigRef) {
         firebaseConfigRef.once('value').then((snap) => {
             const cloudData = snap.val();
@@ -320,7 +372,7 @@ function saveAllChanges() {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(currentConfig));
     } catch (e) {
-        console.error("LocalStorage save error (storage limit?)", e);
+        console.error("LocalStorage save error", e);
     }
 
     // 2. Save to Firebase Cloud
@@ -343,12 +395,13 @@ function saveAllChanges() {
 // ========================================================
 function renderTypewriterWords(words) {
     const list = document.getElementById('typewriter-words-list');
+    if (!list) return;
     list.innerHTML = '';
-    words.forEach((word, index) => {
+    words.forEach((word) => {
         const item = document.createElement('div');
         item.className = 'flex items-center gap-2 typewriter-word-item';
         item.innerHTML = `
-            <input type="text" value="${escapeHtml(word)}" class="flex-1 px-3 py-2 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary">
+            <input type="text" value="${escapeHtml(word)}" class="input-field flex-1">
             <button type="button" onclick="removeTypewriterWord(this)" class="w-9 h-9 flex items-center justify-center rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition" title="Hapus kata">
                 <i class="fas fa-trash-can text-xs"></i>
             </button>
@@ -359,10 +412,11 @@ function renderTypewriterWords(words) {
 
 function addTypewriterWord(text = "Kata Baru") {
     const list = document.getElementById('typewriter-words-list');
+    if (!list) return;
     const item = document.createElement('div');
     item.className = 'flex items-center gap-2 typewriter-word-item animate-fade-in';
     item.innerHTML = `
-        <input type="text" value="${escapeHtml(text)}" class="flex-1 px-3 py-2 bg-darker/60 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-primary">
+        <input type="text" value="${escapeHtml(text)}" class="input-field flex-1">
         <button type="button" onclick="removeTypewriterWord(this)" class="w-9 h-9 flex items-center justify-center rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition" title="Hapus kata">
             <i class="fas fa-trash-can text-xs"></i>
         </button>
@@ -386,7 +440,7 @@ function getTypewriterWordsFromDOM() {
 }
 
 // ========================================================
-// 6. MEDIA & IMAGE UPLOADS (WITH FAST COMPRESSION)
+// 6. CLOUDINARY & MEDIA UPLOADS
 // ========================================================
 function toggleCloudinaryUI() {
     const enabled = getChecked('cfg-cloudinary-enabled');
@@ -450,7 +504,6 @@ async function testCloudinaryConnection() {
 
     showToast("Menguji koneksi ke Cloudinary...", "info");
     try {
-        // Upload 1x1 transparent png test blob
         const byteCharacters = atob("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAA=");
         const byteNumbers = new Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
@@ -459,7 +512,7 @@ async function testCloudinaryConnection() {
         const byteArray = new Uint8Array(byteNumbers);
         const testBlob = new Blob([byteArray], { type: 'image/png' });
 
-        const url = await uploadToCloudinary(testBlob);
+        await uploadToCloudinary(testBlob);
         showToast("Koneksi Cloudinary Berhasil! CDN siap digunakan.", "success");
         toggleCloudinaryUI();
     } catch(err) {
@@ -596,7 +649,6 @@ function compressAndReadImage(file, maxW, maxH, callback) {
             const ctx = canvas.getContext('2d');
             ctx.drawImage(image, 0, 0, width, height);
 
-            // Compress to webp or jpeg quality 0.8
             const dataUrl = canvas.toDataURL('image/webp', 0.82);
             callback(dataUrl);
         };
@@ -608,27 +660,37 @@ function compressAndReadImage(file, maxW, maxH, callback) {
 // ========================================================
 // 7. THEME & COLORS
 // ========================================================
-function applyColorPreset(primary, accent, presetName) {
+function applyColorPreset(primary, accent) {
     setVal('cfg-color-primary', primary);
     setVal('cfg-color-primary-text', primary);
     setVal('cfg-color-accent', accent);
     setVal('cfg-color-accent-text', accent);
-    currentConfig.theme.preset = presetName;
     updateColorPreview();
-    showToast(`Palet ${presetName.toUpperCase()} dipilih!`, "info");
+    showToast("Palet warna diterapkan!", "info");
 }
 
-function syncColorInput(type) {
+function syncColorFromPicker(type) {
     if (type === 'primary') {
-        const textVal = getVal('cfg-color-primary-text');
-        if (/^#[0-9A-F]{6}$/i.test(textVal)) {
-            setVal('cfg-color-primary', textVal);
+        const val = getVal('cfg-color-primary');
+        setVal('cfg-color-primary-text', val);
+    } else {
+        const val = getVal('cfg-color-accent');
+        setVal('cfg-color-accent-text', val);
+    }
+    updateColorPreview();
+}
+
+function syncColorFromText(type) {
+    if (type === 'primary') {
+        const val = getVal('cfg-color-primary-text');
+        if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+            setVal('cfg-color-primary', val);
             updateColorPreview();
         }
     } else {
-        const textVal = getVal('cfg-color-accent-text');
-        if (/^#[0-9A-F]{6}$/i.test(textVal)) {
-            setVal('cfg-color-accent', textVal);
+        const val = getVal('cfg-color-accent-text');
+        if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+            setVal('cfg-color-accent', val);
             updateColorPreview();
         }
     }
@@ -640,18 +702,16 @@ function updateColorPreview() {
     setVal('cfg-color-primary-text', primary);
     setVal('cfg-color-accent-text', accent);
 
-    // Update preview samples
     const btn = document.getElementById('preview-btn-sample');
     if (btn) {
         btn.style.background = `linear-gradient(135deg, ${primary}, #4f46e5)`;
-        btn.style.boxShadow = `0 4px 15px ${primary}40`;
     }
 
     const badge = document.getElementById('preview-badge-sample');
     if (badge) {
-        badge.style.background = `${accent}20`;
+        badge.style.background = `${accent}33`;
         badge.style.color = accent;
-        badge.style.border = `1px solid ${accent}40`;
+        badge.style.border = `1px solid ${accent}55`;
     }
 
     const text = document.getElementById('preview-text-sample');
@@ -663,30 +723,8 @@ function updateColorPreview() {
 }
 
 // ========================================================
-// 8. SECURITY & BACKUP
+// 8. BACKUP & RESTORE
 // ========================================================
-function updateAdminPin() {
-    const p1 = getVal('cfg-new-pin');
-    const p2 = getVal('cfg-confirm-pin');
-
-    if (!p1 || p1.length < 4) {
-        showToast("PIN minimal harus 4 karakter!", "error");
-        return;
-    }
-    if (p1 !== p2) {
-        showToast("Konfirmasi PIN tidak cocok!", "error");
-        return;
-    }
-
-    savePin(p1);
-    if (!currentConfig.security) currentConfig.security = {};
-    currentConfig.security.adminPin = p1;
-    saveAllChanges();
-    setVal('cfg-new-pin', '');
-    setVal('cfg-confirm-pin', '');
-    showToast("PIN Admin berhasil diperbarui!", "success");
-}
-
 function exportBackupJSON() {
     readFormIntoConfig();
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentConfig, null, 2));
@@ -753,15 +791,15 @@ function showToast(msg, type = "success") {
     if (type === "success") {
         toastTitle.textContent = "Berhasil";
         toastIcon.innerHTML = '<i class="fas fa-check"></i>';
-        toastIcon.className = 'w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm';
+        toastIcon.className = 'w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm';
     } else if (type === "error") {
         toastTitle.textContent = "Gagal";
         toastIcon.innerHTML = '<i class="fas fa-xmark"></i>';
-        toastIcon.className = 'w-8 h-8 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center font-bold text-sm';
+        toastIcon.className = 'w-8 h-8 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-sm';
     } else {
         toastTitle.textContent = "Informasi";
         toastIcon.innerHTML = '<i class="fas fa-info"></i>';
-        toastIcon.className = 'w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm';
+        toastIcon.className = 'w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-sm';
     }
 
     toast.classList.remove('translate-y-24', 'opacity-0');
@@ -796,9 +834,3 @@ function setChecked(id, val) {
 function escapeHtml(str) {
     return str ? String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
 }
-
-// Initial Boot
-document.addEventListener('DOMContentLoaded', () => {
-    checkAuth();
-});
-
