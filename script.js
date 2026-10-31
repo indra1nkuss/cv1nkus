@@ -681,6 +681,17 @@ document.addEventListener('DOMContentLoaded', () => {
         menuToggle.addEventListener('click', () => {
             mobileNav.classList.remove('-translate-y-full', 'opacity-0');
             document.body.style.overflow = 'hidden';
+            // Stagger animate nav items
+            const navItems = mobileNav.querySelectorAll('nav a.mobile-link');
+            navItems.forEach((item, i) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-20px)';
+                setTimeout(() => {
+                    item.style.transition = 'opacity 0.35s cubic-bezier(0.16,1,0.3,1), transform 0.35s cubic-bezier(0.16,1,0.3,1)';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0)';
+                }, 150 + i * 60);
+            });
         });
 
         menuClose.addEventListener('click', () => {
