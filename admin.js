@@ -30,7 +30,9 @@ const DEFAULT_CONFIG = {
     },
     media: {
         profileImg: "images/indra.webp",
-        bgImg: "images/background-web.webp"
+        bgImg: "images/background-web.webp",
+        cvUrl: "cv1nkus.pdf",
+        cvName: "cv1nkus.pdf"
     },
     theme: {
         primaryColor: "#6366f1",
@@ -365,6 +367,13 @@ function populateFormFromConfig() {
     updateImagePreview('preview-profile-img', currentConfig.media.profileImg, '../images/indra.webp');
     updateImagePreview('preview-bg-img', currentConfig.media.bgImg, '../images/background-web.webp');
 
+    // CV Document
+    const cvUrl = (currentConfig.media && currentConfig.media.cvUrl) || 'cv1nkus.pdf';
+    const cvName = (currentConfig.media && currentConfig.media.cvName) || 'cv1nkus.pdf';
+    setVal('cfg-cv-url', cvUrl);
+    setVal('cfg-cv-name', cvName);
+    updateCvDisplay(cvUrl, cvName);
+
     // Theme
     setVal('cfg-color-primary', currentConfig.theme.primaryColor || '#6366f1');
     setVal('cfg-color-primary-text', currentConfig.theme.primaryColor || '#6366f1');
@@ -415,8 +424,11 @@ function readFormIntoConfig() {
     currentConfig.cloudinary.uploadPreset = getVal('cfg-cloudinary-preset');
 
     // Media
+    if (!currentConfig.media) currentConfig.media = {};
     currentConfig.media.profileImg = getVal('cfg-profile-img-url') || currentConfig.media.profileImg;
     currentConfig.media.bgImg = getVal('cfg-bg-img-url') || currentConfig.media.bgImg;
+    currentConfig.media.cvUrl = getVal('cfg-cv-url') || currentConfig.media.cvUrl || 'cv1nkus.pdf';
+    currentConfig.media.cvName = getVal('cfg-cv-name') || currentConfig.media.cvName || 'cv1nkus.pdf';
 
     // Theme
     currentConfig.theme.primaryColor = getVal('cfg-color-primary');
@@ -826,6 +838,156 @@ function resetToFactoryDefaults() {
         saveAllChanges();
         showToast("Semua pengaturan telah di-reset ke setelan awal!", "success");
     }
+}
+
+// ========================================================
+// 8.4. CV PDF MANAGEMENT (UPLOAD / EDIT / HAPUS)
+// ========================================================
+function updateCvDisplay(url, name) {
+    const previewBtn = document.getElementById('cv-preview-btn');
+    const nameEl = document.getElementById('cv-current-filename');
+    const typeEl = document.getElementById('cv-current-type');
+    const badgeEl = document.getElementById('cv-status-badge');
+
+    const cleanUrl = url || 'cv1nkus.pdf';
+    const cleanName = name || (cleanUrl.startsWith('data:') ? 'Custom_Uploaded_CV.pdf' : cleanUrl.split('/').pop()) || 'cv1nkus.pdf';
+
+    if (nameEl) nameEl.textContent = cleanName;
+
+    let targetHref = cleanUrl;
+    if (cleanUrl === 'cv1nkus.pdf' || cleanUrl.startsWith('images/')) {
+        targetHref = '../' + cleanUrl;
+    }
+
+    if (previewBtn) {
+        previewBtn.href = targetHref;
+    }
+
+    if (typeEl) {
+        if (cleanUrl.startsWith('data:application/pdf')) {
+            typeEl.textContent = 'PDF Kustom tersimpan di Database (Base64)';
+        } else if (cleanUrl.includes('cloudinary.com')) {
+            typeEl.textContent = 'PDF Tersimpan di Cloudinary CDN';
+        } else if (cleanUrl.startsWith('http')) {
+            typeEl.textContent = 'Link URL Eksternal / Cloud';
+        } else {
+            typeEl.textContent = 'File PDF Lokal (' + cleanUrl + ')';
+        }
+    }
+
+    if (badgeEl) {
+        if (cleanUrl === 'cv1nkus.pdf') {
+            badgeEl.className = 'text-[11px] px-2.5 py-1 rounded-full bg-slate-500/10 text-slate-400 font-mono border border-slate-500/20 flex items-center gap-1.5';
+            badgeEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Bawaan';
+        } else {
+            badgeEl.className = 'text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-mono border border-emerald-500/20 flex items-center gap-1.5';
+            badgeEl.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Kustom Aktif';
+        }
+    }
+}
+
+async function uploadRawToCloudinary(file) {
+    const cloudName = getVal('cfg-cloudinary-name') || (currentConfig.cloudinary && currentConfig.cloudinary.cloudName);
+    const uploadPreset = getVal('cfg-cloudinary-preset') || (currentConfig.cloudinary && currentConfig.cloudinary.uploadPreset);
+
+    if (!cloudName || !uploadPreset) {
+        throw new Error("Harap lengkapi Cloud Name dan Upload Preset Cloudinary!");
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', uploadPreset.trim());
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName.trim()}/auto/upload`, {
+        method: 'POST',
+        body: formData
+    });
+
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error?.message || "Gagal upload file ke Cloudinary.");
+    }
+
+    const data = await res.json();
+    return data.secure_url;
+}
+
+async function handleCvUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+        showToast("Harap pilih file berformat PDF (.pdf)!", "error");
+        return;
+    }
+
+    const sizeKB = Math.round(file.size / 1024);
+    if (file.size > 15 * 1024 * 1024) {
+        showToast("Ukuran file terlalu besar! Maksimal 15MB.", "error");
+        return;
+    }
+
+    const useCloudinary = getChecked('cfg-cloudinary-enabled') && getVal('cfg-cloudinary-name') && getVal('cfg-cloudinary-preset');
+
+    if (useCloudinary) {
+        showToast("Mengunggah CV ke Cloudinary CDN...", "info");
+        try {
+            const url = await uploadRawToCloudinary(file);
+            if (!currentConfig.media) currentConfig.media = {};
+            currentConfig.media.cvUrl = url;
+            currentConfig.media.cvName = file.name;
+            setVal('cfg-cv-url', url);
+            setVal('cfg-cv-name', file.name);
+            updateCvDisplay(url, file.name);
+            showToast(`CV (${file.name}, ${sizeKB} KB) berhasil diunggah ke CDN! Klik 'Simpan Semua'.`, "success");
+        } catch (err) {
+            console.error(err);
+            showToast(err.message, "error");
+        }
+    } else {
+        showToast("Membaca file PDF...", "info");
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const base64 = evt.target.result;
+            if (!currentConfig.media) currentConfig.media = {};
+            currentConfig.media.cvUrl = base64;
+            currentConfig.media.cvName = file.name;
+            setVal('cfg-cv-url', base64);
+            setVal('cfg-cv-name', file.name);
+            updateCvDisplay(base64, file.name);
+            showToast(`CV (${file.name}, ${sizeKB} KB) siap disimpan! Klik 'Simpan Semua'.`, "success");
+        };
+        reader.onerror = function() {
+            showToast("Gagal membaca file PDF!", "error");
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function applyCvUrl() {
+    const url = getVal('cfg-cv-url').trim();
+    if (!url) {
+        showToast("Masukkan URL atau path file PDF!", "error");
+        return;
+    }
+    const name = getVal('cfg-cv-name').trim() || (url.startsWith('data:') ? 'Custom_Uploaded_CV.pdf' : url.split('/').pop()) || 'cv1nkus.pdf';
+    if (!currentConfig.media) currentConfig.media = {};
+    currentConfig.media.cvUrl = url;
+    currentConfig.media.cvName = name;
+    updateCvDisplay(url, name);
+    showToast("URL CV berhasil diperbarui! Klik 'Simpan Semua'.", "success");
+}
+
+function resetCvPdf() {
+    if (!currentConfig.media) currentConfig.media = {};
+    currentConfig.media.cvUrl = 'cv1nkus.pdf';
+    currentConfig.media.cvName = 'cv1nkus.pdf';
+    setVal('cfg-cv-url', 'cv1nkus.pdf');
+    setVal('cfg-cv-name', 'cv1nkus.pdf');
+    const input = document.getElementById('upload-cv-file');
+    if (input) input.value = '';
+    updateCvDisplay('cv1nkus.pdf', 'cv1nkus.pdf');
+    showToast("CV dikembalikan ke file bawaan (cv1nkus.pdf)! Klik 'Simpan Semua'.", "info");
 }
 
 // ========================================================

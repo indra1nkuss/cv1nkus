@@ -382,7 +382,7 @@
                 <div id="tab-media" class="tab-content hidden space-y-8">
                     <div>
                         <h2 class="text-xl font-bold font-heading text-white">Foto & Aset Media</h2>
-                        <p class="text-sm text-slate-400">Ganti foto profil dan latar belakang visual website.</p>
+                        <p class="text-sm text-slate-400">Ganti foto profil, dokumen CV (PDF), dan latar belakang visual website.</p>
                     </div>
 
                     <!-- CLOUDINARY CONFIG -->
@@ -478,6 +478,75 @@
                             </div>
                         </div>
                     </div>
+                    <!-- CURRICULUM VITAE (CV / RESUME PDF) -->
+                    <div class="glass-card p-6 rounded-2xl space-y-6">
+                        <div class="flex items-center justify-between pb-3 border-b border-white/5">
+                            <div class="flex items-center gap-2 text-rose-400 font-semibold text-sm">
+                                <i class="fas fa-file-pdf text-base"></i> Dokumen CV (Curriculum Vitae / Resume PDF)
+                            </div>
+                            <span id="cv-status-badge" class="text-[11px] px-2.5 py-1 rounded-full bg-slate-500/10 text-slate-400 font-mono border border-slate-500/20 flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Bawaan
+                            </span>
+                        </div>
+
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            Kelola file PDF CV yang dapat diunduh oleh pengunjung website dari tombol <strong class="text-white">Download CV</strong> di Navbar, Hero, dan Menu Mobile.
+                        </p>
+
+                        <!-- Preview & Quick Action Bar -->
+                        <div class="p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div class="flex items-center gap-3.5 min-w-0">
+                                <div class="w-12 h-12 rounded-xl bg-rose-500/20 border border-rose-500/30 flex items-center justify-center text-rose-400 flex-shrink-0 text-xl shadow-md">
+                                    <i class="fas fa-file-pdf"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div id="cv-current-filename" class="text-sm font-bold text-white truncate">cv1nkus.pdf</div>
+                                    <div id="cv-current-type" class="text-[11px] text-slate-400 mt-0.5 truncate">File PDF Standar Website</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 w-full sm:w-auto">
+                                <a id="cv-preview-btn" href="../cv1nkus.pdf" target="_blank" class="px-4 py-2 bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-2 flex-1 sm:flex-none">
+                                    <i class="fas fa-arrow-up-right-from-square"></i> Buka / Cek CV
+                                </a>
+                                <button type="button" onclick="resetCvPdf()" class="px-3.5 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1.5 flex-1 sm:flex-none" title="Reset ke CV Bawaan">
+                                    <i class="fas fa-trash-can"></i> Hapus / Reset
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Upload File & Filename -->
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block">
+                                    <i class="fas fa-cloud-arrow-up text-accent mr-1"></i> Upload File PDF Baru
+                                </label>
+                                <input type="file" id="upload-cv-file" accept="application/pdf,.pdf" onchange="handleCvUpload(event)"
+                                       class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-500/20 file:text-rose-300 hover:file:bg-rose-500/30 cursor-pointer">
+                                <p class="text-[11px] text-slate-500 mt-1">Format khusus .pdf. Otomatis tersinkronisasi ke seluruh website.</p>
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-slate-300 mb-1.5 block">
+                                    <i class="fas fa-tag text-purple-400 mr-1"></i> Nama File Saat Diunduh
+                                </label>
+                                <input type="text" id="cfg-cv-name" class="input-field" placeholder="cv1nkus.pdf">
+                                <p class="text-[11px] text-slate-500 mt-1">Nama file yang tertera saat pengunjung mendownload.</p>
+                            </div>
+                        </div>
+
+                        <!-- Direct URL / External Link Option -->
+                        <div class="pt-2 border-t border-white/5">
+                            <label class="text-xs font-medium text-slate-300 mb-1.5 block">
+                                <i class="fas fa-link text-indigo-400 mr-1"></i> Atau Gunakan URL File / Link Eksternal (Google Drive / Cloudinary / Web)
+                            </label>
+                            <div class="flex gap-2">
+                                <input type="text" id="cfg-cv-url" class="input-field flex-1" placeholder="cv1nkus.pdf atau https://...">
+                                <button type="button" onclick="applyCvUrl()" class="px-4 py-2 bg-white/10 hover:bg-white/15 text-xs text-white rounded-xl transition flex-shrink-0">
+                                    Terapkan URL
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- TAB PROYEK: KELOLA PROYEK PORTFOLIO -->

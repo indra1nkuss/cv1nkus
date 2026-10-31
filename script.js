@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 5. Media (Images)
+        // 5. Media (Images & Documents)
         if (cfg.media) {
             const profImg = document.getElementById('profile-img');
             if (profImg && cfg.media.profileImg) {
@@ -286,6 +286,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (bgEl && cfg.media.bgImg) {
                 bgEl.style.backgroundImage = `url('${cfg.media.bgImg}')`;
             }
+
+            // Dynamic CV PDF Link & Download Name
+            const cvUrl = cfg.media.cvUrl || 'cv1nkus.pdf';
+            const cvName = cfg.media.cvName || 'cv1nkus.pdf';
+            const cvButtons = document.querySelectorAll('#download-cv, #nav-download-cv, #mobile-download-cv, a[href$=".pdf"]');
+            cvButtons.forEach(btn => {
+                btn.href = cvUrl;
+                btn.setAttribute('download', cvName);
+                if (cvUrl.startsWith('http')) {
+                    btn.setAttribute('target', '_blank');
+                } else {
+                    btn.removeAttribute('target');
+                }
+            });
         }
 
         // 6. Animations
