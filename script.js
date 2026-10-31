@@ -314,6 +314,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             window.renderProjects(DEFAULT_PROJECTS);
         }
+
+        // 8. Certificates Dynamic Sync
+        if (cfg.certificates && Array.isArray(cfg.certificates) && cfg.certificates.length > 0) {
+            window.renderCertificates(cfg.certificates);
+        } else {
+            window.renderCertificates(DEFAULT_CERTIFICATES);
+        }
     };
 
     // Apply saved config immediately from localStorage
@@ -323,9 +330,11 @@ document.addEventListener('DOMContentLoaded', () => {
             window.applySiteConfig(JSON.parse(localSaved));
         } else {
             initTypewriter();
+            if (window.renderCertificates) window.renderCertificates(DEFAULT_CERTIFICATES);
         }
     } catch(e) {
         initTypewriter();
+        if (window.renderCertificates) window.renderCertificates(DEFAULT_CERTIFICATES);
     }
 
     // =========================================
@@ -419,6 +428,74 @@ document.addEventListener('DOMContentLoaded', () => {
         initProjectFiltering();
 
         // Refresh GSAP ScrollTrigger
+        if (typeof ScrollTrigger !== 'undefined') {
+            setTimeout(() => {
+                ScrollTrigger.refresh();
+            }, 100);
+        }
+    };
+
+    // =========================================
+    // 1.9. DEFAULT CERTIFICATES & DYNAMIC RENDERER
+    // =========================================
+    const DEFAULT_CERTIFICATES = [
+        {
+            id: "cert_1",
+            title: "AWS Certified Solutions Architect",
+            issuer: "Amazon Web Services",
+            issueDate: "Jan 2023",
+            credentialUrl: "https://aws.amazon.com/verification",
+            icon: "fas fa-certificate",
+            image: ""
+        },
+        {
+            id: "cert_2",
+            title: "Full Stack Developer Bootcamp",
+            issuer: "Dicoding Indonesia",
+            issueDate: "Dec 2022",
+            credentialUrl: "https://www.dicoding.com/certificates",
+            icon: "fas fa-graduation-cap",
+            image: ""
+        }
+    ];
+
+    window.renderCertificates = function(certificates) {
+        const grid = document.getElementById('certificates-grid');
+        if (!grid) return;
+
+        const list = (certificates && Array.isArray(certificates) && certificates.length > 0) ? certificates : DEFAULT_CERTIFICATES;
+
+        grid.innerHTML = list.map(cert => {
+            const hasLink = cert.credentialUrl && cert.credentialUrl !== '#' && cert.credentialUrl.trim() !== '';
+            const linkHtml = hasLink ? `
+                <a href="${escapeHtml(cert.credentialUrl)}" target="_blank" rel="noopener noreferrer" class="text-xs text-accent hover:text-white transition flex items-center gap-1.5 font-semibold group/link">
+                    <span>Verifikasi</span> <i class="fas fa-arrow-up-right-from-square text-[10px] group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform"></i>
+                </a>
+            ` : '';
+
+            const visualIcon = cert.image ? `
+                <img src="${escapeHtml(cert.image)}" alt="${escapeHtml(cert.title)}" class="w-full h-full object-cover rounded-xl">
+            ` : `
+                <i class="${escapeHtml(cert.icon || 'fas fa-certificate')} text-2xl sm:text-3xl"></i>
+            `;
+
+            return `
+                <div class="flex items-center glass-card p-6 sm:p-8 rounded-2xl reveal hover:border-primary/40 transition duration-300 group">
+                    <div class="bg-primary/20 p-3 sm:p-4 rounded-2xl mr-5 sm:mr-6 text-primary shadow-lg shadow-primary/10 flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center group-hover:scale-110 transition duration-300 overflow-hidden">
+                        ${visualIcon}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-white font-bold text-lg sm:text-xl mb-1 line-clamp-1 group-hover:text-primary transition">${escapeHtml(cert.title)}</h3>
+                        <p class="text-slate-400 text-sm mb-2 line-clamp-1">${escapeHtml(cert.issuer || '-')}</p>
+                        <div class="flex items-center justify-between flex-wrap gap-2 pt-1 border-t border-white/5">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-primary">Issued: ${escapeHtml(cert.issueDate || '-')}</p>
+                            ${linkHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
         if (typeof ScrollTrigger !== 'undefined') {
             setTimeout(() => {
                 ScrollTrigger.refresh();

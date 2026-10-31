@@ -85,6 +85,26 @@ const DEFAULT_CONFIG = {
             image: "images/cashflow-app.webp",
             link: "https://github.com/Julianarwansah/uas_cashflow_app"
         }
+    ],
+    certificates: [
+        {
+            id: "cert_1",
+            title: "AWS Certified Solutions Architect",
+            issuer: "Amazon Web Services",
+            issueDate: "Jan 2023",
+            credentialUrl: "https://aws.amazon.com/verification",
+            icon: "fas fa-certificate",
+            image: ""
+        },
+        {
+            id: "cert_2",
+            title: "Full Stack Developer Bootcamp",
+            issuer: "Dicoding Indonesia",
+            issueDate: "Dec 2022",
+            credentialUrl: "https://www.dicoding.com/certificates",
+            icon: "fas fa-graduation-cap",
+            image: ""
+        }
     ]
 };
 
@@ -360,6 +380,9 @@ function populateFormFromConfig() {
 
     // Projects CRUD
     renderAdminProjects();
+
+    // Certificates CRUD
+    renderAdminCertificates();
 }
 
 function readFormIntoConfig() {
@@ -1046,6 +1069,242 @@ function testProjectLink() {
 // ========================================================
 // 9. UI HELPERS & TABS
 // ========================================================
+// ========================================================
+// 8.6. CERTIFICATES CRUD MANAGEMENT (TAMBAH / EDIT / HAPUS)
+// ========================================================
+function renderAdminCertificates() {
+    const grid = document.getElementById('admin-certs-grid');
+    if (!grid) return;
+
+    if (!currentConfig.certificates || !Array.isArray(currentConfig.certificates)) {
+        currentConfig.certificates = JSON.parse(JSON.stringify(DEFAULT_CONFIG.certificates || []));
+    }
+
+    if (currentConfig.certificates.length === 0) {
+        grid.innerHTML = `
+            <div class="sm:col-span-2 text-center py-12 glass-card rounded-2xl border border-white/5">
+                <i class="fas fa-certificate text-4xl text-amber-400/50 mb-3"></i>
+                <h4 class="text-white font-bold text-base mb-1">Belum ada sertifikat</h4>
+                <p class="text-slate-400 text-xs mb-4">Klik tombol di atas untuk menambahkan lisensi atau sertifikat pertama Anda.</p>
+                <button type="button" onclick="openCertModal()" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-90 text-white rounded-xl text-xs font-semibold transition cursor-pointer">
+                    + Tambah Sertifikat Sekarang
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = currentConfig.certificates.map((cert) => {
+        const hasImg = cert.image && cert.image.trim() !== '';
+        const imgSrc = hasImg ? (cert.image.startsWith('http') || cert.image.startsWith('data:') ? cert.image : ('../' + cert.image)) : '';
+        
+        const visualBadge = hasImg ? `
+            <img src="${escapeHtml(imgSrc)}" class="w-12 h-12 rounded-xl object-cover border border-white/10 flex-shrink-0">
+        ` : `
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center text-xl flex-shrink-0">
+                <i class="${escapeHtml(cert.icon || 'fas fa-certificate')}"></i>
+            </div>
+        `;
+
+        const hasLink = cert.credentialUrl && cert.credentialUrl.trim() !== '' && cert.credentialUrl !== '#';
+        const linkPreview = hasLink ? `
+            <a href="${escapeHtml(cert.credentialUrl)}" target="_blank" rel="noopener noreferrer" class="text-[11px] text-accent hover:underline flex items-center gap-1 mt-1 font-medium">
+                <i class="fas fa-arrow-up-right-from-square text-[9px]"></i> Verifikasi Kredensial
+            </a>
+        ` : '';
+
+        return `
+            <div class="glass-card p-5 rounded-2xl border border-white/10 flex flex-col justify-between hover:border-amber-500/30 transition">
+                <div class="flex items-start gap-4 mb-4">
+                    ${visualBadge}
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-white font-bold text-base leading-snug line-clamp-1">${escapeHtml(cert.title)}</h4>
+                        <p class="text-slate-400 text-xs mt-0.5">${escapeHtml(cert.issuer || '-')}</p>
+                        <div class="flex items-center gap-2 mt-2 flex-wrap">
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                                Issued: ${escapeHtml(cert.issueDate || '-')}
+                            </span>
+                        </div>
+                        ${linkPreview}
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-white/5">
+                    <button type="button" onclick="openCertModal('${cert.id}')" class="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-slate-300 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer">
+                        <i class="fas fa-pen text-[10px]"></i> Edit
+                    </button>
+                    <button type="button" onclick="deleteCert('${cert.id}')" class="px-3 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer">
+                        <i class="fas fa-trash-can text-[10px]"></i> Hapus
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function openCertModal(id) {
+    const modal = document.getElementById('cert-form-modal');
+    const titleText = document.getElementById('cert-modal-title-text');
+    if (!modal) return;
+
+    if (id) {
+        // Edit mode
+        const cert = (currentConfig.certificates || []).find(c => c.id === id);
+        if (!cert) return;
+
+        titleText.innerHTML = '<i class="fas fa-pen-to-square text-amber-400"></i> Edit Sertifikat';
+        setVal('cert-edit-id', cert.id);
+        setVal('cert-input-title', cert.title || '');
+        setVal('cert-input-issuer', cert.issuer || '');
+        setVal('cert-input-date', cert.issueDate || '');
+        setVal('cert-input-link', cert.credentialUrl || '');
+        setVal('cert-input-icon', cert.icon || 'fas fa-certificate');
+        setVal('cert-input-image', cert.image || '');
+        
+        updateCertPreviewFromInput();
+    } else {
+        // Create mode
+        titleText.innerHTML = '<i class="fas fa-certificate text-amber-400"></i> Tambah Sertifikat Baru';
+        setVal('cert-edit-id', '');
+        setVal('cert-input-title', '');
+        setVal('cert-input-issuer', '');
+        setVal('cert-input-date', '');
+        setVal('cert-input-link', '');
+        setVal('cert-input-icon', 'fas fa-certificate');
+        setVal('cert-input-image', '');
+
+        const previewBox = document.getElementById('cert-preview-box');
+        if (previewBox) previewBox.classList.add('hidden');
+    }
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCertModal() {
+    const modal = document.getElementById('cert-form-modal');
+    if (modal) modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+function updateCertPreviewFromInput() {
+    const imgVal = getVal('cert-input-image');
+    const previewBox = document.getElementById('cert-preview-box');
+    const previewImg = document.getElementById('cert-preview-img');
+    if (!previewBox || !previewImg) return;
+
+    if (imgVal && imgVal.trim() !== '') {
+        const src = imgVal.startsWith('http') || imgVal.startsWith('data:') ? imgVal : ('../' + imgVal);
+        previewImg.src = src;
+        previewBox.classList.remove('hidden');
+    } else {
+        previewBox.classList.add('hidden');
+    }
+}
+
+function saveCertItem(e) {
+    e.preventDefault();
+
+    const id = getVal('cert-edit-id');
+    const title = getVal('cert-input-title');
+    const issuer = getVal('cert-input-issuer');
+    const issueDate = getVal('cert-input-date');
+    const credentialUrl = getVal('cert-input-link');
+    const icon = getVal('cert-input-icon') || 'fas fa-certificate';
+    const image = getVal('cert-input-image') || '';
+
+    if (!title || !issuer) {
+        showToast("Nama sertifikat dan lembaga penerbit wajib diisi!", "error");
+        return;
+    }
+
+    if (!currentConfig.certificates) currentConfig.certificates = [];
+
+    if (id) {
+        // Update existing
+        const idx = currentConfig.certificates.findIndex(c => c.id === id);
+        if (idx !== -1) {
+            currentConfig.certificates[idx] = {
+                ...currentConfig.certificates[idx],
+                title,
+                issuer,
+                issueDate,
+                credentialUrl,
+                icon,
+                image
+            };
+        }
+    } else {
+        // Create new
+        const newId = 'cert_' + Date.now();
+        currentConfig.certificates.push({
+            id: newId,
+            title,
+            issuer,
+            issueDate,
+            credentialUrl,
+            icon,
+            image
+        });
+    }
+
+    // Save and re-render
+    saveAllChanges();
+    renderAdminCertificates();
+    closeCertModal();
+    showToast("Sertifikat berhasil disimpan ke Firebase!", "success");
+}
+
+function deleteCert(id) {
+    const cert = (currentConfig.certificates || []).find(c => c.id === id);
+    const title = cert ? cert.title : 'sertifikat ini';
+
+    if (confirm(`Apakah Anda yakin ingin menghapus "${title}"?`)) {
+        currentConfig.certificates = (currentConfig.certificates || []).filter(c => c.id !== id);
+        saveAllChanges();
+        renderAdminCertificates();
+        showToast("Sertifikat berhasil dihapus.", "info");
+    }
+}
+
+async function handleCertImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const useCloudinary = getChecked('cfg-cloudinary-enabled') && getVal('cfg-cloudinary-name') && getVal('cfg-cloudinary-preset');
+
+    if (useCloudinary) {
+        showToast("Mengunggah gambar sertifikat ke Cloudinary CDN...", "info");
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', getVal('cfg-cloudinary-preset'));
+
+            const resp = await fetch(`https://api.cloudinary.com/v1_1/${getVal('cfg-cloudinary-name')}/image/upload`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await resp.json();
+            if (data.secure_url) {
+                setVal('cert-input-image', data.secure_url);
+                updateCertPreviewFromInput();
+                showToast("Gambar sertifikat berhasil diunggah ke Cloudinary!", "success");
+                return;
+            }
+        } catch (err) {
+            console.warn("Cloudinary error, fallback to local:", err);
+            showToast("Gagal Cloudinary, kompresi lokal digunakan.", "warning");
+        }
+    }
+
+    // Local compression
+    compressAndReadImage(file, 800, 600, (base64) => {
+        setVal('cert-input-image', base64);
+        updateCertPreviewFromInput();
+        showToast("Gambar sertifikat di-load & dikompresi lokal.", "info");
+    });
+}
+
 function switchTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
